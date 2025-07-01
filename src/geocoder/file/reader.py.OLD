@@ -1,0 +1,35 @@
+import csv
+
+
+class Reader:
+    def __init__(self, filepath, charenc, delimiter, address_col):
+        self.filepath = filepath
+        self.charenc = charenc
+        self.delimiter = delimiter
+        self.address_col = address_col
+
+        self.f = open(
+            filepath,
+            "r",
+            encoding=charenc,
+        )
+
+        self.csv_input = csv.reader(self.f, delimiter=delimiter)
+        self.headers = next(self.csv_input)
+
+    def get_headers(self):
+        return self.headers
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        line = next(self.csv_input)
+        # 빈 줄 또는 컬럼 개수가 부족한 줄은 무시
+        if self.address_col >= len(line):
+            return line, ""
+        addr = line[self.address_col].strip()
+        return line, addr
+
+    def __str__(self):
+        return "Reader"

@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지오코더 API 개발자 설명서</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #3498db;
+            margin-top: 20px;
+        }
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+            margin-right: 10px;
+        }
+        .get {
+            background-color: #61affe;
+        }
+        .post {
+            background-color: #49cc90;
+        }
+        .endpoint {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .nav {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        .nav a {
+            color: #2980b9;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        .parameter-table {
+            margin-top: 15px;
+        }
+        .example-response {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>지오코더 API 개발자 설명서</h1>
+    
+    <div class="nav">
+        <h2>목차</h2>
+        <a href="#introduction">소개</a>
+        <a href="#authentication">인증</a>
+        <a href="#geocode">주소 지오코딩</a>
+        <a href="#reverse_geocode">역 지오코딩</a>
+        <a href="#token_stats">토큰 통계</a>
+        <a href="#hd_history">행정동 이력</a>
+    </div>
+
+    <section id="introduction">
+        <h2>소개</h2>
+        <p>지오코더 API는 주소를 지리적 좌표로 변환하고, 좌표를 주소로 변환하는 기능을 제공합니다.</p>
+        <p>이 API를 통해 다음과 같은 기능을 사용할 수 있습니다:</p>
+        <ul>
+            <li>주소 지오코딩 - 주소를 위도/경도 좌표로 변환</li>
+            <li>역 지오코딩 - 위도/경도 좌표를 주소로 변환</li>
+            <li>토큰 사용량 통계 확인</li>
+            <li>행정동 이력 조회</li>
+        </ul>
+    </section>
+
+    <section id="authentication">
+        <h2>인증</h2>
+        <p>모든 API 요청은 토큰 기반 인증을 사용합니다. 토큰은 URL 파라미터로 제공합니다.</p>
+        <p>예: <code>?token=YOUR_API_TOKEN</code></p>
+    </section>
+
+    <section id="geocode">
+        <h2>주소 지오코딩</h2>
+        <p>주소를 지리적 좌표(위도, 경도)로 변환합니다.</p>
+
+        <h3>GET 지오코딩</h3>
+        <div class="endpoint">
+            <span class="method get">GET</span> /geocode
+        </div>
+        
+        <h4>요청 파라미터</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>파라미터</th>
+                <th>타입</th>
+                <th>필수</th>
+                <th>설명</th>
+            </tr>
+            <tr>
+                <td>q</td>
+                <td>string</td>
+                <td>예</td>
+                <td>하나 이상의 주소를 포함하는 문자열. 각 주소는 줄바꿈(\\n)으로 구분</td>
+            </tr>
+            <tr>
+                <td>token</td>
+                <td>string</td>
+                <td>예</td>
+                <td>API 인증 토큰</td>
+            </tr>
+        </table>
+
+        <h4>요청 예제</h4>
+        <pre>GET /geocode?q=서울특별시%20송파구%20송파대로8길%2010%0A김제%20온천길%2037&token=YOUR_API_TOKEN</pre>
+
+        <h4>응답 예제</h4>
+        <pre class="example-response">{
+  "total_time": 0.15,
+  "total_count": 2,
+  "success_count": 2,
+  "fail_count": 0,
+  "results": [
+    {
+      "x": 966445,
+      "y": 1949518,
+      "z": "05512",
+      "hc": "1174064000",
+      "lc": "1174010900",
+      "rc": "117406103008",
+      "bn": "10",
+      "h1": "서울특별시",
+      "rm": "송파대로8길",
+      "bm": ["풍림아이원아파트"],
+      "hd_cd": "1174064000",
+      "hd_nm": "방이2동",
+      "success": true,
+      "errmsg": "",
+      "h1_cd": "11",
+      "h2_cd": "11740",
+      "kostat_h1_cd": "11",
+      "kostat_h2_cd": "11740",
+      "hash": "e93a83cf",
+      "address": "서울특별시 송파구 송파대로8길 10",
+      "addressCls": "ROAD",
+      "toksString": "서울특별시|송파구|송파대로8길|10",
+      "x_axis": 127.1146829,
+      "y_axis": 37.5138498,
+      "inputaddr": "서울특별시 송파구 송파대로8길 10"
+    },
+    {
+      "x": 933939,
+      "y": 1769049,
+      "z": "54332",
+      "hc": "4521054000",
+      "lc": "4521054000",
+      "rc": "452105304150",
+      "bn": "37",
+      "h1": "전라북도",
+      "rm": "온천길",
+      "bm": [],
+      "hd_cd": "4521054000",
+      "hd_nm": "교월동",
+      "success": true,
+      "errmsg": "",
+      "h1_cd": "45",
+      "h2_cd": "45210",
+      "kostat_h1_cd": "45",
+      "kostat_h2_cd": "45210",
+      "hash": "4e7a9e2a",
+      "address": "전라북도 김제시 온천길 37",
+      "addressCls": "ROAD",
+      "toksString": "전라북도|김제시|온천길|37",
+      "x_axis": 126.8632492,
+      "y_axis": 35.8298487,
+      "inputaddr": "김제 온천길 37"
+    }
+  ]
+}</pre>
+
+        <h3>POST 지오코딩</h3>
+        <div class="endpoint">
+            <span class="method post">POST</span> /geocode
+        </div>
+
+        <h4>요청 파라미터</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>파라미터</th>
+                <th>타입</th>
+                <th>필수</th>
+                <th>설명</th>
+            </tr>
+            <tr>
+                <td>data</td>
+                <td>object</td>
+                <td>예</td>
+                <td>지오코딩할 주소 목록</td>
+            </tr>
+            <tr>
+                <td>token</td>
+                <td>string</td>
+                <td>예</td>
+                <td>API 인증 토큰</td>
+            </tr>
+        </table>
+
+        <h4>요청 본문 예제</h4>
+        <pre>{
+  "q": [
+    "서울특별시 송파구 송파대로8길 10",
+    "김제 온천길 37",
+    "강원 춘천시 남산면 서천리 산111"
+  ]
+}</pre>
+
+        <h4>응답 형식</h4>
+        <p>GET 지오코딩과 동일한 응답 형식입니다.</p>
+        
+        <h4>응답 필드 설명</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>필드</th>
+                <th>타입</th>
+                <th>설명</th>
+            </tr>
+            <tr>
+                <td>total_time</td>
+                <td>float</td>
+                <td>총 처리 시간 (초)</td>
+            </tr>
+            <tr>
+                <td>total_count</td>
+                <td>integer</td>
+                <td>총 요청 주소 개수</td>
+            </tr>
+            <tr>
+                <td>success_count</td>
+                <td>integer</td>
+                <td>성공한 주소 개수</td>
+            </tr>
+            <tr>
+                <td>fail_count</td>
+                <td>integer</td>
+                <td>실패한 주소 개수</td>
+            </tr>
+            <tr>
+                <td>results</td>
+                <td>array</td>
+                <td>지오코딩 결과 목록</td>
+            </tr>
+        </table>
+        
+        <h4>결과 객체 필드</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>필드</th>
+                <th>타입</th>
+                <th>설명</th>
+            </tr>
+            <tr>
+                <td>x</td>
+                <td>integer</td>
+                <td>원본 X 좌표 (EPSG:5179)</td>
+            </tr>
+            <tr>
+                <td>y</td>
+                <td>integer</td>
+                <td>원본 Y 좌표 (EPSG:5179)</td>
+            </tr>
+            <tr>
+                <td>z</td>
+                <td>string</td>
+                <td>우편번호</td>
+            </tr>
+            <tr>
+                <td>hc</td>
+                <td>string</td>
+                <td>행정동 코드</td>
+            </tr>
+            <tr>
+                <td>lc</td>
+                <td>string</td>
+                <td>법정동 코드</td>
+            </tr>
+            <tr>
+                <td>rc</td>
+                <td>string</td>
+                <td>도로명 코드</td>
+            </tr>
+            <tr>
+                <td>bn</td>
+                <td>string</td>
+                <td>건물 번호</td>
+            </tr>
+            <tr>
+                <td>h1</td>
+                <td>string</td>
+                <td>행정구역 1 (시도명)</td>
+            </tr>
+            <tr>
+                <td>rm</td>
+                <td>string</td>
+                <td>도로명</td>
+            </tr>
+            <tr>
+                <td>bm</td>
+                <td>array</td>
+                <td>건물명 목록</td>
+            </tr>
+            <tr>
+                <td>hd_cd</td>
+                <td>string</td>
+                <td>행정동 코드</td>
+            </tr>
+            <tr>
+                <td>hd_nm</td>
+                <td>string</td>
+                <td>행정동 이름</td>
+            </tr>
+            <tr>
+                <td>success</td>
+                <td>boolean</td>
+                <td>지오코딩 성공 여부</td>
+            </tr>
+            <tr>
+                <td>errmsg</td>
+                <td>string</td>
+                <td>오류 메시지</td>
+            </tr>
+            <tr>
+                <td>h1_cd</td>
+                <td>string</td>
+                <td>행정구역 1 코드</td>
+            </tr>
+            <tr>
+                <td>h2_cd</td>
+                <td>string</td>
+                <td>행정구역 2 코드</td>
+            </tr>
+            <tr>
+                <td>kostat_h1_cd</td>
+                <td>string</td>
+                <td>통계청 행정구역 1 코드</td>
+            </tr>
+            <tr>
+                <td>kostat_h2_cd</td>
+                <td>string</td>
+                <td>통계청 행정구역 2 코드</td>
+            </tr>
+            <tr>
+                <td>hash</td>
+                <td>string</td>
+                <td>해시 값</td>
+            </tr>
+            <tr>
+                <td>address</td>
+                <td>string</td>
+                <td>전체 주소</td>
+            </tr>
+            <tr>
+                <td>addressCls</td>
+                <td>string</td>
+                <td>주소 분류</td>
+            </tr>
+            <tr>
+                <td>toksString</td>
+                <td>string</td>
+                <td>토큰화된 문자열</td>
+            </tr>
+            <tr>
+                <td>x_axis</td>
+                <td>float</td>
+                <td>경도 (EPSG:4326)</td>
+            </tr>
+            <tr>
+                <td>y_axis</td>
+                <td>float</td>
+                <td>위도 (EPSG:4326)</td>
+            </tr>
+            <tr>
+                <td>inputaddr</td>
+                <td>string</td>
+                <td>입력 주소</td>
+            </tr>
+        </table>
+    </section>
+
+    <section id="reverse_geocode">
+        <h2>역 지오코딩</h2>
+        <p>지리적 좌표(위도, 경도)를 주소로 변환합니다.</p>
+
+        <div class="endpoint">
+            <span class="method get">GET</span> /reverse_geocode
+        </div>
+
+        <h4>요청 파라미터</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>파라미터</th>
+                <th>타입</th>
+                <th>필수</th>
+                <th>설명</th>
+            </tr>
+            <tr>
+                <td>x</td>
+                <td>float</td>
+                <td>예</td>
+                <td>경도 좌표 (EPSG:4326)</td>
+            </tr>
+            <tr>
+                <td>y</td>
+                <td>float</td>
+                <td>예</td>
+                <td>위도 좌표 (EPSG:4326)</td>
+            </tr>
+            <tr>
+                <td>token</td>
+                <td>string</td>
+                <td>예</td>
+                <td>API 인증 토큰</td>
+            </tr>
+        </table>
+
+        <h4>요청 예제</h4>
+        <pre>GET /reverse_geocode?x=127.1146829&y=37.5138498&token=YOUR_API_TOKEN</pre>
+
+        <h4>응답 예제</h4>
+        <pre class="example-response">{
+  "ADR_MNG_NO": "1174010900110040000",
+  "yyyymm": "202306",
+  "address": "서울특별시 송파구 송파대로8길 10",
+  "success": true,
+  "geom": "POINT(127.1146829 37.5138498)",
+  "errmsg": ""
+}</pre>
+
+        <h4>응답 필드 설명</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>필드</th>
+                <th>타입</th>
+                <th>설명</th>
+            </tr>
+            <tr>
+                <td>ADR_MNG_NO</td>
+                <td>string</td>
+                <td>주소 관리 번호</td>
+            </tr>
+            <tr>
+                <td>yyyymm</td>
+                <td>string</td>
+                <td>데이터 기준 년월 (YYYYMM 형식, 예: 202306)</td>
+            </tr>
+            <tr>
+                <td>address</td>
+                <td>string</td>
+                <td>전체 주소 (도로명 또는 지번)</td>
+            </tr>
+            <tr>
+                <td>success</td>
+                <td>boolean</td>
+                <td>리버스 지오코딩 성공 여부</td>
+            </tr>
+            <tr>
+                <td>geom</td>
+                <td>string</td>
+                <td>WKT 형식의 지오메트리 정보 (예: POINT(X Y))</td>
+            </tr>
+            <tr>
+                <td>errmsg</td>
+                <td>string</td>
+                <td>오류 발생 시 오류 메시지</td>
+            </tr>
+        </table>
+    </section>
+
+    <section id="token_stats">
+        <h2>토큰 통계</h2>
+        <p>API 토큰의 사용량 통계를 조회합니다.</p>
+
+        <div class="endpoint">
+            <span class="method get">GET</span> /token/stats
+        </div>
+
+        <h4>요청 파라미터</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>파라미터</th>
+                <th>타입</th>
+                <th>필수</th>
+                <th>설명</th>
+            </tr>
+            <tr>
+                <td>token</td>
+                <td>string</td>
+                <td>예</td>
+                <td>통계를 조회할 API 토큰</td>
+            </tr>
+        </table>
+
+        <h4>요청 예제</h4>
+        <pre>GET /token/stats?token=YOUR_API_TOKEN</pre>
+
+        <h4>응답 예제</h4>
+        <pre class="example-response">{
+  "token_id": "123e4567-e89b-12d3-a456-426614174000",
+  "user_id": "user@example.com",
+  "created_date": "2023-01-01T00:00:00",
+  "expiry_date": "2024-01-01T00:00:00",
+  "is_active": true,
+  "token_type": "premium",
+  "usage_count": 15204,
+  "quarter": 100000,
+  "remaining": 84796,
+  "percentage": 15.204
+}</pre>
+
+        <h4>응답 필드 설명</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>필드</th>
+                <th>타입</th>
+                <th>설명</th>
+            </tr>
+            <tr>
+                <td>token_id</td>
+                <td>string</td>
+                <td>토큰 고유 식별자</td>
+            </tr>
+            <tr>
+                <td>user_id</td>
+                <td>string</td>
+                <td>토큰 소유 사용자 ID</td>
+            </tr>
+            <tr>
+                <td>created_date</td>
+                <td>string</td>
+                <td>토큰 생성 일시</td>
+            </tr>
+            <tr>
+                <td>expiry_date</td>
+                <td>string</td>
+                <td>토큰 만료 일시</td>
+            </tr>
+            <tr>
+                <td>is_active</td>
+                <td>boolean</td>
+                <td>토큰 활성화 상태</td>
+            </tr>
+            <tr>
+                <td>token_type</td>
+                <td>string</td>
+                <td>토큰 유형</td>
+            </tr>
+            <tr>
+                <td>usage_count</td>
+                <td>integer</td>
+                <td>현재까지 사용된 요청 수</td>
+            </tr>
+            <tr>
+                <td>quarter</td>
+                <td>integer</td>
+                <td>할당된 분기별 요청 수</td>
+            </tr>
+            <tr>
+                <td>remaining</td>
+                <td>integer</td>
+                <td>남은 요청 수</td>
+            </tr>
+            <tr>
+                <td>percentage</td>
+                <td>float</td>
+                <td>사용 비율 (%)</td>
+            </tr>
+        </table>
+    </section>
+
+    <section id="hd_history">
+        <h2>행정동 이력</h2>
+        <p>행정동 이력 정보를 조회합니다.</p>
+
+        <div class="endpoint">
+            <span class="method get">GET</span> /hd_history
+        </div>
+
+        <h4>요청 파라미터</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>파라미터</th>
+                <th>타입</th>
+                <th>필수</th>
+                <th>설명</th>
+            </tr>
+            <tr>
+                <td>hd_cd</td>
+                <td>string</td>
+                <td>예</td>
+                <td>행정동 코드 (8자리)</td>
+            </tr>
+            <tr>
+                <td>token</td>
+                <td>string</td>
+                <td>예</td>
+                <td>API 인증 토큰</td>
+            </tr>
+        </table>
+
+        <h4>요청 예제</h4>
+        <pre>GET /hd_history?hd_cd=1174064000&token=YOUR_API_TOKEN</pre>
+
+        <h4>응답 예제</h4>
+        <pre class="example-response">[
+  {
+    "EMD_CD": "1174064000",
+    "EMD_KOR_NM": "방이2동",
+    "EMD_ENG_NM": "Bangi 2-dong",
+    "from_yyyymm": "201001",
+    "to_yyyymm": "202306"
+  },
+  {
+    "EMD_CD": "1174063000",
+    "EMD_KOR_NM": "방이동",
+    "EMD_ENG_NM": "Bangi-dong",
+    "from_yyyymm": "199501",
+    "to_yyyymm": "200912"
+  }
+]</pre>
+
+        <h4>응답 필드 설명</h4>
+        <table class="parameter-table">
+            <tr>
+                <th>필드</th>
+                <th>타입</th>
+                <th>설명</th>
+            </tr>
+            <tr>
+                <td>EMD_CD</td>
+                <td>string</td>
+                <td>행정동 코드 (8자리)</td>
+            </tr>
+            <tr>
+                <td>EMD_KOR_NM</td>
+                <td>string</td>
+                <td>행정동 한글 이름 (예: 방이2동)</td>
+            </tr>
+            <tr>
+                <td>EMD_ENG_NM</td>
+                <td>string</td>
+                <td>행정동 영어 이름 (예: Bangi 2-dong)</td>
+            </tr>
+            <tr>
+                <td>from_yyyymm</td>
+                <td>string</td>
+                <td>시작 년월 (YYYYMM 형식, 예: 201001)</td>
+            </tr>
+            <tr>
+                <td>to_yyyymm</td>
+                <td>string</td>
+                <td>종료 년월 (YYYYMM 형식, 예: 202306)</td>
+            </tr>
+        </table>
+    </section>
+
+    <footer style="margin-top: 50px; text-align: center; color: #777; font-size: 14px; border-top: 1px solid #eee; padding-top: 20px;">
+        <p>© 2025 지오코더 API. 모든 권리 보유.</p>
+    </footer>
+
+    <script>
+        // 코드 하이라이팅이나 기타 필요한 JavaScript 코드 추가
+    </script>
+</body>
+</html>

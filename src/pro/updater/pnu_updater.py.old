@@ -1,0 +1,374 @@
+import asyncio
+import fiona
+from fiona import transform
+from shapely.geometry import shape
+from shapely.ops import transform
+import pyproj
+
+# import rocksdb3
+import aimrocks
+from src.geocoder.geocoder import Geocoder
+from src.geocoder.util.pnumatcher import PNUMatcher
+from .updater import BaseUpdater
+from .hd_updater import HdUpdater
+from .z_updater import ZUpdater
+
+
+class PnuUpdater(BaseUpdater):
+    """
+    연속지적도를 이용하여 주소 추가
+    연속지적도는 리버스지오코딩을 위해 사용하지만, 건물이 없는 지번주소를 추가하기 위해 사용
+    "경기도_포천시_묘지현황_20240501.csv" 등의 건물이 없는 지번주소를 처리할 수 있다.
+    1. 매달 vworld에서 연속지적을 수작업으로 다운로드 받은 후 실행한다.
+    2. 실행 전에 압축을 풀어야 함 LSMD_CONT_LDREG_52_202404.shp 등의 파일이 생성됨.
+    3. 파일의 위치는 연속지적/shp
+
+    Attributes:
+        name (str): 다운받은 파일명.
+        geocoder (Geocoder): The geocoder instance.
+
+    Methods:
+        __init__(name: str, geocoder: Geocoder): Initializes a instance.
+        prepare_dic(key, value): Prepares a dictionary for the address entry.
+        update(wfile): Updates the geocoder with the address.
+    """
+
+    pnu_matcher = PNUMatcher()
+
+    def __init__(self, name: str, geocoder: Geocoder):
+        super().__init__(geocoder)
+        self.name = name
+        # 파일 다운로드 경로 지정
+        self.outpath = f"{self.JUSO_DATA_DIR}/연속지적/shp/"
+
+    def prepare_dic(self, value):
+        """
+        Prepares a dictionary for the address.
+
+        Args:
+            value: The value of the address.
+
+        Returns:
+            dict: The prepared dictionary for the address.
+
+        """
+
+        pnu = value["PNU"]
+        pnu_dic = self.pnu_matcher.get_ldong_name(pnu)
+        if not pnu_dic:
+            self.logger.error(f"PNU not found: {pnu}")
+            return None
+
+        split_values: list = pnu_dic["법정동명"].split()
+
+        if split_values[0] == "세종특별자치시":
+            split_values[0] = "세종"
+            split_values.insert(1, "세종")
+
+        if (
+            len(split_values) >= 5
+        ):  # ['충청북도', '청주시', '흥덕구', '강내면', '다락리']
+            h1_nm = split_values[0]
+            h23_nm = split_values[1] + " " + split_values[2]
+            ld_nm = split_values[3]
+            ri_nm = split_values[4]
+        elif len(split_values) == 4:
+            if split_values[-1].endswith(
+                "리"
+            ):  # ['강원도', '횡성군', '강림면', '월현리']
+                h1_nm = split_values[0]
+                h23_nm = split_values[1]
+                ld_nm = split_values[2]
+                ri_nm = split_values[3]
+            else:  # ['전북특별자치도', '전주시', '완산구', '교동']
+                h1_nm = split_values[0]
+                h23_nm = split_values[1] + " " + split_values[2]
+                ld_nm = split_values[3]
+                ri_nm = ""
+        elif len(split_values) == 3:  # ['경기도', '포천시', '가산면']
+            h1_nm = split_values[0]
+            h23_nm = split_values[1]
+            ld_nm = split_values[2]
+            ri_nm = ""
+        else:
+            return None
+
+        SAN = "1" if pnu[10:11] == "2" else "0"  # PNU의 "산"은 2. 주소데이터의 "산"은 1
+        bng1 = int(pnu[11:15])
+        bng2 = int(pnu[15:])
+
+        d = {
+            "h1_nm": h1_nm,
+            "h23_nm": h23_nm,
+            "ld_nm": ld_nm,
+            "hd_nm": None,
+            "ri_nm": ri_nm,
+            "road_nm": None,
+            "undgrnd_yn": None,
+            "bld1": None,
+            "bld2": None,
+            "san": SAN,
+            "bng1": str(bng1),
+            "bng2": str(bng2),
+            "bld_reg": None,
+            "bld_nm_text": None,
+            "bld_nm": None,
+            "ld_cd": pnu_dic["법정동코드"],
+            "hd_cd": None,
+            "road_cd": None,
+            "zip": None,
+            "bld_mgt_no": None,
+            "bld_x": value["X좌표"],
+            "bld_y": value["Y좌표"],
+            "jibun": value["JIBUN"],
+        }
+
+        # if d["bld_x"] and not d["hd_cd"]:
+        self.update_hd_and_z(d)
+
+        return d
+
+    def name_to_h1_cd(self, name):
+        """
+        Converts the name of the province to its corresponding h1_cd.
+
+        ex) LSMD_CONT_LDREG_11_202505.shp
+        """
+
+        if name.startswith("LSMD_CONT_LDREG_"):
+            # '11', '36' from 'LSMD_CONT_LDREG_11_202505.shp, LSMD_CONT_LDREG_36110_202505.shp'
+            h1_cd = name.split("_")[3][:2]
+
+        return h1_cd
+
+    async def update(self, wfile):
+        """
+        Updates the geocoder with the pnu (연속지적 shp).
+
+        Args:
+            wfile: The file to write the log to.
+
+        Returns:
+            bool: True if the update is successful, False otherwise.
+        """
+        # CPU 바운드 작업을 별도의 스레드로 오프로드
+        return await asyncio.to_thread(self._update_sync, wfile)
+
+    def _update_sync(self, wfile):
+        """
+        Updates the geocoder with the pnu (연속지적 shp).
+
+        Args:
+            wfile: The file to write the log to.
+
+        Returns:
+            bool: True if the update is successful, False otherwise.
+
+        """
+        # 파일 읽기
+        # 한 줄씩 객체 생성해서 update_record() 호출
+        self._prepare_updater_logger(f"{self.name}.log")
+
+        h1_cd = self.name_to_h1_cd(self.name)
+
+        self.hu = HdUpdater("202504", None)
+        self.hu.cache_shp(h1_cd)
+
+        self.zu = ZUpdater("202504", None)
+        self.zu.cache_shp(h1_cd)
+
+        cnt = 0
+        add_count = 0
+        has_xy = 0
+
+        from_crs = pyproj.CRS("EPSG:5186")
+        to_crs = pyproj.CRS("EPSG:5179")
+
+        proj_transform = pyproj.Transformer.from_crs(
+            from_crs, to_crs, always_xy=True
+        ).transform
+
+        with fiona.open(
+            f"{self.outpath}{self.name}", "r", encoding="cp949"
+        ) as shp_file:
+            self.logger.info(f"Update: {self.outpath}{self.name}")
+
+            # for all geometry
+            n = 0
+            batch = aimrocks.WriteBatch()
+            # batch = rocksdb3.WriterBatch()
+            total_features = len(shp_file)
+            self.logger.info(f"Total features in {self.name}: {total_features:,}")
+            for feature in shp_file:
+
+                # # [TODO: 임시]
+                # if n < 1140000:
+                #     n += 1
+                #     cnt = n
+                #     continue
+
+                value = dict(feature.properties)
+
+                # # [TODO: 삭제]
+                # if not value["PNU"].startswith(
+                #     (
+                #         "4165034000",
+                #         "4165034021",
+                #         "4165034022",
+                #         "4165034023",
+                #         "4165034024",
+                #         "4165034025",
+                #         "4165034026",
+                #         "4165034027",
+                #         "4165034028",
+                #         "4165034029",
+                #         "4165034030",
+                #         "4165034031",
+                #         "4165034032",
+                #         "4181035000",
+                #         "4181035021",
+                #         "4181035022",
+                #         "4181035023",
+                #         "4181035024",
+                #         "4181035025",
+                #         "4181035026",
+                #         "4181035027",
+                #         "4181035028",
+                #         "4181035029",
+                #         "4181035030",
+                #         "4181035031",
+                #         "4181035032",
+                #         "4211037000",
+                #         "4211037021",
+                #         "4211037022",
+                #         "4211037023",
+                #         "4211037024",
+                #         "4211037025",
+                #         "4211037026",
+                #         "4211037027",
+                #         "4271037000",
+                #         "4271037001",
+                #         "4271037021",
+                #         "4271037022",
+                #         "4271037023",
+                #         "4271037024",
+                #         "4271037025",
+                #         "4271037026",
+                #         "4271037027",
+                #         "4271537000",
+                #         "4271537021",
+                #         "4271537022",
+                #         "4271537023",
+                #         "4271537024",
+                #         "4271537025",
+                #         "4271537026",
+                #         "4271537027",
+                #         "4683033000",
+                #         "4683033021",
+                #         "4683033022",
+                #         "4683033023",
+                #         "4683033024",
+                #         "4683033025",
+                #         "4683033026",
+                #         "4683033027",
+                #         "4683033028",
+                #         "4683033029",
+                #         "4683033030",
+                #         "4683033031",
+                #         "4683033032",
+                #         "4683033033",
+                #     )
+                # ):
+                #     n += 1
+                #     if n % 10000 == 0:
+                #         self.logger.info(f"{self.name}  skip {n:,}")
+
+                #     continue
+
+                # if value["COL_ADM_SE"] != "41610": # 광주시
+                #     continue
+
+                geom = shape(feature["geometry"])
+                wgs84_geom = transform(proj_transform, geom)
+                value["X좌표"] = int(wgs84_geom.centroid.x)
+                value["Y좌표"] = int(wgs84_geom.centroid.y)
+
+                try:
+                    address_dic = self.prepare_dic(value)
+                    if not address_dic:
+                        continue
+
+                    # # [TODO: 삭제]
+                    # if address_dic["ld_nm"] != "신북면":
+                    #     continue
+
+                    add_count += self.update_record(
+                        address_dic,
+                        merge_if_exists=True,  # null좌표 업데이트 기능도 있으므로 항상 True로 하는 것이 좋다.
+                        extras={
+                            "updater": "pnu_updater",
+                            "jibun": address_dic["jibun"],
+                        },
+                        batch=batch,
+                    )
+                    if address_dic["bld_x"]:
+                        has_xy += 1
+                except Exception as e:
+                    self.logger.error(f"Error: {e}")
+                    # continue
+                cnt += 1
+                if cnt % 10000 == 0:
+                    progress = (cnt / total_features) * 100
+                    self.logger.info(
+                        f"{self.name}  {cnt:,} +{add_count:,} ({progress:.2f}%)"
+                    )
+                    # print(f"{self.name} {cnt:,}")
+                if cnt % 1000 == 0:
+                    self.write_batch(batch)
+                    batch = aimrocks.WriteBatch()
+                    # batch = rocksdb3.WriterBatch()
+
+        # 마지막 배치 처리
+        if cnt % 1000 != 0:
+            self.write_batch(batch)
+
+        self.ldb.flush()
+
+        self.logger.info(
+            f"연속지적 DB {self.name}: {cnt:,} 건, 좌표있는 건물: {has_xy:,} 건. hash 추가: {add_count:,} 건"
+        )
+
+        self.logger.info(f"완료: {self.name}")
+
+        log_file = f"{self.outpath}{self.name}.log"
+        with open(log_file, "r") as f:
+            log = f.read()
+            wfile.write(log)
+
+        self._stop_updater_logging()
+        return True
+
+    def update_hd_and_z(self, val):
+        if val.get("pos_cd") != None:
+            return
+
+        # hu = HdUpdater("202504", None)
+
+        x = val["bld_x"]
+        y = val["bld_y"]
+
+        # self.hu.cache_shp(val["h23_cd"][:2])
+        hd_dic = self.hu.search_shp(x, y)
+        if hd_dic:
+            # val["hc"] = hd_dic["hd_cd"]
+            val["hd_cd"] = hd_dic["hd_cd"]
+            val["hd_nm"] = hd_dic["hd_nm"]
+
+        if val.get("z"):
+            return
+
+        # z 값이 없으면 우편번호로 설정
+        # zu = ZUpdater("202504", None)
+        z_dic = self.zu.search_shp(x, y)
+        if z_dic and z_dic["zip"]:
+            val["zip"] = z_dic["zip"]

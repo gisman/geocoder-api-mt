@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Geocoder api (stand-alone http server. single process)
+git pull
+
+lsof -ti:4009 | xargs kill -9
+
+cd ~/projects/geocoder-api-mt
+source venv/bin/activate
+echo 'Starting...'
+
+export PYTHON_GIL=0
+export CODE_DATA_DIR=/disk/nvme1t/geocoder-api-db/code
+export GEOCODE_DB=/disk/nvme1t/geocoder-api-db/rocks_debug
+export REVERSE_GEOCODE_DB=/disk/nvme1t/geocoder-api-db/rocks-reverse-geocoder_debug
+export HD_HISTORY_DB=/disk/nvme1t/geocoder-api-db/rocks_hd_history_debug
+export BIGCACHE_DB=/disk/nvme1t/geocoder-api-db/bigcache_debug
+export LOG_LEVEL=INFO
+
+uvicorn api_fast:app --host=0.0.0.0 --port=4009 &
+
+sleep 3
+echo 'Started'
+

@@ -1,0 +1,43 @@
+{
+    // IntelliSense를 사용하여 가능한 특성에 대해 알아보세요.
+    // 기존 특성에 대한 설명을 보려면 가리킵니다.
+    // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "API fast",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/api_fast.py",
+            "args": [
+                // "4039"
+                // "4029"
+                // "4019"
+                "4009"
+                // "4001"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "autoReload": {
+                "enable": true,
+                "pattern": [
+                    "${workspaceFolder}/src/*.py"
+                ]
+            },
+            "justMyCode": true,
+            "env": {
+                // "GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks_debug_navi202504/",
+                "PYTHON_GIL": "0",
+                "READONLY": "false",
+                "GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks_debug",
+                "REVERSE_GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks-reverse-geocoder_debug",
+                "HD_HISTORY_DB": "/disk/nvme1t/geocoder-api-db/rocks_hd_history_debug",
+                "BIGCACHE_DB": "/disk/nvme1t/geocoder-api-db/bigcache_debug",
+                "FULL_HISTORY_LIST": "true",
+                // "LOG_LEVEL": "INFO",
+                "LOG_LEVEL": "DEBUG",
+                "USE_HASH_CACHE": "true",
+            },
+        }
+    ]
+}

@@ -1,0 +1,202 @@
+import json
+import asyncio
+import fiona
+from fiona import transform
+from shapely.geometry import shape
+from shapely.ops import transform
+import pyproj
+
+from src.geocoder.geocoder import Geocoder
+from src.geocoder.util.pnumatcher import PNUMatcher
+from .updater import BaseUpdater, DbCreateContext
+
+
+class RoadAddrUpdater(BaseUpdater):
+    """
+    연속지적도를 이용하여 주소 추가
+    연속지적도는 리버스지오코딩을 위해 사용하지만, 건물이 없는 지번주소를 추가하기 위해 사용
+    "경기도_포천시_묘지현황_20240501.csv" 등의 건물이 없는 지번주소를 처리할 수 있다.
+    1. 매달 vworld에서 연속지적을 수작업으로 다운로드 받은 후 실행한다.
+    2. 실행 전에 압축을 풀어야 함 LSMD_CONT_LDREG_52_202404.shp 등의 파일이 생성됨.
+    3. 파일의 위치는 ~/projects/geocoder-api/juso-data/연속지적/
+
+    Attributes:
+        name (str): 다운받은 파일명.
+        geocoder (Geocoder): The geocoder instance.
+
+    Methods:
+        __init__(name: str, geocoder: Geocoder): Initializes a instance.
+        prepare_dic(key, value): Prepares a dictionary for the address entry.
+        update(wfile): Updates the geocoder with the address.
+    """
+
+    pnu_matcher = PNUMatcher()
+
+    def __init__(self, name: str, geocoder: Geocoder):
+        super().__init__(geocoder)
+        self.name = name
+        # 파일 다운로드 경로 지정
+        self.outpath = f"{self.JUSO_DATA_DIR}/연속지적/shp/"
+
+    def prepare_dic(self, value):
+        """
+        Prepares a dictionary for the address.
+
+        Args:
+            value: The value of the address.
+
+        Returns:
+            dict: The prepared dictionary for the address.
+
+        """
+
+        pnu = value["PNU"]
+        pnu_dic = self.pnu_matcher.get_ldong_name(pnu)
+
+        split_values: list = pnu_dic["법정동명"].split()
+
+        if split_values[0] == "세종특별자치시":
+            split_values[0] = "세종"
+            split_values.insert(1, "세종")
+
+        if (
+            len(split_values) >= 5
+        ):  # ['충청북도', '청주시', '흥덕구', '강내면', '다락리']
+            h1_nm = split_values[0]
+            h23_nm = split_values[1] + " " + split_values[2]
+            ld_nm = split_values[3]
+            ri_nm = split_values[4]
+        elif len(split_values) == 4:  # ['강원도', '횡성군', '강림면', '월현리']
+            h1_nm = split_values[0]
+            h23_nm = split_values[1]
+            ld_nm = split_values[2]
+            ri_nm = split_values[3]
+        elif len(split_values) == 3:  # ['경기도', '포천시', '가산면']
+            h1_nm = split_values[0]
+            h23_nm = split_values[1]
+            ld_nm = split_values[2]
+            ri_nm = ""
+        else:
+            return None
+
+        SAN = "1" if pnu[10:11] == "2" else "0"  # PNU의 "산"은 2. 주소데이터의 "산"은 1
+        bng1 = int(pnu[11:15])
+        bng2 = int(pnu[15:])
+
+        d = {
+            "h1_nm": h1_nm,
+            "h23_nm": h23_nm,
+            "ld_nm": ld_nm,
+            "h4_nm": None,
+            "ri_nm": ri_nm,
+            "road_nm": None,
+            "undgrnd_yn": None,
+            "bld1": None,
+            "bld2": None,
+            "san": SAN,
+            "bng1": str(bng1),
+            "bng2": str(bng2),
+            "bld_reg": None,
+            "bld_nm_text": None,
+            "bld_nm": None,
+            "ld_cd": pnu_dic["법정동코드"],
+            "h4_cd": None,
+            "road_cd": None,
+            "zip": None,
+            "bld_mgt_no": None,
+            "bld_x": value["X좌표"],
+            "bld_y": value["Y좌표"],
+            "jibun": value["JIBUN"],
+        }
+
+        return d
+
+    async def update(self, wfile):
+        """
+        Updates the geocoder with the pnu (연속지적 shp).
+
+        Args:
+            wfile: The file to write the log to.
+
+        Returns:
+            bool: True if the update is successful, False otherwise.
+        """
+        # CPU 바운드 작업을 별도의 스레드로 오프로드
+        return await asyncio.to_thread(self._update_sync, wfile)
+
+    def _update_sync(self, wfile):
+        """
+        Updates the geocoder with the pnu (연속지적 shp).
+
+        Args:
+            wfile: The file to write the log to.
+
+        Returns:
+            bool: True if the update is successful, False otherwise.
+
+        """
+        # 파일 읽기
+        # 한 줄씩 객체 생성해서 update_record() 호출
+        self._prepare_updater_logger(f"{self.name}.log")
+
+        cnt = 0
+        add_count = 0
+        has_xy = 0
+
+        from_crs = pyproj.CRS("EPSG:5186")
+        to_crs = pyproj.CRS("EPSG:5179")
+
+        proj_transform = pyproj.Transformer.from_crs(
+            from_crs, to_crs, always_xy=True
+        ).transform
+
+        with fiona.open(
+            f"{self.outpath}{self.name}", "r", encoding="cp949"
+        ) as shp_file:
+            self.logger.info(f"Update: {self.outpath}{self.name}")
+
+            # for all geometry
+            n = 0
+            for feature in shp_file:
+                value = dict(feature.properties)
+
+                # if value["PNU"] != "4161012000104840001":
+                #     continue
+                # if value["COL_ADM_SE"] != "41610": # 광주시
+                #     continue
+
+                geom = shape(feature["geometry"])
+                wgs84_geom = transform(proj_transform, geom)
+                value["X좌표"] = int(wgs84_geom.centroid.x)
+                value["Y좌표"] = int(wgs84_geom.centroid.y)
+
+                try:
+                    address_dic = self.prepare_dic(value)
+                    add_count += self.update_record(
+                        address_dic,
+                        merge_if_exists=False,
+                        extras={"jibun": address_dic["jibun"]},
+                    )
+                    if address_dic["bld_x"]:
+                        has_xy += 1
+                except Exception as e:
+                    self.logger.error(f"Error: {e}")
+                    # continue
+                cnt += 1
+                if cnt % 10000 == 0:
+                    self.logger.info(f"{self.name} {cnt:,}")
+                    print(f"{self.name} {cnt:,}")
+
+        self.logger.info(
+            f"연속지적 DB {self.name}: {cnt:,} 건, 좌표있는 건물: {has_xy:,} 건. hash 추가: {add_count:,} 건"
+        )
+
+        self.logger.info(f"완료: {self.name}")
+
+        log_file = f"{self.outpath}{self.name}.log"
+        with open(log_file, "r") as f:
+            log = f.read()
+            wfile.write(log)
+
+        self._stop_updater_logging()
+        return True

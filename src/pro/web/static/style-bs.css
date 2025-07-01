@@ -1,0 +1,340 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    color: rgb(0, 0, 0);
+    font-family: "맑은 고딕", "Malgun Gothic", sans-serif;
+    /* font-size: 14px; */
+    line-height: normal;
+    margin: 0px;
+    padding: 0px;
+}
+html, body{height:100%;}
+a {text-decoration: none;}
+#nav-slide-button{position: fixed; left: 408px; top: 116px;}
+.geocode-download {position: relative; margin: 5px;}
+
+/* #geocode-summary {color: #f39814;} */
+#geocode-list {bottom: 100px; width: 100%; overflow-y: auto;}
+/* #header {position: relative;    z-index: 10;    background-color: rgba(0, 0, 0, 0.68);    width: 408px;    overflow: hidden;    height: 80px;} */
+#header {position: relative; display: block; z-index: 10;    
+    /* background-color: rgba(0, 0, 0, 0.68);     */
+    overflow: hidden;    height: 80px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;}
+#header h1 {font-weight: 900;
+    letter-spacing: -1px;
+    margin: 3px 0;
+    float: left;
+    font-size: 30px;
+    line-height: 1.5;}
+#main {position: relative; height: 100%;}
+#geocode-open {margin: 10px; position: relative; float: center}
+#about {float: right}
+#geocode-add {margin-top: 0px; margin-bottom: 0px; margin-left: 100px; margin-right: 0px; position:relative;top:50%; }
+#q {width:100%; height:100%;}
+.footer-a {padding:3px; color: #f39814;background: none; border: none; font-size: 14px;}
+
+#company-info {position: sticky; bottom: 0px; padding: 12px; background-color: rgba(0, 0, 0, 0.68); width: 384px; }
+#buttons {top: 0px; padding: 5px; display: flex; justify-content: center;}
+
+#selectable .geocode-failed {background-color: coral; color: beige;}
+/* #selectable .geocode-failed {background-color: rgba(0, 0, 0, 0.2); color: beige; text-decoration: line-through; } */
+#selectable .geocode-success {background-color: rgba(0, 0, 0, 0.68); color: white;}
+
+#selectable .ui-selecting { background: #FECA40; }
+#selectable .ui-selected { background: #F39814; color: white; }
+#selectable { list-style-type: none; padding: 0; width: 100%; height: 100%; }
+/* #selectable { list-style-type: none; margin: 0; padding: 0; width: 100%; height: 100%; } */
+#selectable li { margin-bottom: 3px; padding: 0.4em; font-size: 14px; height: auto; }
+/* #selectable li { margin: 3px; padding: 0.4em; font-size: 1.0em; height: 18px; } */
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#vmap {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 408px;
+    -webkit-transition: 300ms;
+    -moz-transition: 300ms;
+    transition: 300ms;
+}
+
+#map {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 408px;
+    -webkit-transition: 300ms;
+    -moz-transition: 300ms;
+    transition: 300ms;
+    display: none; 
+    display: block;
+}
+
+#nav {
+    visibility: hidden;
+    position: absolute;
+    left: -371px;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+    /* width: 371px; */
+    /* width: 100%; */
+    width: 408px;
+    height: 100%;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+    background-color:rgba(0,0,0,0.4);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#nav.active {
+    visibility: visible;
+    left: 0;
+    z-index: 500;
+}
+
+.z500 {
+    z-index: 500 !important;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+/* #nav {
+
+    position: relative;
+    margin-top: 0px;
+    margin-left: 0px;
+    float: left;
+    background: white;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    padding: 6px 8px;
+    font-family: Helvetica;
+    font-weight: bold;
+    font-size: 24px;
+    z-index: 800;
+} */
+
+.ui-dialog { z-index: 1000 !important ;}
+
+.leaflet-popup-content {
+    max-width: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.popup-table {
+    width: 100%;
+    border-top: 1px solid #444444;
+    border-collapse: collapse;
+}
+.popup-table th, .popup-table td {
+    border-bottom: 1px solid #444444;
+    padding: 3px;
+}
+.popup-ul {
+    width: 100%;
+}
+.popup-ul li {
+    padding: 3px;
+}
+/* cursor */
+.leaflet-grab {
+	cursor: url(/static/grab_cursor.ico) 7 5, url(/static/grab_cursor.ico), default;
+}
+
+
+/* vworld map */
+#maptype-buttons {top: 0px; padding: 5px; display: flex; justify-content: center;}
+
+
+
+/* from bootstrap sidebar example */
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+
+  .b-example-divider {
+    width: 100%;
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  }
+
+  .b-example-vr {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 100vh;
+  }
+
+  .bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+  }
+
+  .nav-scroller {
+    position: relative;
+    z-index: 2;
+    height: 2.75rem;
+    overflow-y: hidden;
+  }
+
+  .nav-scroller .nav {
+    display: flex;
+    flex-wrap: nowrap;
+    padding-bottom: 1rem;
+    margin-top: -1px;
+    overflow-x: auto;
+    text-align: center;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .btn-bd-primary {
+    --bd-violet-bg: #712cf9;
+    --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+    --bs-btn-font-weight: 600;
+    --bs-btn-color: var(--bs-white);
+    --bs-btn-bg: var(--bd-violet-bg);
+    --bs-btn-border-color: var(--bd-violet-bg);
+    --bs-btn-hover-color: var(--bs-white);
+    --bs-btn-hover-bg: #6528e0;
+    --bs-btn-hover-border-color: #6528e0;
+    --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+    --bs-btn-active-color: var(--bs-btn-hover-color);
+    --bs-btn-active-bg: #5a23c8;
+    --bs-btn-active-border-color: #5a23c8;
+  }
+
+  .bd-mode-toggle {
+    z-index: 1500;
+  }
+
+  .bd-mode-toggle .dropdown-menu .active .bi {
+    display: block !important;
+  }
+
+
+  #map {
+    left: 0px;
+  }
+  #company-info {
+    background-color: var(--bs-body-color);
+  }
+  #selectable li {
+    font-size: 0.8em;
+  }
+  .form-check {
+    margin: 0.5em;  
+  }
+  .side-buttons {
+    padding: 1em;
+    font-size: 0.9em;
+  }
+
+
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+
+  .b-example-divider {
+    width: 100%;
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  }
+
+  .b-example-vr {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 100vh;
+  }
+
+  .bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+  }
+
+  .nav-scroller {
+    position: relative;
+    z-index: 2;
+    height: 2.75rem;
+    overflow-y: hidden;
+  }
+
+  .nav-scroller .nav {
+    display: flex;
+    flex-wrap: nowrap;
+    padding-bottom: 1rem;
+    margin-top: -1px;
+    overflow-x: auto;
+    text-align: center;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .btn-bd-primary {
+    --bd-violet-bg: #712cf9;
+    --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+    --bs-btn-font-weight: 600;
+    --bs-btn-color: var(--bs-white);
+    --bs-btn-bg: var(--bd-violet-bg);
+    --bs-btn-border-color: var(--bd-violet-bg);
+    --bs-btn-hover-color: var(--bs-white);
+    --bs-btn-hover-bg: #6528e0;
+    --bs-btn-hover-border-color: #6528e0;
+    --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+    --bs-btn-active-color: var(--bs-btn-hover-color);
+    --bs-btn-active-bg: #5a23c8;
+    --bs-btn-active-border-color: #5a23c8;
+  }
+
+  .bd-mode-toggle {
+    z-index: 1500;
+  }
+
+  .bd-mode-toggle .dropdown-menu .active .bi {
+    display: block !important;
+  }

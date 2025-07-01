@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="gisman">
+  <title>Geocode - 기미나인</title>
+
+  <!-- CSS only -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+  <link rel="stylesheet" href="/static/style-bs.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+  <link href="/static/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-L8T0RP7DF5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-L8T0RP7DF5');
+    gtag('event', 'geocode site', {
+        'app_name': 'geocoder',
+      });
+  </script>
+</head>
+
+<body>
+
+<header class="sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">Geocode 결과</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse navbar-right" id="mynavbar">
+      <!-- <ul class="navbar-nav"> -->
+      <ul class="navbar-nav mt-2 mt-lg-0">
+
+        <li class="nav-item d-block d-sm-none">
+          <button type="button" class="btn btn-primary d-block d-sm-none" data-bs-toggle="modal" data-bs-target="#geocodeModal">
+            주소 찾기
+          </button>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3" id="help-html" href="https://gimi9.com/info/contact-geocoder/">문의</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3" id="about-html" href="https://gimi9.com/info/geocoder/">설명서</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+</header>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="sidebar border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+
+      <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="sidebarMenuLabel">Geocoder - 기미나인</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-md-flex flex-column p-0 vh-100 min-vh-100 overflow-y-auto">
+
+          <!-- <div id="nav" class="active z500"> -->
+            <div class="side-buttons">
+
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#geocodeModal">
+                주소 찾기
+              </button>
+
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                다운로드
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><button id="geocode-download-csv" class="dropdown-item geocode-download">CSV</button></li>
+                <li><button id="geocode-download-json" class="dropdown-item geocode-download">JSON</button></li>
+                <li><button id="geocode-download-geojson" class="dropdown-item geocode-download">GEOJSON</button></li>
+                <li><button id="geocode-download-kml" class="dropdown-item geocode-download">KML</button></li>
+              </ul>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="chk-success" checked>
+                <label class="form-check-label" for="chk-success">
+                  성공 0
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="chk-fail" checked>
+                <label class="form-check-label" for="chk-fail">
+                  실패 0
+                </label>
+              </div>
+
+            </div>
+            <div id="geocode-list">
+                <!-- <button id="nav-slide-button"></button> -->
+                <ol id="selectable">
+                </ol>
+            </div>
+        <!-- </div> -->
+
+          <!-- <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
+                맨 위로
+              </a>
+            </li>
+          </ul> -->
+
+          <hr class="my-3">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
+                <span class="footer-a" id="geocode-summary"></span>
+              </a>
+            </li>
+          </ul
+        </div>
+      </div>
+      </div>
+    </div>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div id="map" class="col-md-9 ms-sm-auto col-lg-10 px-md-4"></div>
+    </main>
+  </div>
+</div>
+
+<div class="modal fade" id="geocodeModal" tabindex="-1" aria-labelledby="geocodeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-ig">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="geocodeModalLabel">주소 입력(최대 1천건)</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="geocode-form" action="javascript:void(0);" method="get" class="form-horizonal" role="form">
+          <div class="form-group">
+          <fieldset>
+            <label for="select-sample" class="control-label">샘플 주소 불러오기: </label>
+            <div class="">
+            <select id="select-sample" class="form-control">
+              <option value="user input">직접 입력</option>
+              <option value="광역지방자치단체">(주소 앞에 불필요한 텍스트 포함) 광역지방자치단체</option>
+              <option value="default.txt">(샘플) 서울 아파트</option>
+              <option value="경상남도 시립 도서관 주소.txt">(샘플) 경상남도 시립 도서관 주소</option>
+              <option value="강원도 고등학교.txt">(샘플) 강원도 고등학교 주소</option>
+              <option value="경기도 오산시 공중위생업소 현황_ 20190930.txt">(샘플) 경기도 오산시 공중위생업소</option>
+              <option value="경상북도_읍면동사무소 주소_20181231.txt">(샘플) 경상북도 읍면동사무소</option>
+              <option value="인천광역시_중구_외국인이용편리음식점현황_20190829.txt">(샘플) 인천광역시 중구 외국인 이용 편리 음식점</option>
+              <option value="전자공증 법무법인 정보.txt">(샘플) 전자공증 법무법인 정보</option>
+              <option value="행정기관-경찰.txt">(샘플) 행정기관-경찰</option>
+            </select>
+            </div>
+          </fieldset>
+        </div>
+        <hr class="my-3">
+        <div class="form-group">
+            <!-- <hr class="my-3"> -->
+              <textarea id="q" rows="15" cols="50" class="form-control" placeholder="주소를 입력하세요.
+    한 줄에 하나씩 최대 1,000개 까지 요청 할 수 있습니다.
+    
+    또는 샘플 주소를 불러오세요."></textarea>
+        </div>
+          <input type="submit" class="btn btn-primary form-control" data-bs-toggle="modal" data-bs-target="#geocodeModal">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="failedModal" tabindex="-1" aria-labelledby="failedModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-ig">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="failedModalLabel">실패</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>juso.go.kr 비교: <a id="juso-link" href="" target="_blank"></a></p>
+        <ul id="fail-debug" class="list-group">
+        </ul>
+        <hr class="my-3">
+        <ul id="fail-debug-tks" class="list-group">
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="/static/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<!-- <script src="/static/ui-common-bs.js"></script> -->
+<script src="/static/geocode-bs.js"></script>
+<!-- <script src="/static/iframe.js"></script> -->
+<script src="/static/tokml.js"></script> <!-- https://github.com/mapbox/tokml/blob/master/tokml.js -->
+<!-- <script src="/static/geocode-vworld.js"></script> -->
+
+  </body>
+</html>

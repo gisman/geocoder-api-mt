@@ -1,0 +1,14 @@
+setuptools
+uvicorn
+pydantic
+pyproj
+fastapi
+environs
+python-geohash
+polygon-geohasher
+pyogrio
+pandas
+chardet
+cachetools
+geopandas
+python-multipart
