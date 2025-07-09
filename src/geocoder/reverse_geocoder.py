@@ -94,13 +94,9 @@ class ReverseGeocoder:
     HD_GEOHASH_PRECISION = 7
 
     def __init__(self):
-        self.db = Gimi9RocksDB(
-            config.REVERSE_GEOCODE_DB,
-        )
+        self.db = Gimi9RocksDB(config.REVERSE_GEOCODE_DB, read_only=config.READONLY)
 
-        self.hd_db = Gimi9RocksDB(
-            config.HD_HISTORY_DB,
-        )
+        self.hd_db = Gimi9RocksDB(config.HD_HISTORY_DB, read_only=config.READONLY)
 
     # def open(self, db):
     #     self.db = db

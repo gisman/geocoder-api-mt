@@ -569,6 +569,7 @@ async def geocode_file(
         summary = {"error": "주소 컬럼을 찾을 수 없습니다."}
         raise HTTPException(status_code=400, detail="주소 컬럼을 찾을 수 없습니다.")
     else:
+        # summary = await file_geocoder.run_mt( # 멀티 스레드로 실행: 30% 빠르지만 결과가 약간 다르게 나온다.
         summary = await file_geocoder.run(
             data.download_dir,
             quarter,

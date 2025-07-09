@@ -174,6 +174,9 @@ class RocksDBLibrary:
             self.lib.rocksdb_iter_destroy.restype = None
             self.lib.rocksdb_iter_destroy.argtypes = [c_void_p]
 
+            self.lib.rocksdb_iter_seek.restype = None
+            self.lib.rocksdb_iter_seek.argtypes = [c_void_p, c_char_p, c_size_t]
+
             self.lib.rocksdb_iter_seek_to_first.restype = None
             self.lib.rocksdb_iter_seek_to_first.argtypes = [c_void_p]
 
@@ -315,6 +318,7 @@ class Gimi9RocksDB(DbBase):
     """RocksDB 래퍼 클래스"""
 
     db = None
+    options = None
 
     # def __init__(self, db_name, **kwargs):
     def __init__(self, db_name: str, **kwargs):
@@ -345,11 +349,13 @@ class Gimi9RocksDB(DbBase):
         self.lib = self.lib_instance.lib
 
         self.db = None
-        self.options = None
+        # self.options = None
         # self._setup_functions()
         self.open(db_name, **kwargs)
 
-    def open(self, db_path: str, create_if_missing: bool = True) -> None:
+    def open(
+        self, db_path: str, create_if_missing: bool = True, read_only: bool = False
+    ) -> None:
         """
         데이터베이스 열기
 
@@ -360,6 +366,8 @@ class Gimi9RocksDB(DbBase):
         if self.db is not None:
             self.close()
 
+        self.read_only = read_only
+
         # Options 생성
         self.options = self.lib.rocksdb_options_create()
         if create_if_missing:
@@ -367,7 +375,7 @@ class Gimi9RocksDB(DbBase):
 
         # DB 열기
         err = c_char_p()
-        if config.READONLY:
+        if read_only:
             self.db = self.lib.rocksdb_open_for_read_only(
                 self.options, db_path.encode("utf-8"), ctypes.byref(err)
             )
@@ -423,6 +431,60 @@ class Gimi9RocksDB(DbBase):
             if it:
                 self.lib.rocksdb_iter_destroy(it)
 
+    def next(self, it) -> Optional[tuple]:
+        """
+        이터레이터의 다음 키-값 쌍을 반환
+
+        Args:
+            it: RocksDB 이터레이터 객체
+
+        Returns:
+            다음 (key, value) 튜플 또는 None
+        """
+        if not it:
+            return None
+
+        if not self.lib.rocksdb_iter_valid(it):
+            self.lib.rocksdb_iter_destroy(it)
+            return None
+
+        key_len = c_size_t()
+        value_len = c_size_t()
+        key_ptr = self.lib.rocksdb_iter_key(it, ctypes.byref(key_len))
+        value_ptr = self.lib.rocksdb_iter_value(it, ctypes.byref(value_len))
+        key = ctypes.string_at(key_ptr, key_len.value)
+        value = ctypes.string_at(value_ptr, value_len.value)
+
+        self.lib.rocksdb_iter_next(it)
+
+        return key.decode("utf-8"), value.decode("utf-8")
+
+    def seek(self, key: Union[str, bytes]):
+        if self.db is None:
+            raise RocksDBError("데이터베이스가 열려있지 않습니다")
+
+        # ReadOptions 생성
+        read_options = self.lib.rocksdb_readoptions_create()
+
+        it = None
+        try:
+            it = self.lib.rocksdb_create_iterator(self.db, read_options)
+            if not it:
+                raise RocksDBError("Iterator 생성 실패")
+
+            self.lib.rocksdb_iter_seek(
+                it, key.encode("utf-8") if isinstance(key, str) else key, len(key)
+            )
+            if self.lib.rocksdb_iter_valid(it):
+                return it
+            else:
+                self.lib.rocksdb_iter_destroy(it)
+                return None
+        except Exception as e:
+            if it:
+                self.lib.rocksdb_iter_destroy(it)
+            raise RocksDBError(f"Iterator 생성 중 오류 발생: {e}")
+
     def put(self, key: Union[str, bytes], value: Union[str, bytes]) -> None:
         """
         키-값 쌍 저장
@@ -433,6 +495,10 @@ class Gimi9RocksDB(DbBase):
         """
         if self.db is None:
             raise RocksDBError("데이터베이스가 열려있지 않습니다")
+
+        if self.read_only:
+            # return None
+            raise RocksDBError("읽기 전용 모드에서는 데이터를 저장할 수 없습니다")
 
         # 문자열을 바이트로 변환
         key_bytes = key.encode("utf-8") if isinstance(key, str) else key

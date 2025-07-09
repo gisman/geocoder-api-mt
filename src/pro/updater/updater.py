@@ -8,6 +8,8 @@ from src.geocoder.util.HSimplifier import HSimplifier
 from src.geocoder.util.BldSimplifier import BldSimplifier
 from src.geocoder.util.hcodematcher import HCodeMatcher
 
+from src.geocoder.pos_cd import *
+
 import src.config as config
 
 # max_len = 0
@@ -48,6 +50,10 @@ CACHE_SIZE = 1000
 
 class BaseUpdater:
     JUSO_DATA_DIR = config.JUSO_DATA_DIR
+
+    # update_record() 속도 개선을 위해 이미 추가된 주소를 저장하는 리스트
+    # 행정동명과 법정동명이 같을 때 불필요한 연산이 발생
+    addresses: list[str] = []
 
     def __init__(self, geocoder: Geocoder):
         if geocoder:
@@ -173,6 +179,7 @@ class BaseUpdater:
         fast_giveup=False,
     ):
         add_count = 0
+        self.addresses.clear()
 
         daddr["bld_name_merged"] = self._bld_nm_merge(
             daddr.get("bld_reg", ""),
@@ -194,6 +201,12 @@ class BaseUpdater:
         ):
             road_cd = f"{current_h23_cd}{road_cd}"
 
+        bm = self._bld_nm_list(
+            daddr.get("bld_reg", ""),
+            daddr.get("bld_nm_text", ""),
+            daddr.get("bld_nm", ""),
+        )
+
         # db val 제작
         val = {
             "x": (
@@ -211,19 +224,17 @@ class BaseUpdater:
             "road_cd": self.hcodeMatcher.get_current_road_cd(
                 road_cd
             ),  # /*115604154734*/
-            "bld_mgt_no": daddr.get("bld_mgt_no"),  # /*1156013200103420049010058*/
+            "bld_mgt_no": daddr.get("bld_mgt_no", ""),  # /*1156013200103420049010058*/
             "h1_nm": self.hSimplifier.h1Hash(
                 daddr["h1_nm"]
             ),  # 광역시도명. hash 충돌시 사용
             "h23_nm": daddr.get("h23_nm", ""),
-            "hd_nm": daddr["hd_nm"],  # 행정동명
-            "ld_nm": daddr["ld_nm"],  # 법정동명
-            "ri_nm": daddr.get("ri_nm"),  # 리명
-            "road_nm": daddr.get("road_nm"),  # 길이름. hash 충돌시 사용
-            "bm": self._bld_nm_list(
-                daddr.get("bld_reg"), daddr.get("bld_nm_text"), daddr.get("bld_nm")
-            ),  # 건물명. hash 충돌시 사용
-            "san": daddr.get("san"),  # 산 여부
+            "hd_nm": daddr.get("hd_nm", ""),  # 행정동명
+            "ld_nm": daddr.get("ld_nm", ""),  # 법정동명
+            "ri_nm": daddr.get("ri_nm", ""),  # 리명
+            "road_nm": daddr.get("road_nm", ""),  # 길이름. hash 충돌시 사용
+            "bm": bm,  # 건물명. hash 충돌시 사용
+            "san": daddr.get("san", ""),  # 산 여부
             "bng1": daddr.get("bng1"),  # 번지
             "bng2": daddr.get("bng2"),  # 부번지
             "undgrnd_yn": daddr.get("undgrnd_yn"),  # 지하 여부
@@ -254,7 +265,11 @@ class BaseUpdater:
             if daddr["bld_name_merged"]:
                 add_count += self._merge_bld_address_multi(
                     [
-                        ("h23_nm", "ri_nm", "san", "bng1", "bng2", "bm"),
+                        (
+                            ("h23_nm", "ri_nm", "san", "bng1", "bng2", "bm")
+                            if daddr["ri_nm"]
+                            else ()
+                        ),
                         ("h23_nm", "ld_nm", "ri_nm", "san", "bng1", "bng2", "bm"),
                         ("ld_nm", "ri_nm", "san", "bng1", "bng2", "bm"),
                         (
@@ -283,7 +298,11 @@ class BaseUpdater:
             if daddr["bld_name_merged"]:
                 add_count += self._merge_bld_address_multi(
                     [
-                        ("h23_nm", "ri_nm", "san", "bng1", "bng2", "bm"),
+                        (
+                            ("h23_nm", "ri_nm", "san", "bng1", "bng2", "bm")
+                            if daddr["ri_nm"]
+                            else ()
+                        ),
                         ("h23_nm", "hd_nm", "ri_nm", "san", "bng1", "bng2", "bm"),
                         ("hd_nm", "ri_nm", "san", "bng1", "bng2", "bm"),
                         (
@@ -521,12 +540,17 @@ class BaseUpdater:
         return is_xy_fix
 
     def _has_val(self, val0, newval):
+        COMPARE_IGNORE = {"x", "y", "z", "bld_x", "bld_y", "extras", "ld_cd"}
+        # bld_mgt_no만 다른 경우가 많다. 건물명이 없는 경우에 한해서 bld_mgt_no를 동등여부 비교에서 제외한다.
+        if not newval.get("bm"):
+            COMPARE_IGNORE.add("bld_mgt_no")
+
         for val in val0:
             # ld_cd 비교에서 제외. 과도한 지번 주소 추가 방지
             if all(
                 val.get(k) == v
                 for k, v in newval.items()
-                if v and k not in {"x", "y", "z", "bld_x", "bld_y", "extras", "ld_cd"}
+                if v and k not in COMPARE_IGNORE
             ):
                 return True
             # # 광역시도와 길이름이 같고
@@ -574,6 +598,12 @@ class BaseUpdater:
         if address == "":
             return add_count
 
+        if address in self.addresses:
+            # 이미 추가된 주소는 건너뜀
+            return add_count
+
+        self.addresses.append(address)
+
         # print(address)
         if self._del_and_put(address, merge_if_exists, batch=batch):
             add_count += 1
@@ -601,7 +631,9 @@ class BaseUpdater:
         for keys in keys_list:
             if not keys:
                 continue
-            add_count += self._merge_bld_address(keys)
+            add_count += self._merge_bld_address(
+                keys, merge_if_exists=merge_if_exists, batch=batch
+            )
 
             if "h23_nm" in keys and self.ctx.daddr["h3_nm"]:
                 # h23_nm이 있고 h3_nm이 있으면 h2_nm, h3_nm도 추가
@@ -632,6 +664,16 @@ class BaseUpdater:
         add_count = 0
         address = self._make_address_string(self.ctx.daddr, keys)
 
+        if not address:
+            # 주소가 비어있으면 추가하지 않음
+            return add_count
+
+        if address in self.addresses:
+            # 이미 추가된 주소는 건너뜀
+            return add_count
+
+        self.addresses.append(address)
+
         # 건물명이 포함된 hash가 만들어져야 함
         if self._del_and_put_must_have_bld(address, merge_if_exists, batch=batch):
             add_count += 1
@@ -647,7 +689,12 @@ class BaseUpdater:
         return add_count
 
     def _bld_nm_list(self, bld_reg, bld_nm_text, bld_nm):
-        result = [bld_reg, bld_nm_text, bld_nm]
+
+        result = [
+            self.bldSimplifier.simplifyBldName(bld_reg),
+            self.bldSimplifier.simplifyBldName(bld_nm_text),
+            bld_nm,
+        ]
         # 빈 값 제거
         return [item for item in result if item]
         # result = []
@@ -676,7 +723,7 @@ class BaseUpdater:
     ):
         hash, _, _, err_msg = self.geocoder.addressHash(address)
 
-        if len(hash) < 2:
+        if len(hash) < 2 and self.ctx.daddr.get("pos_cd") not in REPRESENTATIVE_ADDRS:
             logging.debug(f"Invalid address hash: {hash} for {address}")
             return 0
 

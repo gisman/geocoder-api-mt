@@ -171,7 +171,7 @@ class Geocoder:
     }
 
     def __init__(self):
-        self.db = Gimi9RocksDB(config.GEOCODE_DB)
+        self.db = Gimi9RocksDB(config.GEOCODE_DB, read_only=config.READONLY)
         # self.db = AimrocksDbGeocode(config.GEOCODE_DB)
         # self.db = RocksDbGeocode(config.GEOCODE_DB)
         self.imoprtant_error = False
@@ -353,6 +353,29 @@ class Geocoder:
             err_msg = ERR_RUNTIME
 
         return hash, toks, addressCls, err_msg
+
+    def search_start_with(self, key_pattern):
+        """
+        주어진 key_pattern을 사용하여 데이터베이스에서 LIKE 검색합니다.
+
+        Args:
+            toks (Tokens): 주소 토큰 객체.
+
+        Returns:
+            list: 검색된 결과의 리스트.
+        """
+        keys = []
+
+        it = self.db.seek(key_pattern)
+        key, v = self.db.next(it)
+        while key:
+            if key.startswith(key_pattern):
+                keys.append(key)
+            else:
+                break
+            key, v = self.db.next(it)
+
+        return keys
 
     def search(self, addr):
         """
@@ -577,7 +600,7 @@ class Geocoder:
 
         Returns:
             str: 'hd_cd', 'ld_cd', 'bld_mgt_no' 중 하나의 첫 두 문자.
-                 해당 키가 존재하지 않으면 None을 반환합니다.
+                해당 키가 존재하지 않으면 None을 반환합니다.
         """
         if h1_cd := val.get("h1_cd"):
             return h1_cd
@@ -1121,6 +1144,8 @@ class Geocoder:
             dict or None: 가장 유사한 지번 주소를 나타내는 딕셔너리.
                 유사한 주소가 없거나 오류가 발생한 경우 None을 반환합니다.
         """
+        # keys = self.search_start_with("영등포_")  # 건물명 주소는 도로명 주소로 시작
+
         if toks.hasTypes(TOKEN_BLD):
             # # 유사한 건물명 검색
 
@@ -1271,6 +1296,8 @@ class Geocoder:
                 # 후보가 하나면 바로 반환
                 val = candidate_addresses[0]
                 return val
+            elif pos_cd_filter:
+                return candidate_addresses[0]
 
             if addressCls == self.JIBUN_ADDRESS:
                 if toks.hasTypes(TOKEN_BLD):

@@ -126,6 +126,7 @@ class RoadAddrUpdater(BaseUpdater):
                 max_overlap_length = 0
 
                 # 후보 행(법)정동들만 자세히 분석
+                match_count = 0
                 for _, hd_row in possible_matches.iterrows():
                     hd_cd = hd_row["EMD_CD"]
                     hd_geom = hd_row.geometry
@@ -150,29 +151,31 @@ class RoadAddrUpdater(BaseUpdater):
                             overlap_ratio = intersection_length / road_length
 
                             # 임계값보다 큰 경우에만 고려
-                            if (
-                                overlap_ratio > LENGTH_THRESHOLD
-                                and intersection_length > max_overlap_length
-                            ):
-                                max_overlap_length = intersection_length
-                                best_match = {
-                                    "EMD_CD": hd_cd,
-                                    "EMD_KOR_NM": hd_row["EMD_KOR_NM"],
-                                }
+                            if overlap_ratio > LENGTH_THRESHOLD:
+                                match_count += 1
+                                if intersection_length > max_overlap_length:
+                                    max_overlap_length = intersection_length
+                                    best_match = {
+                                        "EMD_CD": hd_cd,
+                                        "EMD_KOR_NM": hd_row["EMD_KOR_NM"],
+                                    }
                     except Exception as e:
                         pass
 
                 # 가장 적합한 행(법)정동 매칭 추가
                 if best_match:
-                    # 다른 행정동에도 속하는지 확인. 중복 코드 추가
-                    val = road_hd_matching.get(road_cd)
-                    if val:
-                        # 이미 다른 행정동과 매칭된 경우, 중복되지 않도록 처리
-                        if val["EMD_CD"] != best_match["EMD_CD"]:
-                            val["중복"] = True
-                            # self.logger.warning(
-                            #     f"중복 도로명 코드 발견: {road_cd}, 기존: {val['EMD_CD']}, 새: {best_match['EMD_CD']}"
-                            # )
+                    if match_count > 1:
+                        road_hd_matching[road_cd] = {"중복": True}
+
+                    # # 다른 행정동에도 속하는지 확인. 중복 코드 추가
+                    # val = road_hd_matching.get(road_cd)
+                    # if val:
+                    #     # 이미 다른 행정동과 매칭된 경우, 중복되지 않도록 처리
+                    #     if val["EMD_CD"] != best_match["EMD_CD"]:
+                    #         val["중복"] = True
+                    #         # self.logger.warning(
+                    #         #     f"중복 도로명 코드 발견: {road_cd}, 기존: {val['EMD_CD']}, 새: {best_match['EMD_CD']}"
+                    #         # )
                     else:
                         # 새로운 매칭 추가
                         # self.logger.info(

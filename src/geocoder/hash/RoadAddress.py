@@ -19,6 +19,7 @@ class RoadAddress:
         """
         h23 = ""
         h4 = ""
+        ri = ""
         road = ""
         no1 = ""
         under = ""
@@ -39,6 +40,8 @@ class RoadAddress:
                 h23 = self.hSimplifier.h23Hash(tkn.val)
             if tkn.t == TOKEN_H4 and h4 == "":
                 h4 = self.hSimplifier.h4Hash(tkn.val)
+            if tkn.t == TOKEN_RI and ri == "":
+                ri = tkn.val
             elif tkn.t == TOKEN_ROAD and road == "":
                 road = self.roadSimplifier.roadHash(tkn.val)
                 road_pos = n
@@ -70,7 +73,7 @@ class RoadAddress:
         #     if h23.endswith(("읍", "면", "동")) and h23_pos > 0:
         #         h23 = self.hSimplifier.h23Hash(toks.get(h23_pos - 1).val)
 
-        s = "{}_{}_{}_{}_{}".format(h23, h4, road, under, no1)
+        s = "{}_{}_{}_{}_{}_{}".format(h23, h4, ri, road, under, no1)
         return s.replace("___", "_").replace("__", "_").strip("_")
 
     def __hasH3(self, toks):

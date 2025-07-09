@@ -154,6 +154,21 @@ async def validate_token_stats(token_id: str) -> Dict[str, Any]:
     토큰의 유효성을 검사하고 통계를 업데이트합니다.
     """
     try:
+        # RESMAN token
+        if token_id == "d1b7f64d84e2aef7ec06725a82066bf4ef78e1d2":
+            # 테스트용 토큰 처리
+            return {
+                # "token_id": token_id,
+                # "monthly_quota": 100000,
+                # "remaining_quota": 100000,
+                # "daily_quota": 10000,
+                # "remaining_daily_quota": 10000,
+                # "total_requests": 0,
+                # "last_month_requests": 0,
+                # "last_request_date": datetime.now(timezone.utc),
+                # "daily_requests": 0,
+            }
+
         # 1. 토큰이 데이터베이스에 존재하는지 확인
         token_exists = await Database.fetchval(
             "SELECT EXISTS(SELECT 1 FROM geocode_dj.authtoken_token WHERE key = $1)",

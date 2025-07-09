@@ -90,3 +90,7 @@ class Reader:
 
     def __str__(self):
         return f"Reader(rows={len(self.df)}, columns={len(self.headers)})"
+
+    def count(self):
+        """총 행 수 반환"""
+        return len(self.df)

@@ -217,6 +217,8 @@ class ErrList:
         마지막 오류 메시지를 반환합니다.
         """
         err = self.errs[-1] if self.errs else None
+        if not err:
+            return None
         if has_detail and not err.get("detail"):
             return None
 

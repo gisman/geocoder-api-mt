@@ -12,8 +12,8 @@
             "args": [
                 // "4039"
                 // "4029"
-                // "4019"
-                "4009"
+                "4019"
+                // "4009"
                 // "4001"
             ],
             "cwd": "${workspaceFolder}",
@@ -28,11 +28,12 @@
             "env": {
                 // "GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks_debug_navi202504/",
                 "PYTHON_GIL": "0",
-                "READONLY": "false",
-                "GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks_debug",
-                "REVERSE_GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks-reverse-geocoder_debug",
-                "HD_HISTORY_DB": "/disk/nvme1t/geocoder-api-db/rocks_hd_history_debug",
-                "BIGCACHE_DB": "/disk/nvme1t/geocoder-api-db/bigcache_debug",
+                "READONLY": "true",
+                "GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks",
+                "REVERSE_GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks-reverse-geocoder",
+                "HD_HISTORY_DB": "/disk/nvme1t/geocoder-api-db/rocks_hd_history",
+                "BIGCACHE_DB": "/disk/nvme1t/geocoder-api-db/bigcache",
+                // "BIGCACHE_DB": "/disk/nvme1t/geocoder-api-db/bigcache_debug",
                 "FULL_HISTORY_LIST": "true",
                 // "LOG_LEVEL": "INFO",
                 "LOG_LEVEL": "DEBUG",

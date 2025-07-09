@@ -27,6 +27,7 @@ class BldAddress:
 
         h23 = ""
         h4 = ""
+        ri = ""
         road = ""
         bld = ""
         road_pos = -1
@@ -39,6 +40,8 @@ class BldAddress:
                 h23 = self.hSimplifier.h23Hash(tkn.val)
             elif tkn.t == TOKEN_H4 and h4 == "":
                 h4 = self.hSimplifier.h4Hash(tkn.val)
+            elif tkn.t == TOKEN_RI and ri == "":
+                ri = tkn.val
             elif tkn.t == TOKEN_ROAD and road == "":
                 road = self.roadSimplifier.roadHash(tkn.val)
                 road_pos = n
@@ -61,16 +64,18 @@ class BldAddress:
 
         bld = self.bld_hash(bld, startNames)
 
-        if bld != "":
-            if bld in ["주민센터", "동사무소"] and h4:
-                hash = "{}_{}_{}".format(h23, h4, bld)
-            elif road:
-                hash = "{}_{}_{}".format(h23, road, bld)
-            elif h4:
-                hash = "{}_{}_{}".format(h23, h4, bld)
-            else:
-                hash = "{}_{}".format(h23, bld)
+        # if bld != "":
+        #     if bld in ["주민센터", "동사무소"] and h4:
+        #         hash = "{}_{}_{}".format(h23, h4, bld)
+        #     elif road:
+        #         hash = "{}_{}_{}".format(h23, road, bld)
+        #     elif h4:
+        #         hash = "{}_{}_{}".format(h23, h4, bld)
+        #     else:
+        #         hash = "{}_{}".format(h23, bld)
 
+        # h4 포함 주소가 반영되지 않는 문제 해결. 2025.07.02
+        hash = "{}_{}_{}_{}_{}".format(h23, h4, ri, road, bld)
         return hash.replace("___", "_").replace("__", "_").strip("_")
 
     def bld_hash(self, bld, startNames):

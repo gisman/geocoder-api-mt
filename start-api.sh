@@ -5,12 +5,18 @@ git pull
 
 lsof -ti:4001 | xargs kill -9
 
-cd ~/projects/geocoder-api
+cd ~/projects/geocoder-api-mt
 source venv/bin/activate
 echo 'Starting...'
 
-# export FLASK_ENV=production
-# echo | nohup python src/api_pro.py >> log/geocode-api.log &
+export PYTHON_GIL=0
+export CODE_DATA_DIR=/disk/nvme1t/geocoder-api-db/code
+export GEOCODE_DB=/disk/nvme1t/geocoder-api-db/rocks
+export REVERSE_GEOCODE_DB=/disk/nvme1t/geocoder-api-db/rocks-reverse-geocoder
+export HD_HISTORY_DB=/disk/nvme1t/geocoder-api-db/rocks_hd_history
+export BIGCACHE_DB=/disk/nvme1t/geocoder-api-db/bigcache
+export LOG_LEVEL=INFO
+
 uvicorn api_fast:app --host=0.0.0.0 --port=4001 &
 
 sleep 3

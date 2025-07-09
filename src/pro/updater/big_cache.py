@@ -32,7 +32,7 @@ class BigCache:
         Path(self.db_path).mkdir(parents=True, exist_ok=True)
 
         # Initialize RocksDB
-        self.db = Gimi9RocksDB(self.db_path)
+        self.db = Gimi9RocksDB(self.db_path, read_only=False)
         self._initialized = True
 
     def get(self, key: str) -> Optional[Any]:

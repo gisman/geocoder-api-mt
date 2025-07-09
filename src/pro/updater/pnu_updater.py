@@ -203,6 +203,16 @@ class PnuUpdater(BaseUpdater):
         return await asyncio.to_thread(self._delete_all_sync, wfile)
 
     def _delete_all_sync(self, wfile):
+        """
+        Deletes all PNU-related address entries from the geocoder.
+
+        Args:
+            wfile: The file to write the log to.
+
+        Returns:
+            bool: True if the deletion is successful, False otherwise.
+        """
+
         self._prepare_updater_logger(f"{self.name}.log")
 
         log_file = f"{self.outpath}{self.name}.log"
@@ -262,6 +272,7 @@ class PnuUpdater(BaseUpdater):
         # Find all files matching the pattern
         pattern = f"{self.outpath}{self.name.split('.')[0]}*.shp"
         matching_files = glob.glob(pattern)
+        matching_files.sort(reverse=True)
 
         self._prepare_updater_logger(f"{self.name}.log")
 
@@ -338,16 +349,6 @@ class PnuUpdater(BaseUpdater):
         # total_features = len(shp_file)
         self.logger.info(f"Total features in {self.name}: {total_features:,}")
         for value, geom in sr:
-            # for feature in shp_file:
-
-            # [TODO: 임시]
-            # if n < 1140000:
-            #     n += 1
-            #     cnt = n
-            #     continue
-
-            # value = dict(feature.properties)
-            # geom = shape(feature["geometry"])
 
             if geom:
                 centroid = geom.centroid
@@ -358,12 +359,6 @@ class PnuUpdater(BaseUpdater):
                 # geometry가 None인 경우 있음
                 self.logger.debug(f"{value['A1']} has no geometry, skipping.")
                 continue
-
-            # wgs84_geom = transform(proj_transform, geom)
-            # value["X좌표"] = int(wgs84_geom.centroid.x)
-            # value["Y좌표"] = int(wgs84_geom.centroid.y)
-
-            # [TODO: 임시]
 
             try:
                 address_dic = self.prepare_dic(value)
@@ -405,8 +400,6 @@ class PnuUpdater(BaseUpdater):
                 batch.clear()
                 # batch = rocksdb3.WriterBatch()
                 bcount = 0
-                # [TODO: 임시]
-                # break
 
         # 마지막 배치 처리
         if bcount != 0:
