@@ -410,116 +410,116 @@ async def batch_geocode(
     return summary
 
 
-@router.post("/upload", include_in_schema=False)
-async def upload(
-    request: Request,
-    file: UploadFile = File(...),
-    # uploaded_filename: str = Form(...),
-    target_crs: str = Form("EPSG:4326"),
-    token: str = "",
-    token_stats: dict = Depends(get_token_stats),
-):
-    """
-    ## 주소가 포함된 파일을 업로드하고 지오코딩합니다.
+# @router.post("/upload", include_in_schema=False)
+# async def upload(
+#     request: Request,
+#     file: UploadFile = File(...),
+#     # uploaded_filename: str = Form(...),
+#     target_crs: str = Form("EPSG:4326"),
+#     token: str = "",
+#     token_stats: dict = Depends(get_token_stats),
+# ):
+#     """
+#     ## 주소가 포함된 파일을 업로드하고 지오코딩합니다.
 
-    ### Args:
+#     ### Args:
 
-    * file: 업로드할 파일 (주소를 포함한 CSV, 엑셀 파일).
-    * target_crs: 좌표계 (기본값: EPSG:4326)
-    * token (str): API 토큰 값.
+#     * file: 업로드할 파일 (주소를 포함한 CSV, 엑셀 파일).
+#     * target_crs: 좌표계 (기본값: EPSG:4326)
+#     * token (str): API 토큰 값.
 
-    ### Returns:
+#     ### Returns:
 
-    * 지오코딩 결과 요약
+#     * 지오코딩 결과 요약
 
-    ## Uploads and geocodes a file containing addresses.
+#     ## Uploads and geocodes a file containing addresses.
 
-    ### Args:
+#     ### Args:
 
-    * file: The file to upload (CSV, Excel file containing addresses).
-    * target_crs: Coordinate system (default: EPSG:4326).
-    * token (str): API Token value.
+#     * file: The file to upload (CSV, Excel file containing addresses).
+#     * target_crs: Coordinate system (default: EPSG:4326).
+#     * token (str): API Token value.
 
-    ### Returns:
+#     ### Returns:
 
-    * A summary of the geocoding results.
+#     * A summary of the geocoding results.
 
-    """
-    if not file:
-        raise HTTPException(status_code=400, detail="Invalid input")
+#     """
+#     if not file:
+#         raise HTTPException(status_code=400, detail="Invalid input")
 
-    uploaded_filename = file.filename
+#     uploaded_filename = file.filename
 
-    # 임시 파일 생성
-    temp_dir = tempfile.gettempdir()
-    filepath = os.path.join(temp_dir, uploaded_filename)
-    download_dir = os.path.join(temp_dir, "geocoded")
+#     # 임시 파일 생성
+#     temp_dir = tempfile.gettempdir()
+#     filepath = os.path.join(temp_dir, uploaded_filename)
+#     download_dir = os.path.join(temp_dir, "geocoded")
 
-    # 다운로드 디렉터리가 존재하지 않으면 생성
-    os.makedirs(download_dir, exist_ok=True)
+#     # 다운로드 디렉터리가 존재하지 않으면 생성
+#     os.makedirs(download_dir, exist_ok=True)
 
-    try:
-        # 업로드된 파일을 임시 파일에 저장
-        with open(filepath, "wb") as f:
-            shutil.copyfileobj(file.file, f)
+#     try:
+#         # 업로드된 파일을 임시 파일에 저장
+#         with open(filepath, "wb") as f:
+#             shutil.copyfileobj(file.file, f)
 
-        LIMIT_COUNT = 100000
-        # [TODO] 사용자 정보에서 quarter 읽기
-        quarter = LIMIT_COUNT
+#         LIMIT_COUNT = 100000
+#         # [TODO] 사용자 정보에서 quarter 읽기
+#         quarter = LIMIT_COUNT
 
-        # 지오코딩 수행
-        file_geocoder = FileGeocoder(
-            geocoder=ApiHandler.geocoder, reverse_geocoder=ApiHandler.reverse_geocoder
-        )
-        await file_geocoder.prepare(filepath, uploaded_filename)
+#         # 지오코딩 수행
+#         file_geocoder = FileGeocoder(
+#             geocoder=ApiHandler.geocoder, reverse_geocoder=ApiHandler.reverse_geocoder
+#         )
+#         await file_geocoder.prepare(filepath, uploaded_filename)
 
-        if file_geocoder.address_col == -1:
-            summary = {"error": "주소 컬럼을 찾을 수 없습니다."}
-            raise HTTPException(status_code=400, detail="주소 컬럼을 찾을 수 없습니다.")
-        else:
-            summary = await file_geocoder.run(
-                download_dir,
-                quarter,
-                target_crs=target_crs,
-                sample_count=data.sample_count,
-            )
+#         if file_geocoder.address_col == -1:
+#             summary = {"error": "주소 컬럼을 찾을 수 없습니다."}
+#             raise HTTPException(status_code=400, detail="주소 컬럼을 찾을 수 없습니다.")
+#         else:
+#             summary = await file_geocoder.run(
+#                 download_dir,
+#                 quarter,
+#                 target_crs=target_crs,
+#                 sample_count=data.sample_count,
+#             )
 
-        # 결과 파일 경로 추가
-        output_filename = os.path.splitext(uploaded_filename)[0] + "_geocoded.csv"
-        output_filepath = os.path.join(download_dir, output_filename)
+#         # 결과 파일 경로 추가
+#         output_filename = os.path.splitext(uploaded_filename)[0] + "_geocoded.csv"
+#         output_filepath = os.path.join(download_dir, output_filename)
 
-        if os.path.exists(output_filepath):
-            summary["output_file"] = output_filepath
+#         if os.path.exists(output_filepath):
+#             summary["output_file"] = output_filepath
 
-        if token_stats:
-            asyncio.create_task(
-                update_token_stats(token_stats["token_id"], summary["success_count"])
-            )
-            await write_usage_log(
-                token_id=token_stats["token_id"],
-                endpoint=request.url.path,
-                success_count=summary["success_count"],
-                hd_success_count=summary["hd_success_count"],
-                error_count=summary["fail_count"],
-                ip_address=(
-                    request.client.host if request.client else None
-                ),  # IP 주소는 필요에 따라 설정
-                processing_time=summary["total_time"],  # 처리 시간은 필요에 따라 설정
-                billable=True,  # 과금 대상 여부는 필요에 따라 설정
-                quota_consumed=summary["success_count"],
-            )
-            # print(f"Token stats: {token_stats}")
+#         if token_stats:
+#             asyncio.create_task(
+#                 update_token_stats(token_stats["token_id"], summary["success_count"])
+#             )
+#             await write_usage_log(
+#                 token_id=token_stats["token_id"],
+#                 endpoint=request.url.path,
+#                 success_count=summary["success_count"],
+#                 hd_success_count=summary["hd_success_count"],
+#                 error_count=summary["fail_count"],
+#                 ip_address=(
+#                     request.client.host if request.client else None
+#                 ),  # IP 주소는 필요에 따라 설정
+#                 processing_time=summary["total_time"],  # 처리 시간은 필요에 따라 설정
+#                 billable=True,  # 과금 대상 여부는 필요에 따라 설정
+#                 quota_consumed=summary["success_count"],
+#             )
+#             # print(f"Token stats: {token_stats}")
 
-        return summary
+#         return summary
 
-    except Exception as e:
-        logging.error(f"File geocoding error: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"File geocoding error: {str(e)}")
-    finally:
-        # 임시 파일 정리
-        file.file.close()
-        if os.path.exists(filepath):
-            os.unlink(filepath)
+#     except Exception as e:
+#         logging.error(f"File geocoding error: {str(e)}")
+#         raise HTTPException(status_code=500, detail=f"File geocoding error: {str(e)}")
+#     finally:
+#         # 임시 파일 정리
+#         file.file.close()
+#         if os.path.exists(filepath):
+#             os.unlink(filepath)
 
 
 @router.post("/geocode_file", include_in_schema=False)
