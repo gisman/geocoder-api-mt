@@ -240,42 +240,6 @@ class Geocoder:
 
         return self.UNRECOGNIZABLE_ADDRESS
 
-    def __bldAddressHash(self, toks):
-        """
-        주어진 토큰을 사용하여 주소 해시를 생성합니다.
-
-        Args:
-            toks (list): 주소 해시에 사용될 토큰 리스트.
-
-        Returns:
-            str: 생성된 주소 해시.
-        """
-        return self.bldAddress.hash(toks)
-
-    def __jibunAddressHash(self, toks):
-        """
-        주어진 토큰을 사용하여 지번 주소의 해시 값을 반환합니다.
-
-        Args:
-            toks (list): 해시 값을 생성하는 데 사용될 토큰들의 리스트.
-
-        Returns:
-            str: 지번 주소의 해시 값.
-        """
-        return self.jibunAddress.hash(toks)
-
-    def __roadAddressHash(self, toks):
-        """
-        주어진 토큰(toks)을 사용하여 도로명 주소의 해시 값을 반환합니다.
-
-        Args:
-            toks (str): 해시 값을 생성하는 데 사용될 토큰.
-
-        Returns:
-            int: 도로 주소의 해시 값.
-        """
-        return self.roadAddress.hash(toks)
-
     @address_hash_cache(maxsize=1024)
     def addressHash(self, addr):
         """
@@ -377,51 +341,355 @@ class Geocoder:
 
         return keys
 
-    def search(self, addr):
+    def possible_hashs(self, toks: Tokens, hash: str, addressCls):
+        # def possible_hashs(self, toks: Tokens, hash: str, addressCls) -> list[str]:
         """
-        주어진 주소를 검색하여 가장 유사한 주소 정보를 반환합니다.
+        주어진 주소에서 가능한 해시 값을 생성합니다.
 
-        Parameters:
-        addr (str): 검색할 주소 문자열.
+        건물 좌표 검색을 위해 건물명, 건물동 검색을 먼저.
+
+        JIBUN_ADDRESS
+            TOKEN_BLD, TOKEN_BLD_DONG
+            TOKEN_BLD
+            건물명 제외
+            인근 지번
+            리 빼고 위 반복
+
+        ROAD_ADDRESS
+            TOKEN_BLD, TOKEN_BLD_DONG   전남 무안군 삼향읍 남악리 오룡길 1(남악리 100) 전라남도청 본관
+            TOKEN_BLD                   전남 무안군 삼향읍 남악리 오룡길 1(남악리 100) 전라남도청
+            건물명 제외                   전남 무안군 삼향읍 남악리 오룡길 1(남악리 100)
+            인근 도로명 건번               전남 무안군 삼향읍 남악리 오룡길 [2, 3, 4... 1-1, 1-2, 1-3, 1-4, ...]
+            리 빼고 위 반복               전남 무안군 삼향읍 오룡길 1 전라남도청 본관
+            동 빼고 위 반복               전남 무안군 오룡길 1 전라남도청 본관
+            도로명 이하 반복               오룡길 1 전라남도청 본관, 오룡길 1 전라남도청, 오룡길 1
+
+        BLD_ADDRESS
+            TOKEN_BLD, TOKEN_BLD_DONG
+            TOKEN_BLD
+            리 빼고 위 반복
+
+        Args:
+            address (str): 주소 문자열.
 
         Returns:
-        dict: 검색 결과를 포함한 딕셔너리. 성공 시, 딕셔너리는 다음 키를 포함합니다:
-            - success (bool): 검색 성공 여부.
-            - errmsg (str): 오류 메시지 (성공 시 빈 문자열).
-            - h1_cd (str): h1 코드 (성공 시).
-            - h2_cd (str): h2 코드 (성공 시).
-            - kostat_h1_cd (str): KOSTAT h1 코드 (성공 시).
-            - kostat_h2_cd (str): KOSTAT h2 코드 (성공 시).
-            - hash (str): 주소 해시 값.
-            - address (str): 입력된 주소.
-            - addressCls (str): 주소 클래스.
-            - toksString (str): 토큰 문자열.
+            list: 가능한 해시 정보의 리스트.
 
-        오류가 발생하거나 주소를 찾을 수 없는 경우, 딕셔너리는 다음 키를 포함합니다:
-            - success (bool): False.
-            - errmsg (str): 오류 메시지.
-            - hash (str): 주소 해시 값.
-            - address (str): 입력된 주소.
-            - addressCls (str): 주소 클래스.
-            - toksString (str): 토큰 문자열.
+            NOT_ADDRESS = "NOT_ADDRESS"
+            JIBUN_ADDRESS = "JIBUN_ADDRESS"
+            BLD_ADDRESS = "BLD_ADDRESS"
+            ROAD_ADDRESS = "ROAD_ADDRESS"
+
+            ROAD_END_ADDRESS = "ROAD_END_ADDRESS"
+            RI_END_ADDRESS = "RI_END_ADDRESS"
+            H4_END_ADDRESS = "H4_END_ADDRESS"
+            H23_END_ADDRESS = "H23_END_ADDRESS"
+            H1_END_ADDRESS = "H1_END_ADDRESS"
+
         """
-        hash = ""
-        toks = []
-        self.err_list = ErrList()
-        self.imoprtant_error = False
-        addressCls = self.NOT_ADDRESS
-        err = ERR_RUNTIME
 
-        if not isinstance(addr, str):
-            return None
+        hash_infos = []
 
-        address = addr.strip('"')
-        if address == "":
-            addressCls = self.NOT_ADDRESS
-            return None
+        if addressCls == self.NOT_ADDRESS:
+            return []
 
-        hash, toks, addressCls, err = self.addressHash(address)
+        # 건물명과 건물동
+        if toks.hasTypes(TOKEN_BLD_DONG):
+            bld_dong = toks.get(toks.index(TOKEN_BLD_DONG)).val
+            if addressCls == self.JIBUN_ADDRESS:
+                yield (
+                    {
+                        "hash": self.jibunAddress.hash(toks),
+                        "addressCls": self.JIBUN_ADDRESS,
+                        "err_failed": ERR_BLD_DONG_NOT_FOUND,
+                        "err_detail": bld_dong,
+                    }
+                )
+            elif addressCls == self.BLD_ADDRESS:
+                yield (
+                    {
+                        "hash": self.bldAddress.hash(toks),
+                        "addressCls": self.BLD_ADDRESS,
+                        "err_failed": ERR_BLD_DONG_NOT_FOUND,
+                        "err_detail": bld_dong,
+                    }
+                )
+            elif addressCls == self.ROAD_ADDRESS:
+                yield (
+                    {
+                        "hash": self.roadAddress.hash(toks),
+                        "addressCls": self.ROAD_ADDRESS,
+                        "err_failed": ERR_BLD_DONG_NOT_FOUND,
+                        "err_detail": bld_dong,
+                    }
+                )
 
+        # 건물동 제외하고 건물명까지
+        if toks.hasTypes(TOKEN_BLD):
+            bld_nm = toks.get(toks.index(TOKEN_BLD)).val
+            if addressCls == self.JIBUN_ADDRESS:
+                yield (
+                    {
+                        "hash": self.jibunAddress.hash(toks, end_with=TOKEN_BLD),
+                        "addressCls": self.JIBUN_ADDRESS,
+                        "err_failed": ERR_BLD_NM_NOT_FOUND,
+                        "err_detail": bld_nm,
+                    }
+                )
+            elif addressCls == self.BLD_ADDRESS:
+                yield (
+                    {
+                        "hash": self.bldAddress.hash(toks, end_with=TOKEN_BLD),
+                        "addressCls": self.BLD_ADDRESS,
+                        "err_failed": ERR_BLD_NM_NOT_FOUND,
+                        "err_detail": bld_nm,
+                    }
+                )
+            elif addressCls == self.ROAD_ADDRESS:
+                yield (
+                    {
+                        "hash": self.roadAddress.hash(toks, end_with=TOKEN_BLD),
+                        "addressCls": self.ROAD_ADDRESS,
+                        "err_failed": ERR_BLD_NM_NOT_FOUND,
+                        "err_detail": bld_nm,
+                    }
+                )
+
+        # 리 빼고 다시 시도
+        # toks_without_ri = toks.copy()
+        # if toks.hasTypes(TOKEN_RI) and toks.hasTypes(TOKEN_BLD):
+        #     toks_without_ri.delete(toks_without_ri.index(TOKEN_RI))
+
+        #     # 건물명과 건물동
+        #     if toks_without_ri.hasTypes(TOKEN_BLD_DONG):
+        #         if addressCls == self.JIBUN_ADDRESS:
+        #             yield(
+        #                 {
+        #                     "hash": self.jibunAddress.hash(toks_without_ri),
+        #                     "addressCls": self.JIBUN_ADDRESS,
+        #                 }
+        #             )
+        #         elif addressCls == self.BLD_ADDRESS:
+        #             yield(
+        #                 {
+        #                     "hash": self.bldAddress.hash(toks_without_ri),
+        #                     "addressCls": self.BLD_ADDRESS,
+        #                 }
+        #             )
+        #         elif addressCls == self.ROAD_ADDRESS:
+        #             yield(
+        #                 {
+        #                     "hash": self.roadAddress.hash(toks_without_ri),
+        #                     "addressCls": self.ROAD_ADDRESS,
+        #                 }
+        #             )
+
+        #     # 건물동 제외하고 건물명까지
+        #     if toks_without_ri.hasTypes(TOKEN_BLD):
+        #         if addressCls == self.JIBUN_ADDRESS:
+        #             yield(
+        #                 {
+        #                     "hash": self.jibunAddress.hash(
+        #                         toks_without_ri, end_with=TOKEN_BLD
+        #                     ),
+        #                     "addressCls": self.JIBUN_ADDRESS,
+        #                 }
+        #             )
+        #         elif addressCls == self.BLD_ADDRESS:
+        #             yield(
+        #                 {
+        #                     "hash": self.bldAddress.hash(
+        #                         toks_without_ri, end_with=TOKEN_BLD
+        #                     ),
+        #                     "addressCls": self.BLD_ADDRESS,
+        #                 }
+        #             )
+        #         elif addressCls == self.ROAD_ADDRESS:
+        #             yield(
+        #                 {
+        #                     "hash": self.roadAddress.hash(
+        #                         toks_without_ri, end_with=TOKEN_BLD
+        #                     ),
+        #                     "addressCls": self.ROAD_ADDRESS,
+        #                 }
+        #             )
+
+        # 건물명 제외하고 검색
+        if addressCls == self.JIBUN_ADDRESS:
+            yield (
+                {
+                    "hash": self.jibunAddress.hash(toks, end_with=TOKEN_BNG),
+                    "addressCls": self.JIBUN_ADDRESS,
+                    "err_failed": ERR_JIBUN_HASH,
+                }
+            )
+        elif addressCls == self.ROAD_ADDRESS:
+            yield (
+                {
+                    "hash": self.roadAddress.hash(toks, end_with=TOKEN_BLDNO),
+                    "addressCls": self.ROAD_ADDRESS,
+                    "err_failed": ERR_ROAD_HASH,
+                }
+            )
+
+        # 인근 주소
+        if addressCls == self.JIBUN_ADDRESS:
+            hashs = self.get_near_jibun_hashs(hash)
+            for h in hashs:
+                yield (
+                    {
+                        "hash": h,
+                        "addressCls": self.JIBUN_ADDRESS,
+                        "err_failed": ERR_NEAR_JIBUN_NOT_FOUND,
+                        "info_success": INFO_NEAR_JIBUN_FOUND,
+                        "info_detail": h,
+                    }
+                )
+        elif addressCls == self.ROAD_ADDRESS:
+            hashs = self.get_near_road_bld_hashs(hash)
+            for h in hashs:
+                yield (
+                    {
+                        "hash": h,
+                        "addressCls": self.ROAD_ADDRESS,
+                        "err_failed": ERR_NEAR_ROAD_BLD_NOT_FOUND,
+                        "info_success": INFO_NEAR_ROAD_BLD_FOUND,
+                        "info_detail": h,
+                    }
+                )
+
+        combinations = self.address_combination(toks, addressCls)
+        for h in combinations:
+            yield (
+                {
+                    "hash": h["hash"],
+                    "addressCls": h["addressCls"],
+                    "err_failed": h["err"],
+                }
+            )
+
+        # # 리 빼고 인근 주소
+        # if toks.hasTypes(TOKEN_RI):
+        #     addr_without_ri = toks_without_ri.to_address()
+        #     hash_without_ri, _, _, err = self.addressHash(addr_without_ri)
+        #     if addressCls == self.JIBUN_ADDRESS:
+        #         hashs = self.get_near_jibun_hashs(hash_without_ri)
+        #         for h in hashs:
+        #             yield({"hash": h, "addressCls": self.JIBUN_ADDRESS})
+        #     elif addressCls == self.ROAD_ADDRESS:
+        #         hashs = self.get_near_road_bld_hashs(hash_without_ri)
+        #         for h in hashs:
+        #             yield({"hash": h, "addressCls": self.ROAD_ADDRESS})
+
+        # # 지번주소의 h23 빼고 인근 주소
+        # if (
+        #     addressCls == self.JIBUN_ADDRESS
+        #     and toks.hasTypes(TOKEN_H23)
+        #     and toks.hasTypes(TOKEN_H4)
+        # ):
+        #     yield(
+        #         {
+        #             "hash": self.jibunAddress.hash(toks, end_with=TOKEN_BNG),
+        #             "addressCls": self.JIBUN_ADDRESS,
+        #             "err_failed": ERR_NEAR_JIBUN_NOT_FOUND,
+        #         }
+        #     )
+
+        # 도로명주소의 동 빼고 인근 주소               전남 무안군 오룡길 1 전라남도청 본관
+        if addressCls == self.ROAD_ADDRESS and toks.hasTypes(TOKEN_H4):
+            dong_ri = " ".join(
+                [toks.get(toks.index(TOKEN_H4)).val, toks.get(toks.index(TOKEN_RI)).val]
+            )
+            yield (
+                {
+                    "hash": self.roadAddress.hash(
+                        toks, end_with=TOKEN_BLDNO, ignore=[TOKEN_H4, TOKEN_RI]
+                    ),
+                    "addressCls": self.ROAD_ADDRESS,
+                    "err_failed": ERR_NEAR_ROAD_BLD_NOT_FOUND,
+                    "err_detail": dong_ri,
+                    "info_success": INFO_NEAR_ROAD_BLD_FOUND,
+                    "info_detail": h,
+                }
+            )
+
+        # 도로명 이하 주소               오룡길 1 전라남도청 본관, 오룡길 1 전라남도청, 오룡길 1
+        if toks.hasTypes(TOKEN_ROAD) and toks.hasTypes(TOKEN_BLDNO):
+            yield (
+                {
+                    "hash": self.roadAddress.hash(toks, start_with=TOKEN_ROAD),
+                    "addressCls": self.ROAD_ADDRESS,
+                    "err_failed": ERR_REGION_NOT_FOUND,
+                }
+            )
+
+        # 대표주소
+        # 길대표
+        if toks.hasTypes(TOKEN_ROAD):
+            yield (
+                {
+                    "hash": self.roadAddress.hash(toks, end_with=TOKEN_ROAD),
+                    "addressCls": self.ROAD_END_ADDRESS,
+                    "err_failed": ERR_ROAD_NOT_FOUND,
+                    "err_detail": toks.get(toks.index(TOKEN_ROAD)).val,
+                }
+            )
+        # 리빼고 길대표
+        if toks.hasTypes(TOKEN_ROAD) and toks.hasTypes(TOKEN_RI):
+            yield (
+                {
+                    "hash": self.roadAddress.hash(
+                        toks, end_with=TOKEN_ROAD, ignore=[TOKEN_RI]
+                    ),
+                    "addressCls": self.ROAD_END_ADDRESS,
+                    "err_failed": ERR_ROAD_NOT_FOUND,
+                    "err_detail": toks.get(toks.index(TOKEN_ROAD)).val,
+                }
+            )
+        # 리대표
+        if toks.hasTypes(TOKEN_RI):
+            yield (
+                {
+                    "hash": self.jibunAddress.hash(toks, end_with=TOKEN_RI),
+                    "addressCls": self.RI_END_ADDRESS,
+                    "err_failed": ERR_RI_NOT_FOUND,
+                    "err_detail": toks.get(toks.index(TOKEN_RI)).val,
+                }
+            )
+        # 동대표
+        if toks.hasTypes(TOKEN_H4):
+            yield (
+                {
+                    "hash": self.jibunAddress.hash(toks, end_with=TOKEN_H4),
+                    "addressCls": self.H4_END_ADDRESS,
+                    "err_failed": ERR_DONG_NOT_FOUND,
+                    "err_detail": toks.get(toks.index(TOKEN_H4)).val,
+                }
+            )
+        # 시군구대표
+        if toks.hasTypes(TOKEN_H23):
+            yield (
+                {
+                    "hash": self.jibunAddress.hash(toks, end_with=TOKEN_H23),
+                    "addressCls": self.H23_END_ADDRESS,
+                    "err_failed": ERR_H23_NOT_FOUND,
+                    "err_detail": toks.get(toks.index(TOKEN_H23)).val,
+                }
+            )
+        # 광역시도 대표
+        if toks.hasTypes(TOKEN_H1):
+            yield (
+                {
+                    "hash": self.hsimplifier.h1Hash(toks.get(0).val),
+                    "addressCls": self.H1_END_ADDRESS,
+                    "err_failed": ERR_H1_NOT_FOUND,
+                    "err_detail": toks.get(toks.index(TOKEN_H1)).val,
+                }
+            )
+
+        # return hash_infos
+
+    def append_err_by_addressCls(self, addressCls):
         if addressCls == self.NOT_ADDRESS:
             self.append_err(ERR_NOT_ADDRESS)
         elif addressCls == self.JIBUN_ADDRESS:
@@ -441,9 +709,25 @@ class Geocoder:
         elif addressCls == self.H1_END_ADDRESS:
             self.append_err(INFO_H1_END_ADDRESS)
 
+    def search(self, addr):
+        if not isinstance(addr, str):
+            return None
+
+        self.err_list = ErrList()
+        self.imoprtant_error = False
+        addressCls = self.NOT_ADDRESS
+        err = ERR_RUNTIME
+
+        address = addr.strip('"')
+        if address == "":
+            addressCls = self.NOT_ADDRESS
+            return None
+
+        hash, toks, addressCls, err = self.addressHash(address)
+        self.append_err_by_addressCls(addressCls)
+
         logger.debug(f"address: {address}, \n hash: {hash}, addressCls: {addressCls}")
         logger.debug(f"toks: {toks}, errmsg: {err}")
-
         if err:
             self.append_err(err)
 
@@ -454,49 +738,32 @@ class Geocoder:
             }
         toksString = self.tokenizer.getToksString(toks)
 
-        if hash:
-            logger.debug(f"Try search addressCls: {addressCls}, hash: {hash}")
-            val = self.most_similar_address(toks, hash, addressCls)
-            if not val:
-                if self.imoprtant_error:
-                    val = {
-                        "success": False,
-                        "errmsg": self.err_message(addressCls, None),
-                    }
-                    return val
+        # possible_hash_list = self.possible_hashs(toks, hash, addressCls)
 
-                self.append_err(ERR_NOT_FOUND)
+        for hash_info in self.possible_hashs(toks, hash, addressCls):
+            # for hash_info in possible_hash_list:
+            hash = hash_info["hash"]
+            val = self.most_similar_address(toks, hash, hash_info["addressCls"])
+            err_failed = hash_info.get("err_failed", None)
+            err_detail = hash_info.get("err_detail", None)
+            if val:
+                # "info_success": INFO_NEAR_ROAD_BLD_FOUND,
+                # "info_detail": h,
+                if "info_success" in hash_info:
+                    self.append_err(
+                        hash_info["info_success"],
+                        hash_info.get("info_detail", ""),
+                    )
+                    logger.info(
+                        f"{hash_info['info_success']}: {hash_info.get('info_detail', '')}"
+                    )
 
-                if addressCls == self.ROAD_ADDRESS:
-                    val = self.most_similar_road_addr(toks, hash, addressCls)
-                elif addressCls == self.JIBUN_ADDRESS:
-                    val = self.most_similar_jibun_addr(toks, hash, addressCls)
-                elif addressCls == self.BLD_ADDRESS:
-                    val = self.most_similar_bld_addr(toks, hash, addressCls)
+                    if hash_info["info_success"] == INFO_NEAR_JIBUN_FOUND:
+                        val["pos_cd"] = NEAR_JIBUN
+                    elif hash_info["info_success"] == INFO_NEAR_ROAD_BLD_FOUND:
+                        val["pos_cd"] = NEAR_ROAD_BLD
 
-            if not val:
-                # 리, 동, 시군구 제거한 주소 검색 시도
-                combinations = self.address_combination(toks, addressCls)
-                for comb in combinations:
-                    val = self.most_similar_address(toks, comb["hash"], addressCls)
-                    if val:
-                        logger.debug(
-                            f'Found address with combination: {comb["hash"], comb["err"]}'
-                        )
-                        # self.append_err(
-                        #     comb["err"], "리, 동, 시군구 제거한 주소 검색 시도"
-                        # )
-                        break
-
-            # 대표 주소 검색
-            if not val:
-                val, addressCls = self.search_representative_address(toks, addressCls)
-
-            if not val:
-                self.append_err(ERR_REPRESENTATIVE_ADDRESS_NOT_FOUND)
-                logger.debug(f"NOTFOUND ERROR: {hash}, {addressCls}")
-                val = {"success": False, "errmsg": "NOTFOUND ERROR"}
-            else:
+                logger.debug(f"Found address with hash: {hash}")
                 val["success"] = True
                 val["errmsg"] = ""
                 if "pos_cd" not in val:
@@ -506,6 +773,14 @@ class Geocoder:
                         val["pos_cd"] = ROAD
                     elif addressCls == self.BLD_ADDRESS:
                         val["pos_cd"] = BLD
+
+                val["hash"] = hash
+                val["address"] = address
+                val["addressCls"] = hash_info["addressCls"] or addressCls
+                toksString = self.tokenizer.getToksString(toks)
+                val["toksString"] = toksString
+                error_message = self.err_message(addressCls, val.get("pos_cd"))
+                val["errmsg"] = error_message
 
                 try:
                     h1_cd = self.get_h1(val)
@@ -519,77 +794,17 @@ class Geocoder:
                     val["h2_cd"] = ""
                     val["kostat_h1_cd"] = ""
                     val["kostat_h2_cd"] = ""
-                    # print(e, address, val)
-        else:
-            val = {"success": False, "errmsg": err}
 
-        val["hash"] = hash
-        val["address"] = address
-        val["addressCls"] = addressCls
-        val["toksString"] = toksString
-        error_message = self.err_message(addressCls, val.get("pos_cd"))
-        val["errmsg"] = error_message
+                val["pos_cd"] = (
+                    filter_to_pos_cd(val.get("pos_cd")) if val.get("pos_cd") else ""
+                )
 
-        logger.debug(f"val: {json.dumps(val, indent=4, ensure_ascii=False)}")
-        logger.debug(f'{self.err_list.to_err_str()}, {val.get("pos_cd", addressCls)}')
-        logger.debug(error_message or "미매핑 사유 텍스트 없음")
-
-        val["pos_cd"] = filter_to_pos_cd(val.get("pos_cd")) if val.get("pos_cd") else ""
-
-        return val
-
-    def search_representative_address(self, toks: Tokens, addressCls):
-        """
-        BASE_ADDRESS_ORDER = [
-            ROAD_END_ADDRESS,
-            RI_END_ADDRESS,
-            H4_END_ADDRESS,
-            H23_END_ADDRESS,
-            H1_END_ADDRESS,
-        ]
-        """
-        if addressCls == self.ROAD_ADDRESS:
-            addressCls = self.ROAD_END_ADDRESS
-        elif addressCls == self.JIBUN_ADDRESS:
-            addressCls = self.RI_END_ADDRESS
-        elif addressCls == self.BLD_ADDRESS:
-            addressCls = self.ROAD_END_ADDRESS
-
-        begin_addressCls_pos = self.BASE_ADDRESS_ORDER.index(addressCls)
-        for i in range(begin_addressCls_pos, len(self.BASE_ADDRESS_ORDER)):
-            addressCls = self.BASE_ADDRESS_ORDER[i]
-            end_with_token_info = self.END_WITH_TOKEN_INFO.get(addressCls, None)
-            end_with = end_with_token_info["end_with"]
-            pos_cd_filter = end_with_token_info["pos_cd_filter"]
-
-            if not toks.hasTypes(end_with):
-                continue
-
-            if addressCls == self.ROAD_END_ADDRESS:
-                hash = self.roadAddress.hash(toks, end_with=end_with)
+                return val
             else:
-                hash = self.jibunAddress.hash(toks, end_with=end_with)
+                self.append_err(err_failed, err_detail)
 
-            logger.debug(f"Try search addressCls: {addressCls}, hash: {hash}")
-            val = self.most_similar_address(
-                toks, hash, addressCls, pos_cd_filter=pos_cd_filter
-            )
-
-            if val:
-                return val, addressCls
-            else:
-                if addressCls == self.ROAD_END_ADDRESS:
-                    self.append_err(ERR_ROAD_NOT_FOUND, hash)
-                elif addressCls == self.RI_END_ADDRESS:
-                    self.append_err(ERR_RI_NOT_FOUND, hash)
-                elif addressCls == self.H4_END_ADDRESS:
-                    self.append_err(ERR_DONG_NOT_FOUND, hash)
-                elif addressCls == self.H23_END_ADDRESS:
-                    self.append_err(ERR_H23_NOT_FOUND, hash)
-                elif addressCls == self.H1_END_ADDRESS:
-                    self.append_err(ERR_H1_NOT_FOUND, hash)
-
-        return None, self.NOT_ADDRESS
+        self.append_err(ERR_NOT_FOUND)
+        return None
 
     def get_h1(self, val):
         """
@@ -679,7 +894,7 @@ class Geocoder:
                 candidate_addresses = [
                     r
                     for r in candidate_addresses
-                    if r["road_cd"] and len(r["road_cd"]) == 12
+                    if r.get("road_cd") and len(r["road_cd"]) == 12
                 ]
                 # 도로명으로 시작하는 주소인 경우 h23_nm이 같아야 함
                 # 그렇지 않으면 None 반환
@@ -938,308 +1153,6 @@ class Geocoder:
 
         return near_jibun_hashs
 
-    def most_similar_jibun_addr(self, toks: Tokens, hash, addressCls: str):
-        """
-        주어진 토큰과 해시를 사용하여 가장 유사한 지번 주소를 반환합니다.
-        """
-        if toks.hasTypes(TOKEN_BNG):
-            # 인근 지번 검색
-            near_jibun_hashs = self.get_near_jibun_hashs(hash)
-            val = None
-            for near_hash in near_jibun_hashs:
-                val = self.most_similar_address(toks, near_hash, addressCls)
-                if val:
-                    val["pos_cd"] = NEAR_JIBUN
-                    self.append_err(INFO_NEAR_JIBUN_FOUND, str(near_hash))
-                    return val
-
-            if not val:
-                self.append_err(ERR_NEAR_JIBUN_NOT_FOUND, str(near_jibun_hashs))
-                # return None
-
-            # 리 대표주소 검색
-            if toks.hasTypes(TOKEN_RI):
-                ri_hash = self.jibunAddress.hash(toks, end_with=TOKEN_RI)
-                val = self.most_similar_address(
-                    toks, ri_hash, addressCls, pos_cd_filter=[RI_ADDR_FILTER]
-                )
-                if val:
-                    return val
-
-            # 동 대표주소 검색
-            if toks.hasTypes(TOKEN_H4):
-                hash = self.jibunAddress.hash(toks, end_with=TOKEN_H4)
-                val = self.most_similar_address(
-                    toks,
-                    hash,
-                    addressCls,
-                    pos_cd_filter=[HD_ADDR_FILTER, LD_ADDR_FILTER],
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_DONG_NOT_FOUND, toks.get(toks.index(TOKEN_H4)).val
-                    )
-                    return None
-
-            # 시군구 대표주소 검색
-            if toks.hasTypes(TOKEN_H23):
-                hash = self.jibunAddress.hash(toks, end_with=TOKEN_H23)
-                val = self.most_similar_address(
-                    toks, hash, addressCls, pos_cd_filter=[H23_ADDR_FILTER]
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_H23_NOT_FOUND, toks.get(toks.index(TOKEN_H23)).val
-                    )
-                    return None
-
-            # 광역시도 대표주소 검색
-            if toks.hasTypes(TOKEN_H1):
-                hash = self.jibunAddress.hash(toks, end_with=TOKEN_H1)
-                val = self.most_similar_address(
-                    toks, hash, addressCls, pos_cd_filter=[H1_ADDR_FILTER]
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_H1_NOT_FOUND, toks.get(toks.index(TOKEN_H1)).val
-                    )
-                    return None
-
-        return None
-
-    def most_similar_road_addr(self, toks: Tokens, hash, addressCls: str):
-        """
-        주어진 토큰과 해시를 사용하여 가장 유사한 지번 주소를 반환합니다.
-
-        Args:
-            toks (Tokens): 주소를 나타내는 토큰 리스트.
-            hash (str): 지번 주소의 해시 값.
-            addressCls (str): 주소 클래스 (지번 주소).
-
-        Returns:
-            dict or None: 가장 유사한 지번 주소를 나타내는 딕셔너리.
-                유사한 주소가 없거나 오류가 발생한 경우 None을 반환합니다.
-        """
-        if toks.hasTypes(TOKEN_BLDNO):
-            # 인근 건물번호 검색
-            near_road_bld_hashs = self.get_near_road_bld_hashs(hash)
-            for near_hash in near_road_bld_hashs:
-                val = self.most_similar_address(toks, near_hash, addressCls)
-                if val:
-                    val["pos_cd"] = NEAR_ROAD_BLD
-                    self.append_err(INFO_NEAR_ROAD_BLD_FOUND, str(near_hash))
-                    return val
-
-            self.append_err(ERR_NEAR_ROAD_BLD_NOT_FOUND, str(near_road_bld_hashs))
-
-            # 리 빼고 검색
-            if toks.hasTypes(TOKEN_RI):
-                road_hash = self.roadAddress.hash(
-                    toks, start_with=TOKEN_ROAD, ignore=[TOKEN_RI]
-                )
-                logger.debug(
-                    f"most_similar_road_addr: road_hash: {road_hash}, toks: {toks}"
-                )
-                val = self.most_similar_address(toks, road_hash, addressCls)
-                if val:
-                    return val
-
-            # 도로명 이하 주소 검색
-            if toks.hasTypes(TOKEN_ROAD):
-                road_hash = self.roadAddress.hash(toks, start_with=TOKEN_ROAD)
-                logger.debug(
-                    f"most_similar_road_addr: road_hash: {road_hash}, toks: {toks}"
-                )
-                val = self.most_similar_address(toks, road_hash, addressCls)
-                if val:
-                    self.append_err(ERR_REGION_NOT_FOUND)
-                    return val
-
-            # 도로명 대표주소 검색
-            if toks.hasTypes(TOKEN_ROAD):
-                road_hash = self.roadAddress.hash(toks, end_with=TOKEN_ROAD)
-                val = self.most_similar_address(
-                    toks, road_hash, addressCls, pos_cd_filter=[ROAD_ADDR_FILTER]
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_ROAD_NOT_FOUND, toks.get(toks.index(TOKEN_ROAD)).val
-                    )
-
-            # 리 대표주소 검색
-            if toks.hasTypes(TOKEN_RI):
-                ri_hash = self.jibunAddress.hash(toks, end_with=TOKEN_RI)
-                val = self.most_similar_address(
-                    toks, ri_hash, addressCls, pos_cd_filter=[RI_ADDR_FILTER]
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_RI_NOT_FOUND, toks.get(toks.index(TOKEN_RI)).val
-                    )
-
-            # 동 대표주소 검색
-            if toks.hasTypes(TOKEN_H4):
-                hash = self.jibunAddress.hash(toks, end_with=TOKEN_H4)
-                val = self.most_similar_address(
-                    toks,
-                    hash,
-                    addressCls,
-                    pos_cd_filter=[HD_ADDR_FILTER, LD_ADDR_FILTER],
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_DONG_NOT_FOUND, toks.get(toks.index(TOKEN_H4)).val
-                    )
-
-            # 시군구 대표주소 검색
-            if toks.hasTypes(TOKEN_H23):
-                hash = self.jibunAddress.hash(toks, end_with=TOKEN_H23)
-                val = self.most_similar_address(
-                    toks, hash, addressCls, pos_cd_filter=[H23_ADDR_FILTER]
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_H23_NOT_FOUND, toks.get(toks.index(TOKEN_H23)).val
-                    )
-
-            # 광역시도 대표주소 검색
-            if toks.hasTypes(TOKEN_H1):
-                hash = self.jibunAddress.hash(toks, end_with=TOKEN_H1)
-                val = self.most_similar_address(
-                    toks, hash, addressCls, pos_cd_filter=[H1_ADDR_FILTER]
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_H1_NOT_FOUND, toks.get(toks.index(TOKEN_H1)).val
-                    )
-
-        return None
-
-    def most_similar_bld_addr(self, toks: Tokens, hash, addressCls: str):
-        """
-        주어진 토큰과 해시를 사용하여 가장 유사한 지번 주소를 반환합니다.
-
-        Args:
-            toks (Tokens): 주소를 나타내는 토큰 리스트.
-            hash (str): 지번 주소의 해시 값.
-            addressCls (str): 주소 클래스 (지번 주소).
-
-        Returns:
-            dict or None: 가장 유사한 지번 주소를 나타내는 딕셔너리.
-                유사한 주소가 없거나 오류가 발생한 경우 None을 반환합니다.
-        """
-        # keys = self.search_start_with("영등포_")  # 건물명 주소는 도로명 주소로 시작
-
-        if toks.hasTypes(TOKEN_BLD):
-            # # 유사한 건물명 검색
-
-            # 리 빼고 검색
-            if toks.hasTypes(TOKEN_RI):
-                road_hash = self.roadAddress.hash(
-                    toks, start_with=TOKEN_ROAD, ignore=[TOKEN_RI]
-                )
-                logger.debug(
-                    f"most_similar_bld_addr: road_hash: {road_hash}, toks: {toks}"
-                )
-                val = self.most_similar_address(toks, road_hash, addressCls)
-                if val:
-                    return val
-
-            # 도로명 이하 주소 검색
-            if toks.hasTypes(TOKEN_ROAD):
-                road_hash = self.roadAddress.hash(toks, start_with=TOKEN_ROAD)
-                logger.debug(
-                    f"most_similar_bld_addr: road_hash: {road_hash}, toks: {toks}"
-                )
-                val = self.most_similar_address(toks, road_hash, addressCls)
-                if val:
-                    return val
-
-            # 도로명 대표주소 검색
-            if toks.hasTypes(TOKEN_ROAD):
-                road_hash = self.roadAddress.hash(toks, end_with=TOKEN_ROAD)
-                val = self.most_similar_address(
-                    toks, road_hash, addressCls, pos_cd_filter=[ROAD_ADDR_FILTER]
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_ROAD_NOT_FOUND, toks.get(toks.index(TOKEN_ROAD)).val
-                    )
-
-            # 리 대표주소 검색
-            if toks.hasTypes(TOKEN_RI):
-                ri_hash = self.jibunAddress.hash(toks, end_with=TOKEN_RI)
-                val = self.most_similar_address(
-                    toks, ri_hash, addressCls, pos_cd_filter=[RI_ADDR_FILTER]
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_RI_NOT_FOUND, toks.get(toks.index(TOKEN_RI)).val
-                    )
-            # 동 대표주소 검색
-            if toks.hasTypes(TOKEN_H4):
-                hash = self.jibunAddress.hash(toks, end_with=TOKEN_H4)
-                val = self.most_similar_address(
-                    toks,
-                    hash,
-                    addressCls,
-                    pos_cd_filter=[HD_ADDR_FILTER, LD_ADDR_FILTER],
-                )
-                if val:
-                    self.append_err(
-                        ERR_BLD_NM_NOT_FOUND, toks.get(toks.index(TOKEN_BLD)).val
-                    )
-                    return val
-                else:
-                    self.append_err(
-                        ERR_DONG_NOT_FOUND, toks.get(toks.index(TOKEN_H4)).val
-                    )
-            # 시군구 대표주소 검색
-            if toks.hasTypes(TOKEN_H23):
-                hash = self.jibunAddress.hash(toks, end_with=TOKEN_H23)
-                val = self.most_similar_address(
-                    toks, hash, addressCls, pos_cd_filter=[H23_ADDR_FILTER]
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_H23_NOT_FOUND, toks.get(toks.index(TOKEN_H23)).val
-                    )
-            # 광역시도 대표주소 검색
-            if toks.hasTypes(TOKEN_H1):
-                hash = self.jibunAddress.hash(toks, end_with=TOKEN_H1)
-                val = self.most_similar_address(
-                    toks, hash, addressCls, pos_cd_filter=[H1_ADDR_FILTER]
-                )
-                if val:
-                    return val
-                else:
-                    self.append_err(
-                        ERR_H1_NOT_FOUND, toks.get(toks.index(TOKEN_H1)).val
-                    )
-        return None
-
     def most_similar_address(
         self, toks: Tokens, hash, addressCls: str = None, pos_cd_filter: list = None
     ):
@@ -1393,6 +1306,122 @@ class Geocoder:
             # print(e)
             return None
 
+    def err_message(self, addressCls, pos_cd):
+        if addressCls in (self.NOT_ADDRESS, self.UNRECOGNIZABLE_ADDRESS):
+            return "주소 형식이 아님"
+
+        # ROAD_ADDRESS_INFO, NOTFOUND_ERROR, NEAR_ROAD_BLD_NOT_FOUND_ERROR, ROAD_NOT_FOUND_ERROR
+        # , DONG_NOT_FOUND_ERROR, H23_NOT_FOUND_ERROR, H1_NOT_FOUND_ERROR
+        # , ROAD_NOT_FOUND_ERROR, DONG_NOT_FOUND_ERROR'
+        msg = ""
+
+        pos_cd = filter_to_pos_cd(pos_cd) if pos_cd else ""
+
+        if addressCls == self.RI_END_ADDRESS or pos_cd == RI_ADDR:
+            msg = "리 이름까지 유효"
+        if addressCls == self.ROAD_END_ADDRESS or pos_cd == ROAD_ADDR:
+            msg = "도로 이름까지 유효"
+        if addressCls == self.H4_END_ADDRESS or pos_cd in (HD_ADDR, LD_ADDR):
+            err = self.err_list.get_err_by_cd(ERR_ROAD_NOT_FOUND)
+            if err:
+                msg = f'도로명 오류: {err.get("detail", "")}'
+            else:
+                msg = "행정동 또는 법정동 이름까지 유효"
+
+        if addressCls == self.H23_END_ADDRESS or pos_cd == H23_ADDR:
+            err = self.err_list.get_err_by_cd(ERR_DONG_NOT_FOUND)
+            if err:
+                msg = f'동명 오류: {err.get("detail", "")}'
+            else:
+                msg = "시군구 이름까지 유효"
+
+        if addressCls == self.H1_END_ADDRESS or pos_cd == H1_ADDR:
+            err = self.err_list.get_err_by_cd(ERR_H23_NOT_FOUND)
+            if err:
+                msg = f'시군구명 오류: {err.get("detail", "")}'
+            else:
+                msg = "광역시도 이름까지 유효"
+
+        # if msg_detail := self.err_list.to_detail_message():
+        #     msg = f"{msg} ({msg_detail})".strip()
+        detail = self.err_list.last_detail_message(has_detail=True)
+        if detail:
+            if msg:
+                msg = f"{msg} ({detail})".strip()
+            else:
+                msg = detail
+        return msg
+
+    def append_err(self, err, msg=None):
+        if self.err_list:
+            self.err_list.append(err, msg)
+
+    def last_detail_message(self):
+        """
+        마지막 오류 메시지를 반환합니다.
+        """
+        return self.err_list.last_detail_message()
+
+    def address_combination(self, toks0: Tokens, addressCls0: str = None):
+        """
+        주소 조합을 시도하여 가장 유사한 주소를 반환합니다.
+
+        Args:
+            toks (Tokens): 주소를 나타내는 토큰 리스트.
+            addressCls (str): 주소 클래스 (지번 주소).
+
+        Returns:
+            tuple: 가장 유사한 주소와 주소 클래스.
+                유사한 주소가 없거나 오류가 발생한 경우 None과 NOT_ADDRESS를 반환합니다.
+        """
+
+        def token_removed_address(toks, token_type):
+            """
+            주어진 토큰에서 특정 타입의 토큰을 제거한 주소를 반환합니다.
+            """
+            tmp_toks: Tokens = toks0.copy()
+            index = tmp_toks.index(token_type)
+            tmp_toks.delete(index)
+            return tmp_toks.to_address()
+
+        combinations = []
+
+        # ("h23_nm", "ld_nm", "ri_nm", "san", "bng1", "bng2", "bld1", "bld2"),
+        # ("h23_nm", "ld_nm", "ri_nm", "road_nm", "undgrnd_yn", "bld1", "bld2")
+
+        # # 리 제거한 주소. 다른 리에 같은 지번이 있을 수 있다.
+        # if toks0.hasTypes(TOKEN_RI):
+        #     address = token_removed_address(toks0, TOKEN_RI)
+        #     hash, toks, addressCls, err = self.addressHash(address)
+        #     if hash and addressCls == addressCls0:
+        #         combinations.append(
+        #             {"hash": hash, "err": ERR_NAME_RI, "addressCls": addressCls}
+        #         )
+
+        # 동 제거한 주소
+        if toks0.hasTypes(TOKEN_H4) and addressCls0 == self.ROAD_ADDRESS:
+            address = token_removed_address(toks0, TOKEN_H4)
+            hash, toks, addressCls, err = self.addressHash(address)
+            if hash and addressCls == addressCls0:
+                combinations.append(
+                    {"hash": hash, "err": ERR_NAME_H4, "addressCls": addressCls}
+                )
+
+        # 시군구 제거한 주소
+        if toks0.hasTypes(TOKEN_H23):
+            address = token_removed_address(toks0, TOKEN_H23)
+            hash, toks, addressCls, err = self.addressHash(address)
+            if hash and addressCls == addressCls0:
+                if addressCls == self.ROAD_END_ADDRESS and len(toks0) < 3:
+                    # 시군구 없이 도로명만 남기면 다른 시군구의 도로와 매칭 될 수 있으므로 제외
+                    pass
+                else:
+                    combinations.append(
+                        {"hash": hash, "err": ERR_NAME_H4, "addressCls": addressCls}
+                    )
+
+        return combinations
+
     def find_most_similar_building(self, d, bld_name_with_dong):
         """
         사용자 입력과 가장 유사한 건물명을 찾아 반환합니다.
@@ -1452,112 +1481,554 @@ class Geocoder:
         # print(f"\n사용자 입력: '{user_query_4}'")
         # print(f"가장 유사한 건물명: '{most_similar_4}' (유사도: {score_4:.4f})")
 
-    def address_combination(self, toks0: Tokens, addressCls0: str = None):
-        """
-        주소 조합을 시도하여 가장 유사한 주소를 반환합니다.
+    # def search_old(self, addr):
+    #     """
+    #     주어진 주소를 검색하여 가장 유사한 주소 정보를 반환합니다.
 
-        Args:
-            toks (Tokens): 주소를 나타내는 토큰 리스트.
-            addressCls (str): 주소 클래스 (지번 주소).
+    #     Parameters:
+    #     addr (str): 검색할 주소 문자열.
 
-        Returns:
-            tuple: 가장 유사한 주소와 주소 클래스.
-                유사한 주소가 없거나 오류가 발생한 경우 None과 NOT_ADDRESS를 반환합니다.
-        """
+    #     Returns:
+    #     dict: 검색 결과를 포함한 딕셔너리. 성공 시, 딕셔너리는 다음 키를 포함합니다:
+    #         - success (bool): 검색 성공 여부.
+    #         - errmsg (str): 오류 메시지 (성공 시 빈 문자열).
+    #         - h1_cd (str): h1 코드 (성공 시).
+    #         - h2_cd (str): h2 코드 (성공 시).
+    #         - kostat_h1_cd (str): KOSTAT h1 코드 (성공 시).
+    #         - kostat_h2_cd (str): KOSTAT h2 코드 (성공 시).
+    #         - hash (str): 주소 해시 값.
+    #         - address (str): 입력된 주소.
+    #         - addressCls (str): 주소 클래스.
+    #         - toksString (str): 토큰 문자열.
 
-        def token_removed_address(toks, token_type):
-            """
-            주어진 토큰에서 특정 타입의 토큰을 제거한 주소를 반환합니다.
-            """
-            tmp_toks: Tokens = toks0.copy()
-            index = tmp_toks.index(token_type)
-            tmp_toks.delete(index)
-            return tmp_toks.to_address()
+    #     오류가 발생하거나 주소를 찾을 수 없는 경우, 딕셔너리는 다음 키를 포함합니다:
+    #         - success (bool): False.
+    #         - errmsg (str): 오류 메시지.
+    #         - hash (str): 주소 해시 값.
+    #         - address (str): 입력된 주소.
+    #         - addressCls (str): 주소 클래스.
+    #         - toksString (str): 토큰 문자열.
+    #     """
+    #     hash = ""
+    #     toks = []
+    #     self.err_list = ErrList()
+    #     self.imoprtant_error = False
+    #     addressCls = self.NOT_ADDRESS
+    #     err = ERR_RUNTIME
 
-        combinations = []
+    #     if not isinstance(addr, str):
+    #         return None
 
-        # ("h23_nm", "ld_nm", "ri_nm", "san", "bng1", "bng2", "bld1", "bld2"),
-        # ("h23_nm", "ld_nm", "ri_nm", "road_nm", "undgrnd_yn", "bld1", "bld2")
+    #     address = addr.strip('"')
+    #     if address == "":
+    #         addressCls = self.NOT_ADDRESS
+    #         return None
 
-        # 리 제거한 주소. 다른 리에 같은 지번이 있을 수 있다.
-        if toks0.hasTypes(TOKEN_RI):
-            address = token_removed_address(toks0, TOKEN_RI)
-            hash, toks, addressCls, err = self.addressHash(address)
-            if hash and addressCls == addressCls0:
-                combinations.append({"hash": hash, "err": ERR_NAME_RI})
+    #     hash, toks, addressCls, err = self.addressHash(address)
 
-        # 동 제거한 주소
-        if toks0.hasTypes(TOKEN_H4):
-            address = token_removed_address(toks0, TOKEN_H4)
-            hash, toks, addressCls, err = self.addressHash(address)
-            if hash and addressCls == addressCls0:
-                combinations.append({"hash": hash, "err": ERR_NAME_H4})
+    #     if addressCls == self.NOT_ADDRESS:
+    #         self.append_err(ERR_NOT_ADDRESS)
+    #     elif addressCls == self.JIBUN_ADDRESS:
+    #         self.append_err(INFO_JIBUN_ADDRESS)
+    #     elif addressCls == self.BLD_ADDRESS:
+    #         self.append_err(INFO_BLD_ADDRESS)
+    #     elif addressCls == self.ROAD_ADDRESS:
+    #         self.append_err(INFO_ROAD_ADDRESS)
+    #     elif addressCls == self.RI_END_ADDRESS:
+    #         self.append_err(INFO_RI_END_ADDRESS)
+    #     elif addressCls == self.ROAD_END_ADDRESS:
+    #         self.append_err(INFO_ROAD_END_ADDRESS)
+    #     elif addressCls == self.H4_END_ADDRESS:
+    #         self.append_err(INFO_H4_END_ADDRESS)
+    #     elif addressCls == self.H23_END_ADDRESS:
+    #         self.append_err(INFO_H23_END_ADDRESS)
+    #     elif addressCls == self.H1_END_ADDRESS:
+    #         self.append_err(INFO_H1_END_ADDRESS)
 
-        # 시군구 제거한 주소
-        if toks0.hasTypes(TOKEN_H23):
-            address = token_removed_address(toks0, TOKEN_H23)
-            hash, toks, addressCls, err = self.addressHash(address)
-            if hash and addressCls == addressCls0:
-                if addressCls == self.ROAD_END_ADDRESS and len(toks0) < 3:
-                    # 시군구 없이 도로명만 남기면 다른 시군구의 도로와 매칭 될 수 있으므로 제외
-                    pass
-                else:
-                    combinations.append({"hash": hash, "err": ERR_NAME_H4})
+    #     logger.debug(f"address: {address}, \n hash: {hash}, addressCls: {addressCls}")
+    #     logger.debug(f"toks: {toks}, errmsg: {err}")
 
-        return combinations
+    #     if err:
+    #         self.append_err(err)
 
-    def err_message(self, addressCls, pos_cd):
-        if addressCls in (self.NOT_ADDRESS, self.UNRECOGNIZABLE_ADDRESS):
-            return "주소 형식이 아님"
+    #         logger.debug(f"{self.err_list.to_err_str()}, {addressCls}")
+    #         return {
+    #             "success": False,
+    #             "errmsg": self.err_message(addressCls, None),
+    #         }
+    #     toksString = self.tokenizer.getToksString(toks)
 
-        # ROAD_ADDRESS_INFO, NOTFOUND_ERROR, NEAR_ROAD_BLD_NOT_FOUND_ERROR, ROAD_NOT_FOUND_ERROR
-        # , DONG_NOT_FOUND_ERROR, H23_NOT_FOUND_ERROR, H1_NOT_FOUND_ERROR
-        # , ROAD_NOT_FOUND_ERROR, DONG_NOT_FOUND_ERROR'
-        msg = ""
+    #     if hash:
+    #         logger.debug(f"Try search addressCls: {addressCls}, hash: {hash}")
+    #         val = self.most_similar_address(toks, hash, addressCls)
+    #         if not val:
+    #             if self.imoprtant_error:
+    #                 val = {
+    #                     "success": False,
+    #                     "errmsg": self.err_message(addressCls, None),
+    #                 }
+    #                 return val
 
-        pos_cd = filter_to_pos_cd(pos_cd) if pos_cd else ""
+    #             self.append_err(ERR_NOT_FOUND)
 
-        if addressCls == self.RI_END_ADDRESS or pos_cd == RI_ADDR:
-            msg = "리 이름까지 유효"
-        if addressCls == self.ROAD_END_ADDRESS or pos_cd == ROAD_ADDR:
-            msg = "도로 이름까지 유효"
-        if addressCls == self.H4_END_ADDRESS or pos_cd in (HD_ADDR, LD_ADDR):
-            err = self.err_list.get_err_by_cd(ERR_ROAD_NOT_FOUND)
-            if err:
-                msg = f'도로명 오류: {err.get("detail", "")}'
-            else:
-                msg = "행정동 또는 법정동 이름까지 유효"
+    #             if addressCls == self.ROAD_ADDRESS:
+    #                 val = self.most_similar_road_addr(toks, hash, addressCls)
+    #             elif addressCls == self.JIBUN_ADDRESS:
+    #                 val = self.most_similar_jibun_addr(toks, hash, addressCls)
+    #             elif addressCls == self.BLD_ADDRESS:
+    #                 val = self.most_similar_bld_addr(toks, hash, addressCls)
 
-        if addressCls == self.H23_END_ADDRESS or pos_cd == H23_ADDR:
-            err = self.err_list.get_err_by_cd(ERR_DONG_NOT_FOUND)
-            if err:
-                msg = f'동명 오류: {err.get("detail", "")}'
-            else:
-                msg = "시군구 이름까지 유효"
+    #         if not val:
+    #             # 리, 동, 시군구 제거한 주소 검색 시도
+    #             combinations = self.address_combination(toks, addressCls)
+    #             for comb in combinations:
+    #                 val = self.most_similar_address(toks, comb["hash"], addressCls)
+    #                 if val:
+    #                     logger.debug(
+    #                         f'Found address with combination: {comb["hash"], comb["err"]}'
+    #                     )
+    #                     # self.append_err(
+    #                     #     comb["err"], "리, 동, 시군구 제거한 주소 검색 시도"
+    #                     # )
+    #                     break
 
-        if addressCls == self.H1_END_ADDRESS or pos_cd == H1_ADDR:
-            err = self.err_list.get_err_by_cd(ERR_H23_NOT_FOUND)
-            if err:
-                msg = f'시군구명 오류: {err.get("detail", "")}'
-            else:
-                msg = "광역시도 이름까지 유효"
+    #         # 대표 주소 검색
+    #         if not val:
+    #             val, addressCls = self.search_representative_address(toks, addressCls)
 
-        # if msg_detail := self.err_list.to_detail_message():
-        #     msg = f"{msg} ({msg_detail})".strip()
-        detail = self.err_list.last_detail_message(has_detail=True)
-        if detail:
-            if msg:
-                msg = f"{msg} ({detail})".strip()
-            else:
-                msg = detail
-        return msg
+    #         if not val:
+    #             self.append_err(ERR_REPRESENTATIVE_ADDRESS_NOT_FOUND)
+    #             logger.debug(f"NOTFOUND ERROR: {hash}, {addressCls}")
+    #             val = {"success": False, "errmsg": "NOTFOUND ERROR"}
+    #         else:
+    #             val["success"] = True
+    #             val["errmsg"] = ""
+    #             if "pos_cd" not in val:
+    #                 if addressCls == self.JIBUN_ADDRESS:
+    #                     val["pos_cd"] = JIBUN
+    #                 elif addressCls == self.ROAD_ADDRESS:
+    #                     val["pos_cd"] = ROAD
+    #                 elif addressCls == self.BLD_ADDRESS:
+    #                     val["pos_cd"] = BLD
 
-    def append_err(self, err, msg=None):
-        if self.err_list:
-            self.err_list.append(err, msg)
+    #             try:
+    #                 h1_cd = self.get_h1(val)
+    #                 h2_cd = self.get_h2(val)
+    #                 val["h1_cd"] = h1_cd
+    #                 val["h2_cd"] = h2_cd
+    #                 val["kostat_h1_cd"] = self.hcodeMatcher.get_kostat_h1_cd(h2_cd)
+    #                 val["kostat_h2_cd"] = self.hcodeMatcher.get_kostat_h2_cd(h2_cd)
+    #             except Exception as e:
+    #                 val["h1_cd"] = ""
+    #                 val["h2_cd"] = ""
+    #                 val["kostat_h1_cd"] = ""
+    #                 val["kostat_h2_cd"] = ""
+    #                 # print(e, address, val)
+    #     else:
+    #         val = {"success": False, "errmsg": err}
 
-    def last_detail_message(self):
-        """
-        마지막 오류 메시지를 반환합니다.
-        """
-        return self.err_list.last_detail_message()
+    #     val["hash"] = hash
+    #     val["address"] = address
+    #     val["addressCls"] = addressCls
+    #     val["toksString"] = toksString
+    #     error_message = self.err_message(addressCls, val.get("pos_cd"))
+    #     val["errmsg"] = error_message
+
+    #     logger.debug(f"val: {json.dumps(val, indent=4, ensure_ascii=False)}")
+    #     logger.debug(f'{self.err_list.to_err_str()}, {val.get("pos_cd", addressCls)}')
+    #     logger.debug(error_message or "미매핑 사유 텍스트 없음")
+
+    #     val["pos_cd"] = filter_to_pos_cd(val.get("pos_cd")) if val.get("pos_cd") else ""
+
+    #     return val
+
+    # def search_representative_address(self, toks: Tokens, addressCls):
+    #     """
+    #     BASE_ADDRESS_ORDER = [
+    #         ROAD_END_ADDRESS,
+    #         RI_END_ADDRESS,
+    #         H4_END_ADDRESS,
+    #         H23_END_ADDRESS,
+    #         H1_END_ADDRESS,
+    #     ]
+    #     """
+    #     if addressCls == self.ROAD_ADDRESS:
+    #         addressCls = self.ROAD_END_ADDRESS
+    #     elif addressCls == self.JIBUN_ADDRESS:
+    #         addressCls = self.RI_END_ADDRESS
+    #     elif addressCls == self.BLD_ADDRESS:
+    #         addressCls = self.ROAD_END_ADDRESS
+
+    #     begin_addressCls_pos = self.BASE_ADDRESS_ORDER.index(addressCls)
+    #     for i in range(begin_addressCls_pos, len(self.BASE_ADDRESS_ORDER)):
+    #         addressCls = self.BASE_ADDRESS_ORDER[i]
+    #         end_with_token_info = self.END_WITH_TOKEN_INFO.get(addressCls, None)
+    #         end_with = end_with_token_info["end_with"]
+    #         pos_cd_filter = end_with_token_info["pos_cd_filter"]
+
+    #         if not toks.hasTypes(end_with):
+    #             continue
+
+    #         if addressCls == self.ROAD_END_ADDRESS:
+    #             hash = self.roadAddress.hash(toks, end_with=end_with)
+    #         else:
+    #             hash = self.jibunAddress.hash(toks, end_with=end_with)
+
+    #         logger.debug(f"Try search addressCls: {addressCls}, hash: {hash}")
+    #         val = self.most_similar_address(
+    #             toks, hash, addressCls, pos_cd_filter=pos_cd_filter
+    #         )
+
+    #         if val:
+    #             return val, addressCls
+    #         else:
+    #             if addressCls == self.ROAD_END_ADDRESS:
+    #                 self.append_err(ERR_ROAD_NOT_FOUND, hash)
+    #             elif addressCls == self.RI_END_ADDRESS:
+    #                 self.append_err(ERR_RI_NOT_FOUND, hash)
+    #             elif addressCls == self.H4_END_ADDRESS:
+    #                 self.append_err(ERR_DONG_NOT_FOUND, hash)
+    #             elif addressCls == self.H23_END_ADDRESS:
+    #                 self.append_err(ERR_H23_NOT_FOUND, hash)
+    #             elif addressCls == self.H1_END_ADDRESS:
+    #                 self.append_err(ERR_H1_NOT_FOUND, hash)
+
+    #     return None, self.NOT_ADDRESS
+
+    # def __bldAddressHash(self, toks):
+    #     """
+    #     주어진 토큰을 사용하여 주소 해시를 생성합니다.
+
+    #     Args:
+    #         toks (list): 주소 해시에 사용될 토큰 리스트.
+
+    #     Returns:
+    #         str: 생성된 주소 해시.
+    #     """
+    #     return self.bldAddress.hash(toks)
+
+    # def __jibunAddressHash(self, toks):
+    #     """
+    #     주어진 토큰을 사용하여 지번 주소의 해시 값을 반환합니다.
+
+    #     Args:
+    #         toks (list): 해시 값을 생성하는 데 사용될 토큰들의 리스트.
+
+    #     Returns:
+    #         str: 지번 주소의 해시 값.
+    #     """
+    #     return self.jibunAddress.hash(toks)
+
+    # def __roadAddressHash(self, toks):
+    #     """
+    #     주어진 토큰(toks)을 사용하여 도로명 주소의 해시 값을 반환합니다.
+
+    #     Args:
+    #         toks (str): 해시 값을 생성하는 데 사용될 토큰.
+
+    #     Returns:
+    #         int: 도로 주소의 해시 값.
+    #     """
+    #     return self.roadAddress.hash(toks)
+
+    # def most_similar_jibun_addr(self, toks: Tokens, hash, addressCls: str):
+    #     """
+    #     주어진 토큰과 해시를 사용하여 가장 유사한 지번 주소를 반환합니다.
+    #     """
+    #     if toks.hasTypes(TOKEN_BNG):
+    #         # 인근 지번 검색
+    #         near_jibun_hashs = self.get_near_jibun_hashs(hash)
+    #         val = None
+    #         for near_hash in near_jibun_hashs:
+    #             val = self.most_similar_address(toks, near_hash, addressCls)
+    #             if val:
+    #                 val["pos_cd"] = NEAR_JIBUN
+    #                 self.append_err(INFO_NEAR_JIBUN_FOUND, str(near_hash))
+    #                 return val
+
+    #         if not val:
+    #             self.append_err(ERR_NEAR_JIBUN_NOT_FOUND, str(near_jibun_hashs))
+    #             # return None
+
+    #         # 리 대표주소 검색
+    #         if toks.hasTypes(TOKEN_RI):
+    #             ri_hash = self.jibunAddress.hash(toks, end_with=TOKEN_RI)
+    #             val = self.most_similar_address(
+    #                 toks, ri_hash, addressCls, pos_cd_filter=[RI_ADDR_FILTER]
+    #             )
+    #             if val:
+    #                 return val
+
+    #         # 동 대표주소 검색
+    #         if toks.hasTypes(TOKEN_H4):
+    #             hash = self.jibunAddress.hash(toks, end_with=TOKEN_H4)
+    #             val = self.most_similar_address(
+    #                 toks,
+    #                 hash,
+    #                 addressCls,
+    #                 pos_cd_filter=[HD_ADDR_FILTER, LD_ADDR_FILTER],
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_DONG_NOT_FOUND, toks.get(toks.index(TOKEN_H4)).val
+    #                 )
+    #                 return None
+
+    #         # 시군구 대표주소 검색
+    #         if toks.hasTypes(TOKEN_H23):
+    #             hash = self.jibunAddress.hash(toks, end_with=TOKEN_H23)
+    #             val = self.most_similar_address(
+    #                 toks, hash, addressCls, pos_cd_filter=[H23_ADDR_FILTER]
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_H23_NOT_FOUND, toks.get(toks.index(TOKEN_H23)).val
+    #                 )
+    #                 return None
+
+    #         # 광역시도 대표주소 검색
+    #         if toks.hasTypes(TOKEN_H1):
+    #             hash = self.jibunAddress.hash(toks, end_with=TOKEN_H1)
+    #             val = self.most_similar_address(
+    #                 toks, hash, addressCls, pos_cd_filter=[H1_ADDR_FILTER]
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_H1_NOT_FOUND, toks.get(toks.index(TOKEN_H1)).val
+    #                 )
+    #                 return None
+
+    #     return None
+
+    # def most_similar_road_addr(self, toks: Tokens, hash, addressCls: str):
+    #     """
+    #     주어진 토큰과 해시를 사용하여 가장 유사한 지번 주소를 반환합니다.
+
+    #     Args:
+    #         toks (Tokens): 주소를 나타내는 토큰 리스트.
+    #         hash (str): 지번 주소의 해시 값.
+    #         addressCls (str): 주소 클래스 (지번 주소).
+
+    #     Returns:
+    #         dict or None: 가장 유사한 지번 주소를 나타내는 딕셔너리.
+    #             유사한 주소가 없거나 오류가 발생한 경우 None을 반환합니다.
+    #     """
+    #     if toks.hasTypes(TOKEN_BLDNO):
+    #         # 인근 건물번호 검색
+    #         near_road_bld_hashs = self.get_near_road_bld_hashs(hash)
+    #         for near_hash in near_road_bld_hashs:
+    #             val = self.most_similar_address(toks, near_hash, addressCls)
+    #             if val:
+    #                 val["pos_cd"] = NEAR_ROAD_BLD
+    #                 self.append_err(INFO_NEAR_ROAD_BLD_FOUND, str(near_hash))
+    #                 return val
+
+    #         self.append_err(ERR_NEAR_ROAD_BLD_NOT_FOUND, str(near_road_bld_hashs))
+
+    #         # 리 빼고 검색
+    #         if toks.hasTypes(TOKEN_RI):
+    #             road_hash = self.roadAddress.hash(
+    #                 toks, start_with=TOKEN_ROAD, ignore=[TOKEN_RI]
+    #             )
+    #             logger.debug(
+    #                 f"most_similar_road_addr: road_hash: {road_hash}, toks: {toks}"
+    #             )
+    #             val = self.most_similar_address(toks, road_hash, addressCls)
+    #             if val:
+    #                 return val
+
+    #         # 도로명 이하 주소 검색
+    #         if toks.hasTypes(TOKEN_ROAD):
+    #             road_hash = self.roadAddress.hash(toks, start_with=TOKEN_ROAD)
+    #             logger.debug(
+    #                 f"most_similar_road_addr: road_hash: {road_hash}, toks: {toks}"
+    #             )
+    #             val = self.most_similar_address(toks, road_hash, addressCls)
+    #             if val:
+    #                 self.append_err(ERR_REGION_NOT_FOUND)
+    #                 return val
+
+    #         # 도로명 대표주소 검색
+    #         if toks.hasTypes(TOKEN_ROAD):
+    #             road_hash = self.roadAddress.hash(toks, end_with=TOKEN_ROAD)
+    #             val = self.most_similar_address(
+    #                 toks, road_hash, addressCls, pos_cd_filter=[ROAD_ADDR_FILTER]
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_ROAD_NOT_FOUND, toks.get(toks.index(TOKEN_ROAD)).val
+    #                 )
+
+    #         # 리 대표주소 검색
+    #         if toks.hasTypes(TOKEN_RI):
+    #             ri_hash = self.jibunAddress.hash(toks, end_with=TOKEN_RI)
+    #             val = self.most_similar_address(
+    #                 toks, ri_hash, addressCls, pos_cd_filter=[RI_ADDR_FILTER]
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_RI_NOT_FOUND, toks.get(toks.index(TOKEN_RI)).val
+    #                 )
+
+    #         # 동 대표주소 검색
+    #         if toks.hasTypes(TOKEN_H4):
+    #             hash = self.jibunAddress.hash(toks, end_with=TOKEN_H4)
+    #             val = self.most_similar_address(
+    #                 toks,
+    #                 hash,
+    #                 addressCls,
+    #                 pos_cd_filter=[HD_ADDR_FILTER, LD_ADDR_FILTER],
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_DONG_NOT_FOUND, toks.get(toks.index(TOKEN_H4)).val
+    #                 )
+
+    #         # 시군구 대표주소 검색
+    #         if toks.hasTypes(TOKEN_H23):
+    #             hash = self.jibunAddress.hash(toks, end_with=TOKEN_H23)
+    #             val = self.most_similar_address(
+    #                 toks, hash, addressCls, pos_cd_filter=[H23_ADDR_FILTER]
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_H23_NOT_FOUND, toks.get(toks.index(TOKEN_H23)).val
+    #                 )
+
+    #         # 광역시도 대표주소 검색
+    #         if toks.hasTypes(TOKEN_H1):
+    #             hash = self.jibunAddress.hash(toks, end_with=TOKEN_H1)
+    #             val = self.most_similar_address(
+    #                 toks, hash, addressCls, pos_cd_filter=[H1_ADDR_FILTER]
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_H1_NOT_FOUND, toks.get(toks.index(TOKEN_H1)).val
+    #                 )
+
+    #     return None
+
+    # def most_similar_bld_addr(self, toks: Tokens, hash, addressCls: str):
+    #     """
+    #     주어진 토큰과 해시를 사용하여 가장 유사한 지번 주소를 반환합니다.
+
+    #     Args:
+    #         toks (Tokens): 주소를 나타내는 토큰 리스트.
+    #         hash (str): 지번 주소의 해시 값.
+    #         addressCls (str): 주소 클래스 (지번 주소).
+
+    #     Returns:
+    #         dict or None: 가장 유사한 지번 주소를 나타내는 딕셔너리.
+    #             유사한 주소가 없거나 오류가 발생한 경우 None을 반환합니다.
+    #     """
+    #     # keys = self.search_start_with("영등포_")  # 건물명 주소는 도로명 주소로 시작
+
+    #     if toks.hasTypes(TOKEN_BLD):
+    #         # # 유사한 건물명 검색
+
+    #         # 리 빼고 검색
+    #         if toks.hasTypes(TOKEN_RI):
+    #             road_hash = self.roadAddress.hash(
+    #                 toks, start_with=TOKEN_ROAD, ignore=[TOKEN_RI]
+    #             )
+    #             logger.debug(
+    #                 f"most_similar_bld_addr: road_hash: {road_hash}, toks: {toks}"
+    #             )
+    #             val = self.most_similar_address(toks, road_hash, addressCls)
+    #             if val:
+    #                 return val
+
+    #         # 도로명 이하 주소 검색
+    #         if toks.hasTypes(TOKEN_ROAD):
+    #             road_hash = self.roadAddress.hash(toks, start_with=TOKEN_ROAD)
+    #             logger.debug(
+    #                 f"most_similar_bld_addr: road_hash: {road_hash}, toks: {toks}"
+    #             )
+    #             val = self.most_similar_address(toks, road_hash, addressCls)
+    #             if val:
+    #                 return val
+
+    #         # 도로명 대표주소 검색
+    #         if toks.hasTypes(TOKEN_ROAD):
+    #             road_hash = self.roadAddress.hash(toks, end_with=TOKEN_ROAD)
+    #             val = self.most_similar_address(
+    #                 toks, road_hash, addressCls, pos_cd_filter=[ROAD_ADDR_FILTER]
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_ROAD_NOT_FOUND, toks.get(toks.index(TOKEN_ROAD)).val
+    #                 )
+
+    #         # 리 대표주소 검색
+    #         if toks.hasTypes(TOKEN_RI):
+    #             ri_hash = self.jibunAddress.hash(toks, end_with=TOKEN_RI)
+    #             val = self.most_similar_address(
+    #                 toks, ri_hash, addressCls, pos_cd_filter=[RI_ADDR_FILTER]
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_RI_NOT_FOUND, toks.get(toks.index(TOKEN_RI)).val
+    #                 )
+    #         # 동 대표주소 검색
+    #         if toks.hasTypes(TOKEN_H4):
+    #             hash = self.jibunAddress.hash(toks, end_with=TOKEN_H4)
+    #             val = self.most_similar_address(
+    #                 toks,
+    #                 hash,
+    #                 addressCls,
+    #                 pos_cd_filter=[HD_ADDR_FILTER, LD_ADDR_FILTER],
+    #             )
+    #             if val:
+    #                 self.append_err(
+    #                     ERR_BLD_NM_NOT_FOUND, toks.get(toks.index(TOKEN_BLD)).val
+    #                 )
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_DONG_NOT_FOUND, toks.get(toks.index(TOKEN_H4)).val
+    #                 )
+    #         # 시군구 대표주소 검색
+    #         if toks.hasTypes(TOKEN_H23):
+    #             hash = self.jibunAddress.hash(toks, end_with=TOKEN_H23)
+    #             val = self.most_similar_address(
+    #                 toks, hash, addressCls, pos_cd_filter=[H23_ADDR_FILTER]
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_H23_NOT_FOUND, toks.get(toks.index(TOKEN_H23)).val
+    #                 )
+    #         # 광역시도 대표주소 검색
+    #         if toks.hasTypes(TOKEN_H1):
+    #             hash = self.jibunAddress.hash(toks, end_with=TOKEN_H1)
+    #             val = self.most_similar_address(
+    #                 toks, hash, addressCls, pos_cd_filter=[H1_ADDR_FILTER]
+    #             )
+    #             if val:
+    #                 return val
+    #             else:
+    #                 self.append_err(
+    #                     ERR_H1_NOT_FOUND, toks.get(toks.index(TOKEN_H1)).val
+    #                 )
+    #     return None
