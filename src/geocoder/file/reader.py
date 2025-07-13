@@ -19,6 +19,7 @@ class Reader:
                 self.df = pd.read_csv(
                     filepath,
                     encoding=charenc,
+                    encoding_errors="ignore",  # 유니코드 오류 무시
                     delimiter=delimiter,
                     quotechar='"',  # 쌍따옴표를 사용하여 콤마 포함된 값을 처리
                     escapechar="\\",
@@ -31,6 +32,7 @@ class Reader:
                 self.df = pd.read_csv(
                     filepath,
                     encoding=charenc,
+                    encoding_errors="ignore",  # 유니코드 오류 무시
                     delimiter=delimiter,
                     quotechar='"',  # 쌍따옴표를 사용하여 콤마 포함된 값을 처리
                     escapechar="\\",
