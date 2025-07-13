@@ -25,6 +25,7 @@ DATABASE_USER = env("DATABASE_USER")
 DATABASE_PASSWORD = env("DATABASE_PASSWORD")
 DATABASE_HOST = env("DATABASE_HOST", "localhost")
 DATABASE_PORT = env("DATABASE_PORT", "5432")
+THREAD_POOL_SIZE = env.int("THREAD_POOL_SIZE", 4)
 
 log_level = env("LOG_LEVEL", "INFO")
 if log_level.upper() not in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:

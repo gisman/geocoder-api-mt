@@ -754,7 +754,7 @@ class Geocoder:
                         hash_info["info_success"],
                         hash_info.get("info_detail", ""),
                     )
-                    logger.info(
+                    logger.debug(
                         f"{hash_info['info_success']}: {hash_info.get('info_detail', '')}"
                     )
 
@@ -789,6 +789,13 @@ class Geocoder:
                     val["h2_cd"] = h2_cd
                     val["kostat_h1_cd"] = self.hcodeMatcher.get_kostat_h1_cd(h2_cd)
                     val["kostat_h2_cd"] = self.hcodeMatcher.get_kostat_h2_cd(h2_cd)
+
+                    val["hc"] = val.get("hd_cd")
+                    val["lc"] = val.get("ld_cd")
+                    val["rc"] = val.get("road_cd")
+                    val["bn"] = val.get("bld_mgt_no", "")
+                    val["h1"] = val.get("h1_nm")
+                    val["rm"] = val.get("road_nm")
                 except Exception as e:
                     val["h1_cd"] = ""
                     val["h2_cd"] = ""

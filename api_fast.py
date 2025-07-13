@@ -6,6 +6,7 @@ Usage::
 """
 
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from io import StringIO
 import time
 import logging
@@ -1740,6 +1741,7 @@ app.include_router(router)
 class ApiHandler:
     geocoder = Geocoder()
     reverse_geocoder = ReverseGeocoder()
+    executor = ThreadPoolExecutor(max_workers=config.THREAD_POOL_SIZE)  # 스레드 풀 생성
 
     tf = Transformer.from_crs(
         CRS.from_string("EPSG:5179"), CRS.from_string("EPSG:4326"), always_xy=True
@@ -1775,7 +1777,58 @@ class ApiHandler:
 
         return val
 
-    async def geocode(self, addrs):
+    def _geocode_worker(self, addr: str):
+        """개별 주소를 지오코딩하는 작업자 함수"""
+        val = ApiHandler.geocoder.search(addr)
+        if not val:
+            val = {}
+        elif val.get("success") and val.get("x"):
+            x1, y1 = ApiHandler.tf.transform(val["x"], val["y"])
+            val[X_AXIS] = x1
+            val[Y_AXIS] = y1
+
+        val["inputaddr"] = addr
+        return val
+
+    async def geocode(self, addrs: List[str]):
+        """주소 목록을 병렬로 지오코딩합니다."""
+        start_time = time.time()
+
+        limited_addrs = addrs[:LINES_LIMIT]
+
+        loop = asyncio.get_running_loop()
+        # run_in_executor를 사용하여 스레드 풀에서 동기 함수 실행
+        tasks = [
+            loop.run_in_executor(self.executor, self._geocode_worker, addr)
+            for addr in limited_addrs
+        ]
+
+        # 모든 지오코딩 작업이 완료될 때까지 대기
+        results = await asyncio.gather(*tasks)
+
+        success_count = 0
+        hd_success_count = 0
+
+        for val in results:
+            if val.get("success") and val.get("pos_cd", "") in POS_CD_SUCCESS:
+                success_count += 1
+            if val.get("hd_cd"):
+                hd_success_count += 1
+
+        total_count = len(limited_addrs)
+        fail_count = total_count - success_count
+
+        summary = {
+            "total_time": time.time() - start_time,
+            "total_count": total_count,
+            "success_count": success_count,
+            "hd_success_count": hd_success_count,
+            "fail_count": fail_count,
+            "results": results,
+        }
+        return summary
+
+    async def geocode_old(self, addrs):
         summary = {}
         result = []
         count = 0

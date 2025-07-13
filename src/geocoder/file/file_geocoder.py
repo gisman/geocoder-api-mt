@@ -4,6 +4,7 @@
 
 # import pandas as pd
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 import os
 import time
 from pyproj import Transformer, CRS
@@ -36,6 +37,7 @@ class FileGeocoder:
         """
         self.geocoder = geocoder
         self.reverse_geocoder = reverse_geocoder
+        self.executor = ThreadPoolExecutor(max_workers=4)
 
         log_file = "log/geocode-api.log"
         log_handler = logging.FileHandler(log_file)
@@ -163,46 +165,74 @@ class FileGeocoder:
             return {"error": "파일 쓰기 오류: API-R002"}
 
         sample = []
+        full_history_list = config.FULL_HISTORY_LIST
+        loop = asyncio.get_running_loop()
+        batch_size = config.THREAD_POOL_SIZE  # 병렬 처리
+
         try:
-            for line, addr in reader:
-                # limit 체크. 1만건 또는 남은 쿼터 중 작은 것. 용역은 무제한
-                if limit > 0 and count >= limit:
+            iterator = iter(reader)
+            while True:
+                batch = []
+                lines = []
+                try:
+                    for _ in range(batch_size):
+                        line, addr = next(iterator)
+                        if limit > 0 and count + len(batch) >= limit:
+                            # 현재 배치는 처리하지 않고 중단
+                            iterator = None  # 루프 종료용
+                            break
+
+                        batch.append(addr)
+                        lines.append(line)
+                except StopIteration:
+                    pass  # 파일 끝
+
+                if not batch:
                     break
-                count += 1
 
-                # 지오코딩
-                row_result = self.geocode(addr, full_history_list=full_history_list)
+                tasks = [
+                    loop.run_in_executor(
+                        self.executor,
+                        self.geocode,
+                        addr,
+                        full_history_list,
+                    )
+                    for addr in batch
+                ]
 
-                if row_result.get("pos_cd", "") in POS_CD_SUCCESS:
-                    success_count += 1
-                else:
-                    fail_count += 1
+                results = await asyncio.gather(*tasks)
 
-                # # 결과 기록
-                # success = row_result["success"]
+                for i, row_result in enumerate(results):
+                    line = lines[i]
 
-                # if success == "실패":
-                #     fail_count += 1
-                # else:
-                #     success_count += 1
+                    if row_result.get("pos_cd", "") in POS_CD_SUCCESS:
+                        success_count += 1
+                    else:
+                        fail_count += 1
 
-                if row_result.get("hd_cd") or row_result.get("h4_cd"):
-                    hd_success_count += 1
+                    if row_result.get("hd_cd") or row_result.get("h4_cd"):
+                        hd_success_count += 1
 
-                sample_wgs_x = row_result.pop("sample_wgs_x", 0)
-                sample_wgs_y = row_result.pop("sample_wgs_y", 0)
-                writer.write(line, row_result)
-                if count <= sample_count:
-                    # response용 데이터는 hd_history 제외, 출력 좌표계를 wgs84로 유지
-                    row_result.pop("hd_history", None)
-                    row_result[X_AXIS] = sample_wgs_x
-                    row_result[Y_AXIS] = sample_wgs_y
-                    sample.append(row_result)
+                    sample_wgs_x = row_result.pop("sample_wgs_x", 0)
+                    sample_wgs_y = row_result.pop("sample_wgs_y", 0)
+                    writer.write(line, row_result)
+
+                    if count < sample_count:
+                        row_result.pop("hd_history", None)
+                        row_result[X_AXIS] = sample_wgs_x
+                        row_result[Y_AXIS] = sample_wgs_y
+                        sample.append(row_result)
+
+                    count += 1
 
                 if count % 10000 == 0:
                     self.logger.info(
                         f"{count:,}, {time.time() - start_time:.1f}sec, success:{success_count}({success_count/count*100:.2f}%), fail:{fail_count}"
                     )
+
+                if iterator is None:
+                    break
+
         except Exception as e:
             self.logger.error("Failed to geocode: %s", e)
             return {"error": "지오코딩 오류: API-R003"}
@@ -241,7 +271,7 @@ class FileGeocoder:
     ):
         """
         파일을 읽어 지오코딩합니다. 결과를 파일로 저장합니다.
-        멀티 스레드로 실행됩니다.
+        멀티 스레드로 실행됩니다. (실제로는 run()을 호출합니다)
 
         Args:
             download_dir (str): 지오코딩된 파일과 요약을 저장할 디렉토리. (prepare()에 전달된 filepath의 파일명을 사용하여 결과 파일 생성)
@@ -251,173 +281,7 @@ class FileGeocoder:
         Returns:
             dict: 지오코딩 결과 요약 + 주소 컬럼, 인코딩, 구분자
         """
-        summary = {}
-        count = 0
-        success_count = 0
-        hd_success_count = 0
-        fail_count = 0
-        start_time = time.time()
-
-        try:
-            self.tf = self.get_csr_transformer(target_crs)
-            self.tf_wgs84 = self.get_csr_transformer("EPSG:4326")
-        except:
-            self.logger.error("Failed to create CRS transformer")
-            return {"error": "좌표계 설정 오류: API-R001"}
-
-        filename = os.path.basename(self.filepath)
-
-        # reader, writer 생성
-        reader = None
-        writer = None
-        TASK_ROW_COUNT_LIMIT = 10000
-
-        try:
-            reader = Reader(
-                self.filepath,
-                self.charenc,
-                self.delimiter,
-                self.address_col,
-                start_row=0,
-                row_count=TASK_ROW_COUNT_LIMIT,
-            )
-        except Exception as e:
-            self.logger.error("Failed to create reader", e)
-            return {
-                "error": "파일 읽기 오류: API-R0010",
-                "filepath": self.filepath,
-                "charenc": self.charenc,
-                "delimiter": self.delimiter,
-                "address_col": self.address_col,
-            }
-
-        headers = reader.get_headers()
-        full_history_list = config.FULL_HISTORY_LIST
-        hd_history_cols = []
-        if full_history_list:
-            hd_history_cols = self.get_hd_history_headers(
-                config.HD_HISTORY_START_YYYYMM, config.HD_HISTORY_END_YYYYMM
-            )
-            headers.extend(hd_history_cols)
-        try:
-            writer = Writer(
-                f"{download_dir}{filename}.csv",
-                headers,
-                hd_history_cols=hd_history_cols,
-            )
-            writer.writeheader()
-        except Exception as e:
-            self.logger.error("Failed to create writer", e)
-            return {"error": "파일 쓰기 오류: API-R002"}
-
-        sample = []
-        # 전체 건수를 모르는 상태.
-        # 1만건씩 실행
-
-        geocode_tasks = []
-        # 전체 건수 = reader.get_row_count()``
-        start_row = 0
-        row_result_mt = []
-        while True:
-            geocode_tasks.append(
-                asyncio.to_thread(self.geocode_mt, reader, full_history_list)
-            )
-
-            if reader.count() < TASK_ROW_COUNT_LIMIT:
-                # 마지막 batch
-                break
-
-            start_row += TASK_ROW_COUNT_LIMIT
-            reader = Reader(
-                self.filepath,
-                self.charenc,
-                self.delimiter,
-                self.address_col,
-                start_row=start_row,
-                row_count=TASK_ROW_COUNT_LIMIT,
-            )
-
-        row_result_mt_list = await asyncio.gather(*geocode_tasks)
-
-        for result_batch in row_result_mt_list:
-            row_result_mt.extend(result_batch)
-
-        # async with asyncio.TaskGroup() as tg:
-        #     while True:
-        #         tg.create_task(
-        #             asyncio.to_thread(
-        #                 self.geocode_mt, reader, full_history_list, row_result_mt
-        #             )
-        #         )
-
-        #         # geocode_tasks.append(geocode_task)
-
-        #         if reader.count() < TASK_ROW_COUNT_LIMIT:
-        #             # 마지막 batch
-        #             break
-
-        #         start_row += TASK_ROW_COUNT_LIMIT
-        #         reader = Reader(
-        #             self.filepath,
-        #             self.charenc,
-        #             self.delimiter,
-        #             self.address_col,
-        #             start_row=start_row,
-        #             row_count=TASK_ROW_COUNT_LIMIT,
-        #         )
-
-        for row in row_result_mt:
-            # for row in row_results:
-            writer.write(row["input_line"], row)
-
-            if row.get("pos_cd", "") in POS_CD_SUCCESS:
-                success_count += 1
-            else:
-                fail_count += 1
-
-            if row.get("hd_cd") or row.get("h4_cd"):
-                hd_success_count += 1
-
-            count += 1
-
-        # sample에 추가
-        for row in row_result_mt[:sample_count]:
-            # response용 데이터는 hd_history 제외, 출력 좌표계를 wgs84로 유지
-            row.pop("hd_history", None)
-            sample_wgs_x = row.pop("sample_wgs_x", 0)
-            sample_wgs_y = row.pop("sample_wgs_y", 0)
-            row[X_AXIS] = sample_wgs_x
-            row[Y_AXIS] = sample_wgs_y
-            sample.append(row)
-
-        # write summary
-        summary["total_time"] = time.time() - start_time
-        summary["total_count"] = count
-        summary["success_count"] = success_count
-        summary["hd_success_count"] = hd_success_count
-        fail_count = count - success_count
-        summary["fail_count"] = fail_count
-        summary["filename"] = filename
-
-        summary["charenc"] = self.charenc
-        summary["delimiter"] = self.delimiter
-        summary["address_col"] = headers[self.address_col]
-        summary["target_crs"] = target_crs
-        summary["uploaded_filename"] = self.uploaded_filename
-        summary["results"] = sample
-
-        # summary 파일 저장
-        try:
-            with open(
-                f"{download_dir}{filename}.summary", "w", newline=""
-            ) as summary_file:
-                json.dump(summary, summary_file)
-
-        except:
-            self.logger.error("Failed to write summary")
-            return {"error": "요약 파일 쓰기 오류: API-R004"}
-
-        return summary
+        return await self.run(download_dir, limit, target_crs, sample_count)
 
     def __str__(self):
         """
@@ -520,7 +384,7 @@ class FileGeocoder:
         print("geocode_mt end", reader.count())
         return result
 
-    def geocode(self, addr, **kwargs):
+    def geocode(self, addr, full_history_list=False, **kwargs):
         """
         geocoder 객체를 사용하여 주어진 주소를 지오코딩합니다.
 
@@ -541,7 +405,8 @@ class FileGeocoder:
             wgs_x, wgs_y = self.tf_wgs84.transform(x, y)
 
             # 행정동 history 검색
-            if kwargs.get("full_history_list", False):
+            if full_history_list:
+                # if kwargs.get("full_history_list", False):
                 hd_history = self.reverse_geocoder.search_hd_history(
                     wgs_x, wgs_y, full_history_list=True
                 )
