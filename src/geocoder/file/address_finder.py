@@ -107,7 +107,7 @@ class AddressFinder:
         if (
             addrcol
             and max_summary["total_count"] > 0
-            and max_success / max_summary["total_count"] > 0.2
+            and max_success / max_summary["total_count"] > 0.1
         ):
             max_summary["col"] = df100.columns.get_loc(addrcol)
             return max_summary
