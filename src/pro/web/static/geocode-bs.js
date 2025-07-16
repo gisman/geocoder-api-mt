@@ -167,8 +167,8 @@ function getPopupContentsByPos(pos) {
     if (res.cols) {
         colsTable = `<table class="popup-table">
         <tr>
-          <th>컬럼</th>
-          <th>값</th>
+            <th>컬럼</th>
+            <th>값</th>
         </tr>
         ${Object.keys(res.cols).map(function (key) {
             return '<tr><td>' + key + '</td><td>' + res.cols[key] + '</td></tr>'
@@ -300,28 +300,28 @@ function geocode_fail_click(e) {
 function map_preview(res_id, filename, callback) {
     data = {};
     data = { res_id: res_id, file: filename };
-  
+
     $.ajax({
-      method: "POST",
-      url: "https://geocode-dev.gimi9.com/api/ckan",
-      data: data,
+        method: "POST",
+        url: "https://geocode-dev.gimi9.com/api/ckan",
+        data: data,
     }).done(function (resList) {
-      if (resList.error != undefined) {
-        $("#nav").hide();
-  
-        return;
-      }
-  
-      $("#nav").show();
-  
-      render_result(resList);
-  
-      $(".geocode-download").attr("value", filename);
-  
-      if (callback)
-        callback();
+        if (resList.error != undefined) {
+            $("#nav").hide();
+
+            return;
+        }
+
+        $("#nav").show();
+
+        render_result(resList);
+
+        $(".geocode-download").attr("value", filename);
+
+        if (callback)
+            callback();
     });
-  }
+}
 
 function render_result(resList) {
     // summray
