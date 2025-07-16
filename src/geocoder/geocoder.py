@@ -466,7 +466,7 @@ class Geocoder:
         #             yield(
         #                 {
         #                     "hash": self.jibunAddress.hash(toks_without_ri),
-        #                     "addressCls": self.JIBUN_ADDRESS,
+        #                     "addressCls": self.JUN_ADDRESS,
         #                 }
         #             )
         #         elif addressCls == self.BLD_ADDRESS:
@@ -492,7 +492,7 @@ class Geocoder:
         #                     "hash": self.jibunAddress.hash(
         #                         toks_without_ri, end_with=TOKEN_BLD
         #                     ),
-        #                     "addressCls": self.JIBUN_ADDRESS,
+        #                     "addressCls": self.JUN_ADDRESS,
         #                 }
         #             )
         #         elif addressCls == self.BLD_ADDRESS:
@@ -575,7 +575,7 @@ class Geocoder:
         #     if addressCls == self.JIBUN_ADDRESS:
         #         hashs = self.get_near_jibun_hashs(hash_without_ri)
         #         for h in hashs:
-        #             yield({"hash": h, "addressCls": self.JIBUN_ADDRESS})
+        #             yield({"hash": h, "addressCls": self.JUN_ADDRESS})
         #     elif addressCls == self.ROAD_ADDRESS:
         #         hashs = self.get_near_road_bld_hashs(hash_without_ri)
         #         for h in hashs:
@@ -590,7 +590,7 @@ class Geocoder:
         #     yield(
         #         {
         #             "hash": self.jibunAddress.hash(toks, end_with=TOKEN_BNG),
-        #             "addressCls": self.JIBUN_ADDRESS,
+        #             "addressCls": self.JUN_ADDRESS,
         #             "err_failed": ERR_NEAR_JIBUN_NOT_FOUND,
         #         }
         #     )
@@ -689,32 +689,45 @@ class Geocoder:
 
         # return hash_infos
 
-    def append_err_by_addressCls(self, addressCls):
+    def _append_err_by_addressCls(self, err_list, addressCls):
+        """Thread-safe version of append_err_by_addressCls"""
+        # 기존 append_err_by_addressCls 로직을 err_list 파라미터를 받도록 수정
         if addressCls == self.NOT_ADDRESS:
-            self.append_err(ERR_NOT_ADDRESS)
+            self._append_err(err_list, ERR_NOT_ADDRESS)
         elif addressCls == self.JIBUN_ADDRESS:
-            self.append_err(INFO_JIBUN_ADDRESS)
+            self._append_err(err_list, INFO_JIBUN_ADDRESS)
         elif addressCls == self.BLD_ADDRESS:
-            self.append_err(INFO_BLD_ADDRESS)
+            self._append_err(err_list, INFO_BLD_ADDRESS)
         elif addressCls == self.ROAD_ADDRESS:
-            self.append_err(INFO_ROAD_ADDRESS)
+            self._append_err(err_list, INFO_ROAD_ADDRESS)
         elif addressCls == self.RI_END_ADDRESS:
-            self.append_err(INFO_RI_END_ADDRESS)
+            self._append_err(err_list, INFO_RI_END_ADDRESS)
         elif addressCls == self.ROAD_END_ADDRESS:
-            self.append_err(INFO_ROAD_END_ADDRESS)
+            self._append_err(err_list, INFO_ROAD_END_ADDRESS)
         elif addressCls == self.H4_END_ADDRESS:
-            self.append_err(INFO_H4_END_ADDRESS)
+            self._append_err(err_list, INFO_H4_END_ADDRESS)
         elif addressCls == self.H23_END_ADDRESS:
-            self.append_err(INFO_H23_END_ADDRESS)
+            self._append_err(err_list, INFO_H23_END_ADDRESS)
         elif addressCls == self.H1_END_ADDRESS:
-            self.append_err(INFO_H1_END_ADDRESS)
+            self._append_err(err_list, INFO_H1_END_ADDRESS)
+
+    def _append_err(self, err_list, err, msg=""):
+        """Thread-safe version of append_err"""
+        if err_list:
+            err_list.append(err, msg)
+
+    def _err_message(self, err_list, addressCls, pos_cd):
+        """Thread-safe version of err_message"""
+        # 기존 err_message 로직을 err_list 파라미터를 받도록 수정
+        return err_list.last_detail_message() if err_list else ""
 
     def search(self, addr):
         if not isinstance(addr, str):
             return None
 
-        self.err_list = ErrList()
-        self.imoprtant_error = False
+        # 스레드별 로컬 변수로 변경하여 thread safety 확보
+        err_list = ErrList()
+        imoprtant_error = False
         addressCls = self.NOT_ADDRESS
         err = ERR_RUNTIME
 
@@ -724,17 +737,17 @@ class Geocoder:
             return None
 
         hash, toks, addressCls, err = self.addressHash(address)
-        self.append_err_by_addressCls(addressCls)
+        self._append_err_by_addressCls(err_list, addressCls)
 
         logger.debug(f"address: {address}, \n hash: {hash}, addressCls: {addressCls}")
         logger.debug(f"toks: {toks}, errmsg: {err}")
         if err:
-            self.append_err(err)
+            self._append_err(err_list, err)
 
-            logger.debug(f"{self.err_list.to_err_str()}, {addressCls}")
+            logger.debug(f"{err_list.to_err_str()}, {addressCls}")
             return {
                 "success": False,
-                "errmsg": self.err_message(addressCls, None),
+                "errmsg": self._err_message(err_list, addressCls, None),
             }
         toksString = self.tokenizer.getToksString(toks)
 
@@ -743,14 +756,17 @@ class Geocoder:
         for hash_info in self.possible_hashs(toks, hash, addressCls):
             # for hash_info in possible_hash_list:
             hash = hash_info["hash"]
-            val = self.most_similar_address(toks, hash, hash_info["addressCls"])
+            val = self.most_similar_address(
+                toks, hash, hash_info["addressCls"], err_list=err_list
+            )
             err_failed = hash_info.get("err_failed", None)
             err_detail = hash_info.get("err_detail", None)
             if val:
                 # "info_success": INFO_NEAR_ROAD_BLD_FOUND,
                 # "info_detail": h,
                 if "info_success" in hash_info:
-                    self.append_err(
+                    self._append_err(
+                        err_list,
                         hash_info["info_success"],
                         hash_info.get("info_detail", ""),
                     )
@@ -779,7 +795,9 @@ class Geocoder:
                 val["addressCls"] = hash_info["addressCls"] or addressCls
                 toksString = self.tokenizer.getToksString(toks)
                 val["toksString"] = toksString
-                error_message = self.err_message(addressCls, val.get("pos_cd"))
+                error_message = self._err_message(
+                    err_list, addressCls, val.get("pos_cd")
+                )
                 val["errmsg"] = error_message
 
                 try:
@@ -808,9 +826,9 @@ class Geocoder:
 
                 return val
             else:
-                self.append_err(err_failed, err_detail)
+                self._append_err(err_list, err_failed, err_detail)
 
-        self.append_err(ERR_NOT_FOUND)
+        self._append_err(err_list, ERR_NOT_FOUND)
         return None
 
     def get_h1(self, val):
@@ -866,6 +884,7 @@ class Geocoder:
         h1_nm,
         addressCls,
         pos_cd_filter: set = None,
+        err_list: ErrList = None,
     ):
         logger.debug(f"filter_candidate_addresses: {len(candidate_addresses)}")
         if h1_nm:
@@ -879,7 +898,7 @@ class Geocoder:
         # 좌표 없는 것 필터링
         candidate_addresses = [r for r in candidate_addresses if r["x"]]
         if not candidate_addresses:
-            self.append_err(ERR_NOT_FOUND, "좌표 없는 주소")
+            self.append_err(ERR_NOT_FOUND, "좌표 없는 주소", err_list=err_list)
             return []
 
         if pos_cd_filter:
@@ -888,7 +907,9 @@ class Geocoder:
                 r for r in candidate_addresses if r.get("pos_cd", "") in pos_cd_filter
             ]
             if not candidate_addresses:
-                self.append_err(ERR_POS_CD_NOT_FOUND, str(pos_cd_filter))
+                self.append_err(
+                    ERR_POS_CD_NOT_FOUND, str(pos_cd_filter), err_list=err_list
+                )
                 return []
         else:
             if addressCls == self.JIBUN_ADDRESS:
@@ -908,7 +929,11 @@ class Geocoder:
                 if toks.get(0).t == TOKEN_ROAD:
                     h23_nm_set = {r["h23_nm"] for r in candidate_addresses}
                     if len(h23_nm_set) > 1:
-                        self.append_err(ERR_ROAD_NOT_UNIQUE_H23_NM, str(h23_nm_set))
+                        self.append_err(
+                            ERR_ROAD_NOT_UNIQUE_H23_NM,
+                            str(h23_nm_set),
+                            err_list=err_list,
+                        )
                         self.imoprtant_error = True
                         return []
 
@@ -928,7 +953,7 @@ class Geocoder:
                     if r.get("pos_cd") in [RI_ADDR_FILTER]
                 ]
                 if not candidate_addresses:
-                    self.append_err(ERR_RI_NOT_FOUND)
+                    self.append_err(ERR_RI_NOT_FOUND, err_list=err_list)
                     return []
             elif addressCls == self.ROAD_END_ADDRESS:
                 candidate_addresses = [
@@ -937,7 +962,7 @@ class Geocoder:
                     if r.get("pos_cd") in [ROAD_ADDR_FILTER]
                 ]
                 if not candidate_addresses:
-                    self.append_err(ERR_ROAD_NOT_FOUND)
+                    self.append_err(ERR_ROAD_NOT_FOUND, err_list=err_list)
                     return []
             elif addressCls == self.H4_END_ADDRESS:
                 candidate_addresses = [
@@ -946,7 +971,7 @@ class Geocoder:
                     if r.get("pos_cd") in [HD_ADDR_FILTER, LD_ADDR_FILTER]
                 ]
                 if not candidate_addresses:
-                    self.append_err(ERR_DONG_NOT_FOUND)
+                    self.append_err(ERR_DONG_NOT_FOUND, err_list=err_list)
                     return []
             elif addressCls == self.H23_END_ADDRESS:
                 candidate_addresses = [
@@ -955,7 +980,7 @@ class Geocoder:
                     if r.get("pos_cd") in [H23_ADDR_FILTER]
                 ]
                 if not candidate_addresses:
-                    self.append_err(ERR_H23_NOT_FOUND)
+                    self.append_err(ERR_H23_NOT_FOUND, err_list=err_list)
                     return []
             elif addressCls == self.H1_END_ADDRESS:
                 candidate_addresses = [
@@ -964,7 +989,7 @@ class Geocoder:
                     if r.get("pos_cd") in [H1_ADDR_FILTER]
                 ]
                 if not candidate_addresses:
-                    self.append_err(ERR_H1_NOT_FOUND)
+                    self.append_err(ERR_H1_NOT_FOUND, err_list=err_list)
                     return []
 
         if h1_nm and candidate_addresses:
@@ -973,20 +998,20 @@ class Geocoder:
                 r for r in candidate_addresses if r["h1_nm"] == h1_nm
             ]
             if not candidate_addresses:
-                self.append_err(ERR_H1_NM_NOT_FOUND)
+                self.append_err(ERR_H1_NM_NOT_FOUND, err_list=err_list)
                 return []
         else:
             # h1_nm 없으면 모든 h1_nm이 같아야 함. 그렇지 않으면 None 반환
             h1_nm_set = {r["h1_nm"] for r in candidate_addresses if "h1_nm" in r}
             if len(h1_nm_set) > 1:
-                self.append_err(ERR_NOT_UNIQUE_H1_NM, str(h1_nm_set))
+                self.append_err(ERR_NOT_UNIQUE_H1_NM, str(h1_nm_set), err_list=err_list)
                 return []
 
         if addressCls == "JIBUN_ADDRESS" and toks.hasTypes(TOKEN_RI):
             # ri가 있는 경우 ri_nm이 같아야 함
             ri_nm_set = {r["ri_nm"] for r in candidate_addresses if "ri_nm" in r}
             if len(ri_nm_set) > 1:
-                self.append_err(ERR_NOT_UNIQUE_RI_NM, str(ri_nm_set))
+                self.append_err(ERR_NOT_UNIQUE_RI_NM, str(ri_nm_set), err_list=err_list)
                 return []
 
         if addressCls == self.ROAD_ADDRESS:
@@ -1007,14 +1032,16 @@ class Geocoder:
             ]
 
             if not candidate_addresses:
-                self.append_err(ERR_ROAD_NM_NOT_FOUND)
+                self.append_err(ERR_ROAD_NM_NOT_FOUND, err_list=err_list)
                 return []
 
             if not h1_nm:
                 # h1_nm 없으면 모든 후보의 도로명 코드가 같아야 함
                 road_cds = {r.get("road_cd", "") for r in candidate_addresses}
                 if len(road_cds) > 1:
-                    self.append_err(ERR_NOT_UNIQUE_ROAD_CD, str(road_cds))
+                    self.append_err(
+                        ERR_NOT_UNIQUE_ROAD_CD, str(road_cds), err_list=err_list
+                    )
                     return []
 
         # extras.get("updater") 우선순위. "roadbase_updater"를 가장 나중에, extras.get("yyyymm") 우선순위. 가장 최근 날짜를 우선으로 함.
@@ -1161,7 +1188,12 @@ class Geocoder:
         return near_jibun_hashs
 
     def most_similar_address(
-        self, toks: Tokens, hash, addressCls: str = None, pos_cd_filter: list = None
+        self,
+        toks: Tokens,
+        hash,
+        addressCls: str = None,
+        pos_cd_filter: list = None,
+        err_list: ErrList = None,
     ):
         """
         주어진 토큰과 키를 사용하여 가장 유사한 주소를 반환합니다.
@@ -1180,7 +1212,6 @@ class Geocoder:
         try:
             o = self.db.get(hash)
             if o == None:
-                # self.append_err(ERR_NOT_FOUND)
                 logger.debug(f"Not Found: {addressCls}, hash: {hash}")
                 return None
 
@@ -1209,6 +1240,7 @@ class Geocoder:
                 h1_nm,
                 addressCls,
                 pos_cd_filter=pos_cd_filter,
+                err_list=err_list,
             )
             if not candidate_addresses:
                 return None
@@ -1313,7 +1345,7 @@ class Geocoder:
             # print(e)
             return None
 
-    def err_message(self, addressCls, pos_cd):
+    def err_message(self, addressCls, pos_cd, err_list: ErrList = None):
         if addressCls in (self.NOT_ADDRESS, self.UNRECOGNIZABLE_ADDRESS):
             return "주소 형식이 아님"
 
@@ -1359,9 +1391,9 @@ class Geocoder:
                 msg = detail
         return msg
 
-    def append_err(self, err, msg=None):
-        if self.err_list:
-            self.err_list.append(err, msg)
+    def append_err(self, err, msg=None, err_list: ErrList = None):
+        if err_list:
+            err_list.append(err, msg)
 
     def last_detail_message(self):
         """
