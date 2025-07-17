@@ -116,8 +116,8 @@ class ReverseGeocoder:
                 실패 시 빈 리스트를 반환합니다.
         """
         result = []
-        key = geohash.encode(y, x, precision=self.HD_GEOHASH_PRECISION)
         try:
+            key = geohash.encode(y, x, precision=self.HD_GEOHASH_PRECISION)
             o = self.hd_db.get(key.encode())
             if o:
                 hd_list = json.loads(o)

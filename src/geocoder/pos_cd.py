@@ -29,6 +29,7 @@ BLD = "건물명 주소"
 NEAR_JIBUN = "인근 지번 주소"
 NEAR_ROAD_BLD = "인근 도로명 주소"
 SIMILAR_BUILDING_NAME = "유사한 건물명 주소"
+SOURCE_XY = "원본좌표"
 
 POS_CD_SUCCESS = [
     JIBUN,
@@ -37,6 +38,7 @@ POS_CD_SUCCESS = [
     NEAR_JIBUN,
     NEAR_ROAD_BLD,
     SIMILAR_BUILDING_NAME,
+    SOURCE_XY,
 ]
 
 

@@ -66,6 +66,14 @@ class GeocodeFileItem(GeocodeBaseModel):
     sample_count: int = 100  # 샘플 개수, 기본값은 100
 
 
+class GeocodeFileXYItem(GeocodeFileItem):
+    x_col: str = "경도"
+    y_col: str = "위도"
+    delimiter: str = ","
+    encoding: str = "utf-8"
+    source_crs: str = "EPSG:4326"
+
+
 class Batch_Geocode_Item(GeocodeBaseModel):
     q: list[str] = [
         "서울특별시 송파구 송파대로8길 10",
@@ -523,6 +531,66 @@ async def batch_geocode(
 #             os.unlink(filepath)
 
 
+@router.post("/geocode_file_xy", include_in_schema=False)
+async def geocode_file_xy(
+    request: Request,
+    data: GeocodeFileXYItem,
+    token: str = "",
+    token_stats: dict = Depends(get_token_stats),
+):
+    """
+    ## 서버에 위치한 파일을 지오코딩합니다. 파일은 경도(x)와 위도(y) 좌표를 포함하고 있습니다.
+    좌표를 찾을 필요 없으며, 이미 있는 좌표를 사용하여 지역 코드 추가를 합니다.
+
+    ### Args:
+    * x_col: 경도(x) 좌표가 포함된 열의 이름입니다. 기본값은 "경도"입니다.
+    * y_col: 위도(y) 좌표가 포함된 열의 이름입니다. 기본값은 "위도"입니다.
+    * delimiter: 파일의 구분자입니다. 기본값은 쉼표(,)입니다.
+    * encoding: 파일 인코딩 형식입니다. 기본값은 "utf-8"입니다.
+    * source_crs: 입력 좌표계입니다. 기본값은 "EPSG:4326"입니다.
+
+    * filepath: 주소가 포함된 파일의 경로입니다.
+    * uploaded_filename(optional): 업로드한 원시 파일의 이름
+    * download_dir: 지오코딩된 파일을 저장할 디렉토리입니다.
+    * token (str): API 토큰 값.
+
+    ### Returns:
+    * Geocoding summary information.
+
+    """
+    # 입력 데이터 유효성 검사 및 준비
+    validate_and_prepare_file_data(data)
+
+    # DEMO USER의 경우 할당량을 제한합니다.
+    quarter = calculate_quarter_limit(data, token_stats)
+
+    file_xy_geocoder = FileGeocoder(
+        geocoder=ApiHandler.geocoder, reverse_geocoder=ApiHandler.reverse_geocoder
+    )
+    await file_xy_geocoder.prepare_xy(
+        data.filepath,
+        data.uploaded_filename,
+        data.x_col,
+        data.y_col,
+        data.delimiter,
+        data.encoding,
+        data.source_crs,
+    )
+
+    summary = await file_xy_geocoder.run_xy(
+        data.download_dir,
+        quarter,
+        source_crs=data.source_crs,
+        target_crs=data.target_crs,
+        sample_count=data.sample_count,
+    )
+
+    if token_stats and summary.get("success_count", 0):
+        await process_token_stats_and_log(token_stats, summary, request)
+
+    return summary
+
+
 @router.post("/geocode_file", include_in_schema=False)
 async def geocode_file(
     request: Request,
@@ -553,14 +621,11 @@ async def geocode_file(
     ### Returns:
     * Geocoding summary information.
     """
-    if not data.filepath or not data.download_dir:
-        raise HTTPException(status_code=400, detail="Invalid input")
-
-    if not data.uploaded_filename:
-        data.uploaded_filename = os.path.basename(data.filepath)
+    # 입력 데이터 유효성 검사 및 준비
+    validate_and_prepare_file_data(data)
 
     # DEMO USER의 경우 할당량을 제한합니다.
-    quarter = min(token_stats.get("remaining_daily_quota"), data.quarter)
+    quarter = calculate_quarter_limit(data, token_stats)
 
     file_geocoder = FileGeocoder(
         geocoder=ApiHandler.geocoder, reverse_geocoder=ApiHandler.reverse_geocoder
@@ -579,26 +644,45 @@ async def geocode_file(
         )
 
     if token_stats and summary.get("success_count", 0):
-        asyncio.create_task(
-            update_token_stats(token_stats["token_id"], summary.get("success_count", 0))
-        )
-
-        await write_usage_log(
-            token_id=token_stats["token_id"],
-            endpoint=request.url.path,
-            success_count=summary["success_count"],
-            hd_success_count=summary["hd_success_count"],
-            error_count=summary["fail_count"],
-            ip_address=(
-                request.client.host if request.client else None
-            ),  # IP 주소는 필요에 따라 설정
-            processing_time=summary["total_time"],  # 처리 시간은 필요에 따라 설정
-            billable=True,  # 과금 대상 여부는 필요에 따라 설정
-            quota_consumed=summary["success_count"],
-        )
-        # print(f"Token stats: {token_stats}")
+        await process_token_stats_and_log(token_stats, summary, request)
 
     return summary
+
+
+async def process_token_stats_and_log(token_stats, summary, request):
+    await update_token_stats(token_stats["token_id"], summary.get("success_count", 0))
+    # asyncio.create_task(
+    #     update_token_stats(token_stats["token_id"], summary.get("success_count", 0))
+    # )
+
+    await write_usage_log(
+        token_id=token_stats["token_id"],
+        endpoint=request.url.path,
+        success_count=summary["success_count"],
+        hd_success_count=summary["hd_success_count"],
+        error_count=summary["fail_count"],
+        ip_address=(
+            request.client.host if request.client else None
+        ),  # IP 주소는 필요에 따라 설정
+        processing_time=summary["total_time"],  # 처리 시간은 필요에 따라 설정
+        billable=True,  # 과금 대상 여부는 필요에 따라 설정
+        quota_consumed=summary["success_count"],
+    )
+    # print(f"Token stats: {token_stats}")
+
+
+def calculate_quarter_limit(data, token_stats):
+    # DEMO USER의 경우 할당량을 제한합니다.
+    quarter = min(token_stats.get("remaining_daily_quota"), data.quarter)
+    return quarter
+
+
+def validate_and_prepare_file_data(data):
+    if not data.filepath or not data.download_dir:
+        raise HTTPException(status_code=400, detail="Invalid input")
+
+    if not data.uploaded_filename:
+        data.uploaded_filename = os.path.basename(data.filepath)
 
 
 @router.get("/reverse_geocode", response_model=ReverseGeocodeResult)

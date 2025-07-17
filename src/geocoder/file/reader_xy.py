@@ -1,14 +1,16 @@
 import pandas as pd
 
+from src.geocoder.file.reader import Reader
 
-class Reader:
+
+class ReaderXY(Reader):
     def __init__(
-        self, filepath, charenc, delimiter, address_col, start_row=0, row_count=-1
+        self, filepath, charenc, delimiter, x_col, y_col, start_row=0, row_count=-1
     ):
         self.filepath = filepath
         self.charenc = charenc
         self.delimiter = delimiter
-        self.address_col = address_col
+        self.address_col = -1
         self.start_row = start_row
         self.row_count = row_count
 
@@ -46,18 +48,18 @@ class Reader:
         self.headers = list(self.df.columns)
         self.current_index = 0
 
-        # address_col이 유효한지 확인
-        if address_col > -1 and address_col >= len(self.headers):
+        self.x_col = self.headers.index(x_col)
+        self.y_col = self.headers.index(y_col)
+
+        # x_col, y_col이 유효한지 확인
+        if self.x_col > -1 and self.x_col >= len(self.headers):
             raise ValueError(
-                f"address_col({address_col})이 헤더 개수({len(self.headers)})를 초과합니다."
+                f"x_col({self.x_col})이 헤더 개수({len(self.headers)})를 초과합니다."
             )
-
-    def get_headers(self):
-        return self.headers
-
-    def __iter__(self):
-        self.current_index = 0
-        return self
+        if self.y_col > -1 and self.y_col >= len(self.headers):
+            raise ValueError(
+                f"y_col({self.y_col})이 헤더 개수({len(self.headers)})를 초과합니다."
+            )
 
     def __next__(self):
         if self.current_index >= len(self.df):
@@ -67,32 +69,16 @@ class Reader:
         row = self.df.iloc[self.current_index]
         line = row.tolist()
 
-        # 주소 컬럼 데이터 가져오기
-        if self.address_col < len(line):
-            addr = str(line[self.address_col]).strip()
+        # X, Y 컬럼 데이터 가져오기
+        if self.x_col < len(line):
+            x = str(line[self.x_col]).strip()
+            y = str(line[self.y_col]).strip()
         else:
-            addr = ""
+            x = y = ""
 
         self.current_index += 1
-        return line, addr
-
-    def get_data_frame(self):
-        """전체 DataFrame 반환 (pandas 활용을 위한 추가 메서드)"""
-        return self.df
-
-    def get_address_column_data(self):
-        """주소 컬럼 데이터만 반환"""
-        if self.address_col < len(self.headers):
-            return self.df.iloc[:, self.address_col].tolist()
-        return []
+        return line, (x, y)
 
     def get_row_count(self):
-        """총 행 수 반환"""
-        return len(self.df)
-
-    def __str__(self):
-        return f"Reader(rows={len(self.df)}, columns={len(self.headers)})"
-
-    def count(self):
         """총 행 수 반환"""
         return len(self.df)

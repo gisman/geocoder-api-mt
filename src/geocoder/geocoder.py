@@ -845,11 +845,11 @@ class Geocoder:
         if h1_cd := val.get("h1_cd"):
             return h1_cd
 
-        if val["hd_cd"]:
+        if val.get("hd_cd"):
             return val["hd_cd"][:2]
-        elif val["ld_cd"]:
+        elif val.get("ld_cd"):
             return val["ld_cd"][:2]
-        elif val["bld_mgt_no"]:
+        elif val.get("bld_mgt_no"):
             return val["bld_mgt_no"][:2]
 
     def get_h2(self, val):

@@ -11,6 +11,9 @@ from pyproj import Transformer, CRS
 import json
 import logging
 
+from src.geocoder import errs
+from src.geocoder.file.reader_xy import ReaderXY
+
 from .reader import Reader
 from .writer import Writer
 from .enc import Enc
@@ -37,21 +40,46 @@ class FileGeocoder:
         """
         self.geocoder = geocoder
         self.reverse_geocoder = reverse_geocoder
-        self.executor = ThreadPoolExecutor(max_workers=4)
+        self.executor = None
+
+        formatter = logging.Formatter("%(asctime)-15s - %(levelname)s - %(message)s")
 
         log_file = "log/geocode-api.log"
         log_handler = logging.FileHandler(log_file)
-
         log_handler.setLevel(logging.DEBUG)
-
-        formatter = logging.Formatter("%(asctime)-15s - %(levelname)s - %(message)s")
         log_handler.setFormatter(formatter)
+
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.DEBUG)
+        console_handler.setFormatter(formatter)
 
         logger = logging.getLogger()
         logger.addHandler(log_handler)
+        logger.addHandler(console_handler)
 
         self.log_handler = log_handler
         self.logger = logger
+
+    def __del__(self):
+        """
+        FileGeocoder 객체가 소멸될 때 스레드 풀을 정리합니다.
+        """
+        if hasattr(self, "executor") and self.executor:
+            try:
+                self.executor.shutdown(wait=False)
+            except Exception:
+                pass  # 소멸자에서는 예외를 무시
+
+    async def prepare_xy(
+        self, filepath, uploaded_filename, x_col, y_col, delimiter, encoding, source_crs
+    ):
+        self.filepath = filepath
+        self.charenc = encoding
+        self.delimiter = delimiter
+        self.address_col = -1
+        self.uploaded_filename = uploaded_filename
+        self.x_col = x_col
+        self.y_col = y_col
 
     async def prepare(self, filepath, uploaded_filename):
         """
@@ -98,8 +126,86 @@ class FileGeocoder:
                 yyyymm = next(yyyymm)
         return result
 
+    async def run_xy(
+        self,
+        download_dir,
+        limit=10000,
+        source_crs="EPSG:4326",
+        target_crs="EPSG:4326",
+        sample_count=0,
+    ):
+        try:
+            reader = ReaderXY(
+                self.filepath,
+                self.charenc,
+                self.delimiter,
+                self.x_col,
+                self.y_col,
+                start_row=0,
+                row_count=limit,
+            )
+        except Exception as e:
+            self.logger.error("Failed to create reader", e)
+            return {
+                "error": "파일 읽기 오류: API-R0010",
+                "filepath": self.filepath,
+                "charenc": self.charenc,
+                "delimiter": self.delimiter,
+                "x": self.x_col,
+                "y": self.y_col,
+            }
+
+        return await self._run(
+            download_dir,
+            limit,
+            source_crs,
+            target_crs,
+            sample_count,
+            reader,
+            has_xy_cols=True,
+        )
+
     async def run(
         self, download_dir, limit=10000, target_crs="EPSG:4326", sample_count=0
+    ):
+        """
+        파일을 읽어 지오코딩합니다. 결과를 파일로 저장합니다.
+
+        Args:
+            download_dir (str): 지오코딩된 파일과 요약을 저장할 디렉토리. (prepare()에 전달된 filepath의 파일명을 사용하여 결과 파일 생성)
+            limit (int, optional): 지오코딩할 레코드의 최대 개수. 기본값은 10000.
+            target_crs (str, optional): 지오코딩된 좌표의 대상 좌표 참조 시스템(CRS). 기본값은 "EPSG:4326". (WGS84)
+
+        Returns:
+            dict: 지오코딩 결과 요약 + 주소 컬럼, 인코딩, 구분자
+        """
+        try:
+            reader = Reader(
+                self.filepath, self.charenc, self.delimiter, self.address_col
+            )
+        except Exception as e:
+            self.logger.error("Failed to create reader", e)
+            return {
+                "error": "파일 읽기 오류: API-R0010",
+                "filepath": self.filepath,
+                "charenc": self.charenc,
+                "delimiter": self.delimiter,
+                "address_col": self.address_col,
+            }
+
+        return await self._run(
+            download_dir, limit, "EPSG:5179", target_crs, sample_count, reader
+        )
+
+    async def _run(
+        self,
+        download_dir,
+        limit=10000,
+        source_crs="EPSG:5179",
+        target_crs="EPSG:4326",
+        sample_count=0,
+        reader: Reader = None,
+        has_xy_cols=False,
     ):
         """
         파일을 읽어 지오코딩합니다. 결과를 파일로 저장합니다.
@@ -120,8 +226,8 @@ class FileGeocoder:
         start_time = time.time()
 
         try:
-            self.tf = self.get_csr_transformer(target_crs)
-            self.tf_wgs84 = self.get_csr_transformer("EPSG:4326")
+            self.tf = self.get_csr_transformer(target_crs, source_crs)
+            self.tf_wgs84 = self.get_csr_transformer("EPSG:4326", source_crs)
         except:
             self.logger.error("Failed to create CRS transformer")
             return {"error": "좌표계 설정 오류: API-R001"}
@@ -129,21 +235,8 @@ class FileGeocoder:
         filename = os.path.basename(self.filepath)
 
         # reader, writer 생성
-        reader = None
+        # reader = None
         writer = None
-        try:
-            reader = Reader(
-                self.filepath, self.charenc, self.delimiter, self.address_col
-            )
-        except Exception as e:
-            self.logger.error("Failed to create reader", e)
-            return {
-                "error": "파일 읽기 오류: API-R0010",
-                "filepath": self.filepath,
-                "charenc": self.charenc,
-                "delimiter": self.delimiter,
-                "address_col": self.address_col,
-            }
 
         headers = reader.get_headers()
         full_history_list = config.FULL_HISTORY_LIST
@@ -167,22 +260,31 @@ class FileGeocoder:
         sample = []
         full_history_list = config.FULL_HISTORY_LIST
         loop = asyncio.get_running_loop()
-        batch_size = config.THREAD_POOL_SIZE  # 병렬 처리
+        batch_size = 3000  # config.THREAD_POOL_SIZE  # 병렬 처리
+
+        # 스레드 풀을 작업 시작 시에만 생성
+        if self.executor is None:
+            self.executor = ThreadPoolExecutor(max_workers=config.THREAD_POOL_SIZE)
 
         try:
             iterator = iter(reader)
             while True:
                 batch = []
                 lines = []
+                if has_xy_cols:
+                    geocode_func = self.geocode_xy
+                else:
+                    geocode_func = self.geocode
+
                 try:
                     for _ in range(batch_size):
-                        line, addr = next(iterator)
+                        line, addr_or_xy = next(iterator)
                         if limit > 0 and count + len(batch) >= limit:
                             # 현재 배치는 처리하지 않고 중단
                             iterator = None  # 루프 종료용
                             break
 
-                        batch.append(addr)
+                        batch.append(addr_or_xy)
                         lines.append(line)
                 except StopIteration:
                     pass  # 파일 끝
@@ -193,11 +295,11 @@ class FileGeocoder:
                 tasks = [
                     loop.run_in_executor(
                         self.executor,
-                        self.geocode,
-                        addr,
+                        geocode_func,
+                        addr_or_xy,
                         full_history_list,
                     )
-                    for addr in batch
+                    for addr_or_xy in batch
                 ]
 
                 results = await asyncio.gather(*tasks)
@@ -225,10 +327,10 @@ class FileGeocoder:
 
                     count += 1
 
-                if count % 10000 == 0:
-                    self.logger.info(
-                        f"{count:,}, {time.time() - start_time:.1f}sec, success:{success_count}({success_count/count*100:.2f}%), fail:{fail_count}"
-                    )
+                    if count % 10000 == 0:
+                        self.logger.info(
+                            f"{count:,}, {time.time() - start_time:.1f}sec, success:{success_count}({success_count/count*100:.2f}%), fail:{fail_count}"
+                        )
 
                 if iterator is None:
                     break
@@ -236,6 +338,11 @@ class FileGeocoder:
         except Exception as e:
             self.logger.error("Failed to geocode: %s", e)
             return {"error": "지오코딩 오류: API-R003"}
+        finally:
+            # 작업 완료 후 스레드 풀 정리
+            if self.executor:
+                self.executor.shutdown(wait=True)
+                self.executor = None
 
         # write summary
         summary["total_time"] = time.time() - start_time
@@ -309,10 +416,10 @@ class FileGeocoder:
 
             return x1, y1
         except Exception as e:
-            self.logger.error("좌표 변환 오류: %s", e, x, y)
+            self.logger.error(f"좌표 변환 오류: {e}, {x}, {y}")
             return None, None
 
-    def get_csr_transformer(self, target_crs="EPSG:4326"):
+    def get_csr_transformer(self, target_crs="EPSG:4326", source_crs="EPSG:4326"):
         """
         UTM-K (GRS80)에서 대상 CRS로 좌표를 변환하기 위한 CRS 변환기를 생성하고 반환합니다.
 
@@ -344,45 +451,85 @@ class FileGeocoder:
             CRS_TM128 = CRS(**KATECH)
 
             tf = Transformer.from_crs(
-                CRS.from_string("EPSG:5179"), CRS_TM128, always_xy=True
+                CRS.from_string(source_crs), CRS_TM128, always_xy=True
             )
 
             self.tf_int = True
             return tf
         else:
             return Transformer.from_crs(
-                CRS.from_string("EPSG:5179"),
+                CRS.from_string(source_crs),
                 CRS.from_string(target_crs),
                 always_xy=True,
             )
 
-    def geocode_mt(self, reader: Reader, full_history_list=False):
+    # def geocode_mt(self, reader: Reader, full_history_list=False):
+    #     """
+    #     멀티 스레드로 지오코딩을 수행합니다.
+
+    #     Args:
+    #         reader (Reader): Reader 객체로, 파일에서 주소를 읽어옵니다.
+    #         full_history_list (bool): 행정동 history를 전체 조회할지 여부. 기본값은 False.
+
+    #     Returns:
+    #         dict: 지오코딩 결과 요약.
+    #     """
+    #     result = []
+    #     print("geocode_mt start", reader.count())
+    #     try:
+    #         for line, addr in reader:
+    #             # count += 1
+
+    #             # 지오코딩
+    #             row_result = self.geocode(addr, full_history_list=full_history_list)
+    #             row_result["input_line"] = line
+    #             result.append(row_result)
+    #     except Exception as e:
+    #         self.logger.error("Failed to geocode: %s", e)
+    #         return {"error": "지오코딩 오류: API-R003"}
+
+    #     print("geocode_mt end", reader.count())
+    #     return result
+
+    def geocode_xy(self, xy, full_history_list=False, **kwargs):
         """
-        멀티 스레드로 지오코딩을 수행합니다.
-
-        Args:
-            reader (Reader): Reader 객체로, 파일에서 주소를 읽어옵니다.
-            full_history_list (bool): 행정동 history를 전체 조회할지 여부. 기본값은 False.
-
-        Returns:
-            dict: 지오코딩 결과 요약.
+        좌표를 알고 있는 경우, 지역 코드를 추가합니다.
         """
-        result = []
-        print("geocode_mt start", reader.count())
-        try:
-            for line, addr in reader:
-                # count += 1
+        val = {
+            "x": xy[0],
+            "y": xy[1],
+            "success": True,
+            "pos_cd": "원본좌표",
+            "h1_cd": "",
+            "h2_cd": "",
+            "kostat_h1_cd": "",
+            "kostat_h2_cd": "",
+            "hd_cd": "",
+            "hd_nm": "",
+        }
 
-                # 지오코딩
-                row_result = self.geocode(addr, full_history_list=full_history_list)
-                row_result["input_line"] = line
-                result.append(row_result)
-        except Exception as e:
-            self.logger.error("Failed to geocode: %s", e)
-            return {"error": "지오코딩 오류: API-R003"}
+        self.enrich_geocode_result(full_history_list, val)
+        hd_history = val.get("hd_history", [])
+        if hd_history:
+            # 행정동 history가 있는 경우, 가장 최근 행정동 코드와 이름을 가져옵니다.
+            val["hd_cd"] = hd_history[-1].get("EMD_CD", "")
+            val["hd_nm"] = hd_history[-1].get("EMD_KOR_NM", "")
+            h1_cd = self.geocoder.get_h1(val)
+            h2_cd = self.geocoder.get_h2(val)
+            val["h1_cd"] = h1_cd
+            val["h2_cd"] = h2_cd
+            val["kostat_h1_cd"] = self.geocoder.hcodeMatcher.get_kostat_h1_cd(h2_cd)
+            val["kostat_h2_cd"] = self.geocoder.hcodeMatcher.get_kostat_h2_cd(h2_cd)
+        else:
+            # 행정동 history가 없는 경우, 기본값 설정
+            val["hd_cd"] = ""
+            val["hd_nm"] = ""
+            val["h1_cd"] = ""
+            val["h2_cd"] = ""
+            val["kostat_h1_cd"] = ""
+            val["kostat_h2_cd"] = ""
 
-        print("geocode_mt end", reader.count())
-        return result
+        return val
 
     def geocode(self, addr, full_history_list=False, **kwargs):
         """
@@ -397,33 +544,11 @@ class FileGeocoder:
             dict["success"]는 반드시 "실패", "성공" 중 하나입니다.
         """
         val = self.geocoder.search(addr)
-
-        if val and val["success"] and val["x"]:
-            x = val.get("x", 0)
-            y = val.get("y", 0)
-            x1, y1 = self.transform(x, y)
-            wgs_x, wgs_y = self.tf_wgs84.transform(x, y)
-
-            # 행정동 history 검색
-            if full_history_list:
-                # if kwargs.get("full_history_list", False):
-                hd_history = self.reverse_geocoder.search_hd_history(
-                    wgs_x, wgs_y, full_history_list=True
-                )
-                val["hd_history"] = hd_history
-
-            if val.get("pos_cd") == "" or val.get("pos_cd") in POS_CD_SUCCESS:
-                val["success"] = "성공"
-            else:
-                val["success"] = "실패"
-
-            val["sample_wgs_x"] = wgs_x
-            val["sample_wgs_y"] = wgs_y
-            val[X_AXIS] = x1
-            val[Y_AXIS] = y1
+        if val:
+            self.enrich_geocode_result(full_history_list, val)
         else:
             val = {
-                "success": "실패",
+                "success": False,
                 X_AXIS: None,
                 Y_AXIS: None,
                 "h1_cd": "",
@@ -432,8 +557,53 @@ class FileGeocoder:
                 "kostat_h2_cd": "",
                 "hd_cd": "",
                 "hd_nm": "",
-                "errmsg": val.get("errmsg", "") if val else "",
+                "pos_cd": "",
+                "errmsg": errs.ERR_UNRECOGNIZABLE_ADDRESS,
             }
 
         val["inputaddr"] = addr
         return val
+
+    def enrich_geocode_result(self, full_history_list, val):
+        if val and val["success"] and val["x"]:
+            x = val.get("x", 0)
+            y = val.get("y", 0)
+            x1, y1 = self.transform(x, y)
+            if x1:
+                wgs_x, wgs_y = self.tf_wgs84.transform(x, y)
+
+                # 행정동 history 검색
+                if full_history_list:
+                    # if kwargs.get("full_history_list", False):
+                    hd_history = self.reverse_geocoder.search_hd_history(
+                        wgs_x, wgs_y, full_history_list=True
+                    )
+                    val["hd_history"] = hd_history
+
+                if val.get("pos_cd") == "" or val.get("pos_cd") in POS_CD_SUCCESS:
+                    val["success"] = "성공"
+                else:
+                    val["success"] = "실패"
+
+                val["sample_wgs_x"] = wgs_x
+                val["sample_wgs_y"] = wgs_y
+                val[X_AXIS] = x1
+                val[Y_AXIS] = y1
+
+        if "hd_history" not in val:
+            val.update(
+                {
+                    "success": "실패",
+                    X_AXIS: None,
+                    Y_AXIS: None,
+                    "h1_cd": "",
+                    "h2_cd": "",
+                    "kostat_h1_cd": "",
+                    "kostat_h2_cd": "",
+                    "hd_cd": "",
+                    "hd_nm": "",
+                    "errmsg": val.get("errmsg", "") if val else "",
+                }
+            )
+
+        # return val
