@@ -39,7 +39,7 @@
                 "LOG_LEVEL": "INFO",
                 // "LOG_LEVEL": "DEBUG",
                 "USE_HASH_CACHE": "true",
-                "THREAD_POOL_SIZE": "2",
+                "THREAD_POOL_SIZE": "8",
             },
         },
         {

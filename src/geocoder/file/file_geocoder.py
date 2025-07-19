@@ -266,7 +266,9 @@ class FileGeocoder:
         sample = []
         full_history_list = config.FULL_HISTORY_LIST
         # loop = asyncio.get_running_loop()
-        batch_size = 3000  # config.THREAD_POOL_SIZE  # 병렬 처리
+        batch_size = (
+            config.THREAD_POOL_SIZE * 1000
+        )  # config.THREAD_POOL_SIZE  # 병렬 처리
 
         # 스레드 풀을 작업 시작 시에만 생성
         if self.executor is None:
@@ -527,11 +529,11 @@ class FileGeocoder:
         except Exception as e:
             self.logger.error("Failed to geocode: %s", e)
             return {"error": "지오코딩 오류: API-R003"}
-        finally:
-            # 작업 완료 후 스레드 풀 정리
-            if self.executor:
-                self.executor.shutdown(wait=True)
-                self.executor = None
+        # finally:
+        #     # 작업 완료 후 스레드 풀 정리
+        #     if self.executor:
+        #         self.executor.shutdown(wait=True)
+        #         self.executor = None
 
         # write summary
         summary["total_time"] = time.time() - start_time

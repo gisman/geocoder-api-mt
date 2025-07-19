@@ -16,6 +16,9 @@ export REVERSE_GEOCODE_DB=/disk/nvme1t/geocoder-api-db/rocks-reverse-geocoder
 export HD_HISTORY_DB=/disk/nvme1t/geocoder-api-db/rocks_hd_history
 export BIGCACHE_DB=/disk/nvme1t/geocoder-api-db/bigcache
 export LOG_LEVEL=INFO
+export FULL_HISTORY_LIST=true
+export USE_HASH_CACHE=true
+export THREAD_POOL_SIZE=8
 
 uvicorn api_fast:app --host=0.0.0.0 --port=4001 &
 

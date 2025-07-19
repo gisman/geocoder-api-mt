@@ -122,18 +122,18 @@ class Geocoder:
 
     def __init__(self):
         self._main_db = Gimi9RocksDB(config.GEOCODE_DB, read_only=config.READONLY)
-        self._secondary_db = []
-        for i in range(0, config.THREAD_POOL_SIZE):
-            self._secondary_db.append(
-                Gimi9RocksDB(
-                    config.GEOCODE_DB,
-                    read_only=True,
-                    open_secondary=True,
-                    secondary_path=f"{config.GEOCODE_DB}_{i}",
-                )
-            )
+        # self._secondary_db = []
+        # for i in range(0, config.THREAD_POOL_SIZE):
+        #     self._secondary_db.append(
+        #         Gimi9RocksDB(
+        #             config.GEOCODE_DB,
+        #             read_only=True,
+        #             open_secondary=True,
+        #             secondary_path=f"{config.GEOCODE_DB}_{i}",
+        #         )
+        #     )
 
-        self._db_counter = 0
+        # self._db_counter = 0
 
         # self.db = AimrocksDbGeocode(config.GEOCODE_DB)
         # self.db = RocksDbGeocode(config.GEOCODE_DB)
@@ -154,18 +154,18 @@ class Geocoder:
         스레드 풀을 사용하여 각 스레드에 대해 별도의 데이터베이스 인스턴스를 사용합니다.
         """
 
-        # return self._secondary_db[0]
-        index = self._db_counter % (config.THREAD_POOL_SIZE + 1)
-        if index == 0:
-            # 메인 DB를 사용
-            db = self._main_db
-        else:
-            # 스레드별 보조 DB를 사용
-            db = self._secondary_db[self._db_counter % config.THREAD_POOL_SIZE]
+        return self._main_db
+        # index = self._db_counter % (config.THREAD_POOL_SIZE + 1)
+        # if index == 0:
+        #     # 메인 DB를 사용
+        #     db = self._main_db
+        # else:
+        #     # 스레드별 보조 DB를 사용
+        #     db = self._secondary_db[self._db_counter % config.THREAD_POOL_SIZE]
 
-        self._db_counter += 1
-        # print(index)
-        return db
+        # self._db_counter += 1
+        # # print(index)
+        # return db
 
     # def open(self, db):
     #     self.db = db

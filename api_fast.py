@@ -1880,20 +1880,27 @@ class ApiHandler:
 
         limited_addrs = addrs[:LINES_LIMIT]
 
-        loop = asyncio.get_running_loop()
-        # run_in_executor를 사용하여 스레드 풀에서 동기 함수 실행
-        tasks = [
-            loop.run_in_executor(self.executor, self._geocode_worker, addr)
-            for addr in limited_addrs
-        ]
+        # loop = asyncio.get_running_loop()
+        # # run_in_executor를 사용하여 스레드 풀에서 동기 함수 실행
+        # tasks = [
+        #     loop.run_in_executor(self.executor, self._geocode_worker, addr)
+        #     for addr in limited_addrs
+        # ]
 
-        # 모든 지오코딩 작업이 완료될 때까지 대기
-        results = await asyncio.gather(*tasks)
+        # # 모든 지오코딩 작업이 완료될 때까지 대기
+        # results = await asyncio.gather(*tasks)
+
+        execute_results = self.executor.map(
+            self._geocode_worker, (addr for addr in limited_addrs)
+        )
 
         success_count = 0
         hd_success_count = 0
+        results = []
 
-        for val in results:
+        for i, val in enumerate(execute_results):
+            # for val in results:
+            results.append(val)
             if val.get("success") and val.get("pos_cd", "") in POS_CD_SUCCESS:
                 success_count += 1
             if val.get("hd_cd"):
