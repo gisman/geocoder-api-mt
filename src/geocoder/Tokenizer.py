@@ -610,6 +610,20 @@ class Tokenizer:
         if bldPos > 0 and toks.index(TOKEN_BNG) == -1:  # BLD가 있고 BNG 없음
             self.__splitJibun(toks, bldPos)
 
+        # # 동이름이 길이름으로 잘못 인식된 경우
+        # if toks.index(TOKEN_ROAD) > 0 and toks.index(TOKEN_H4) < 0:
+        #     roadpos = toks.index(TOKEN_ROAD)
+        #     road_nm = toks.get(roadpos).val
+        #     for re1 in self.h4Prefix:
+        #         m = re1.match(road_nm)
+        #         if m:
+        #             self.__mergeTokenSequence(
+        #                 toks,
+        #                 [TOKEN_ROAD],
+        #                 [TOKEN_H4],
+        #             )
+        #             break
+
         self.__assumeTokenType(toks)
         self.__mergeAdjacentTokens(toks, TOKEN_ROAD, sep="")
 

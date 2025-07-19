@@ -193,8 +193,14 @@ class FileGeocoder:
                 "address_col": self.address_col,
             }
 
+        # return await self._run_running_loop(
         return await self._run(
-            download_dir, limit, "EPSG:5179", target_crs, sample_count, reader
+            download_dir,
+            limit,
+            "EPSG:5179",
+            target_crs,
+            sample_count,
+            reader,
         )
 
     async def _run(
@@ -209,6 +215,189 @@ class FileGeocoder:
     ):
         """
         파일을 읽어 지오코딩합니다. 결과를 파일로 저장합니다.
+
+        Args:
+            download_dir (str): 지오코딩된 파일과 요약을 저장할 디렉토리. (prepare()에 전달된 filepath의 파일명을 사용하여 결과 파일 생성)
+            limit (int, optional): 지오코딩할 레코드의 최대 개수. 기본값은 10000.
+            target_crs (str, optional): 지오코딩된 좌표의 대상 좌표 참조 시스템(CRS). 기본값은 "EPSG:4326". (WGS84)
+
+        Returns:
+            dict: 지오코딩 결과 요약 + 주소 컬럼, 인코딩, 구분자
+        """
+        summary = {}
+        count = 0
+        success_count = 0
+        hd_success_count = 0
+        fail_count = 0
+        start_time = time.time()
+
+        try:
+            self.tf = self.get_csr_transformer(target_crs, source_crs)
+            self.tf_wgs84 = self.get_csr_transformer("EPSG:4326", source_crs)
+        except:
+            self.logger.error("Failed to create CRS transformer")
+            return {"error": "좌표계 설정 오류: API-R001"}
+
+        filename = os.path.basename(self.filepath)
+
+        # reader, writer 생성
+        # reader = None
+        writer = None
+
+        headers = reader.get_headers()
+        full_history_list = config.FULL_HISTORY_LIST
+        hd_history_cols = []
+        if full_history_list:
+            hd_history_cols = self.get_hd_history_headers(
+                config.HD_HISTORY_START_YYYYMM, config.HD_HISTORY_END_YYYYMM
+            )
+            headers.extend(hd_history_cols)
+        try:
+            writer = Writer(
+                f"{download_dir}{filename}.csv",
+                headers,
+                hd_history_cols=hd_history_cols,
+            )
+            writer.writeheader()
+        except Exception as e:
+            self.logger.error("Failed to create writer", e)
+            return {"error": "파일 쓰기 오류: API-R002"}
+
+        sample = []
+        full_history_list = config.FULL_HISTORY_LIST
+        # loop = asyncio.get_running_loop()
+        batch_size = 3000  # config.THREAD_POOL_SIZE  # 병렬 처리
+
+        # 스레드 풀을 작업 시작 시에만 생성
+        if self.executor is None:
+            self.executor = ThreadPoolExecutor(max_workers=config.THREAD_POOL_SIZE)
+
+        try:
+            iterator = iter(reader)
+            while True:
+                batch = []
+                lines = []
+                if has_xy_cols:
+                    geocode_func = self.geocode_xy
+                else:
+                    geocode_func = self.geocode
+
+                try:
+                    for _ in range(batch_size):
+                        line, addr_or_xy = next(iterator)
+                        if limit > 0 and count + len(batch) >= limit:
+                            # 현재 배치는 처리하지 않고 중단
+                            iterator = None  # 루프 종료용
+                            break
+
+                        batch.append(addr_or_xy)
+                        lines.append(line)
+                except StopIteration:
+                    pass  # 파일 끝
+
+                if not batch:
+                    break
+
+                # tasks = [
+                #     loop.run_in_executor(
+                #         self.executor,
+                #         geocode_func,
+                #         addr_or_xy,
+                #         full_history_list,
+                #     )
+                #     for addr_or_xy in batch
+                # ]
+
+                # results = await asyncio.gather(*tasks)
+
+                # results = self.executor.map(lambda args: geocode_func(*args), zip(batch, [full_history_list] * len(batch)))
+                results = self.executor.map(
+                    geocode_func, batch, zip(batch, [full_history_list] * len(batch))
+                )
+
+                for i, row_result in enumerate(results):
+                    line = lines[i]
+
+                    if row_result.get("pos_cd", "") in POS_CD_SUCCESS:
+                        success_count += 1
+                    else:
+                        fail_count += 1
+
+                    if row_result.get("hd_cd") or row_result.get("h4_cd"):
+                        hd_success_count += 1
+
+                    sample_wgs_x = row_result.pop("sample_wgs_x", 0)
+                    sample_wgs_y = row_result.pop("sample_wgs_y", 0)
+                    writer.write(line, row_result)
+
+                    if count < sample_count:
+                        row_result.pop("hd_history", None)
+                        row_result[X_AXIS] = sample_wgs_x
+                        row_result[Y_AXIS] = sample_wgs_y
+                        sample.append(row_result)
+
+                    count += 1
+
+                    if count % 10000 == 0:
+                        self.logger.info(
+                            f"{count:,}, {time.time() - start_time:.1f}sec, success:{success_count}({success_count/count*100:.2f}%), fail:{fail_count}"
+                        )
+
+                if iterator is None:
+                    break
+
+        except Exception as e:
+            self.logger.error("Failed to geocode: %s", e)
+            return {"error": "지오코딩 오류: API-R003"}
+        finally:
+            # 작업 완료 후 스레드 풀 정리
+            if self.executor:
+                self.executor.shutdown(wait=True)
+                self.executor = None
+
+        # write summary
+        summary["total_time"] = time.time() - start_time
+        summary["total_count"] = count
+        summary["success_count"] = success_count
+        summary["hd_success_count"] = hd_success_count
+        fail_count = count - success_count
+        summary["fail_count"] = fail_count
+        summary["filename"] = filename
+
+        summary["charenc"] = self.charenc
+        summary["delimiter"] = self.delimiter
+        summary["address_col"] = headers[self.address_col]
+        summary["target_crs"] = target_crs
+        summary["uploaded_filename"] = self.uploaded_filename
+        summary["results"] = sample
+
+        # summary 파일 저장
+        try:
+            with open(
+                f"{download_dir}{filename}.summary", "w", newline=""
+            ) as summary_file:
+                json.dump(summary, summary_file)
+
+        except:
+            self.logger.error("Failed to write summary")
+            return {"error": "요약 파일 쓰기 오류: API-R004"}
+
+        return summary
+
+    async def _run_running_loop(
+        self,
+        download_dir,
+        limit=10000,
+        source_crs="EPSG:5179",
+        target_crs="EPSG:4326",
+        sample_count=0,
+        reader: Reader = None,
+        has_xy_cols=False,
+    ):
+        """
+        파일을 읽어 지오코딩합니다. 결과를 파일로 저장합니다.
+
+        loop = asyncio.get_running_loop(), loop.run_in_executor() 를 사용하는 버전. 느리다.
 
         Args:
             download_dir (str): 지오코딩된 파일과 요약을 저장할 디렉토리. (prepare()에 전달된 filepath의 파일명을 사용하여 결과 파일 생성)

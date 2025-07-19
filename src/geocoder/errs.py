@@ -18,7 +18,7 @@ ERR_REPRESENTATIVE_ADDRESS_NOT_FOUND = 19  # "REPRESENTATIVE_ADDRESS_NOT_FOUND E
 ERR_H1_NM_NOT_FOUND = 21  # "H1_NM_NOT_FOUND ERROR"
 ERR_ROAD_NM_NOT_FOUND = 22  # "ROAD_NM_NOT_FOUND ERROR"
 ERR_BLD_NM_NOT_FOUND = 23  # "BLD_NAME_NOT_FOUND ERROR"
-ERR_BLD_DONG_NOT_FOUND = 23  # "BLD_DONG_NOT_FOUND ERROR"
+ERR_BLD_DONG_NOT_FOUND = 24  # "BLD_DONG_NOT_FOUND ERROR"
 ERR_ROAD_NOT_UNIQUE_H23_NM = 31  # "ROAD_NOT_UNIQUE_H23_NM ERROR"
 ERR_NOT_UNIQUE_H1_NM = 32  # "NOT_UNIQUE_H1_NM ERROR"
 ERR_NOT_UNIQUE_ROAD_CD = 33  # "NOT_UNIQUE_ROAD_CD ERROR"
@@ -44,48 +44,63 @@ INFO_NEAR_ROAD_BLD_FOUND = 111  # "NEAR_ROAD_BLD_FOUND INFO"
 INFO_NEAR_JIBUN_FOUND = 112  # "NEAR_JIBUN_FOUND INFO"
 INFO_SIMILAR_BLD_FOUND = 113  # "SIMILAR_BLD_FOUND INFO"
 
+INFO_H1_REPRESENTATIVE_ADDR = 120  # "광역시도 대표주소"
+INFO_H23_REPRESENTATIVE_ADDR = 121  # "시군구 대표주소"
+INFO_HD_REPRESENTATIVE_ADDR = 122  # "행정동 대표주소"
+INFO_LD_REPRESENTATIVE_ADDR = 123  # "법정동 대표주소"
+INFO_RI_REPRESENTATIVE_ADDR = 124  # "리 대표주소"
+INFO_ROAD_REPRESENTATIVE_ADDR = 125  # "길이름 대표주소"
+
+
+ERR_STR_MAP = {
+    ERR_BLD_HASH: "BLD_HASH_ERROR",
+    ERR_JIBUN_HASH: "JIBUN_HASH_ERROR",
+    ERR_NOT_ADDRESS: "NOT_ADDRESS_ERROR",
+    ERR_ROAD_HASH: "ROAD_HASH_ERROR",
+    ERR_RUNTIME: "RUNTIME_ERROR",
+    ERR_UNRECOGNIZABLE_ADDRESS: "UNRECOGNIZABLE_ADDRESS_ERROR",
+    ERR_NOT_FOUND: "NOTFOUND_ERROR",
+    ERR_POS_CD_NOT_FOUND: "POS_CD_NOT_FOUND_ERROR",
+    ERR_ROAD_NOT_FOUND: "ROAD_NOT_FOUND_ERROR",
+    ERR_RI_NOT_FOUND: "RI_NOT_FOUND_ERROR",
+    ERR_DONG_NOT_FOUND: "DONG_NOT_FOUND_ERROR",
+    ERR_H23_NOT_FOUND: "H23_NOT_FOUND_ERROR",
+    ERR_H1_NOT_FOUND: "H1_NOT_FOUND_ERROR",
+    ERR_REGION_NOT_FOUND: "REGION_NOT_FOUND_ERROR",
+    ERR_REPRESENTATIVE_ADDRESS_NOT_FOUND: "REPRESENTATIVE_ADDRESS_NOT_FOUND_ERROR",
+    ERR_H1_NM_NOT_FOUND: "H1_NM_NOT_FOUND_ERROR",
+    ERR_ROAD_NM_NOT_FOUND: "ROAD_NM_NOT_FOUND_ERROR",
+    ERR_BLD_NM_NOT_FOUND: "BLD_NAME_NOT_FOUND_ERROR",
+    ERR_BLD_DONG_NOT_FOUND: "ERR_BLD_DONG_NOT_FOUND",
+    ERR_ROAD_NOT_UNIQUE_H23_NM: "ROAD_NOT_UNIQUE_H23_NM_ERROR",
+    ERR_NOT_UNIQUE_H1_NM: "NOT_UNIQUE_H1_NM_ERROR",
+    ERR_NOT_UNIQUE_ROAD_CD: "NOT_UNIQUE_ROAD_CD_ERROR",
+    ERR_NEAR_ROAD_BLD_NOT_FOUND: "NEAR_ROAD_BLD_NOT_FOUND_ERROR",
+    ERR_NEAR_JIBUN_NOT_FOUND: "NEAR_JIBUN_NOT_FOUND_ERROR",
+    ERR_NAME_RI: "RI_NAME_ERROR",
+    ERR_NAME_H4: "H4_NAME_ERROR",
+    ERR_NAME_H23: "H23_NAME_ERROR",
+    INFO_JIBUN_ADDRESS: "지번 주소",
+    INFO_BLD_ADDRESS: "건물 주소",
+    INFO_ROAD_ADDRESS: "도로명 주소",
+    INFO_RI_END_ADDRESS: "리에서 끝나는 주소",
+    INFO_ROAD_END_ADDRESS: "도로명에서 끝나는 주소",
+    INFO_H4_END_ADDRESS: "동에서 끝나는 주소",
+    INFO_H23_END_ADDRESS: "시군구에서 끝나는 주소",
+    INFO_H1_END_ADDRESS: "광역시도에서 끝나는 주소",
+    INFO_NEAR_ROAD_BLD_FOUND: "인근 도로명 주소",
+    INFO_NEAR_JIBUN_FOUND: "인근 지번 주소",
+    INFO_SIMILAR_BLD_FOUND: "(유사한)건물명 주소",
+    INFO_H1_REPRESENTATIVE_ADDR: "광역시도 대표주소",
+    INFO_H23_REPRESENTATIVE_ADDR: "시군구 대표주소",
+    INFO_HD_REPRESENTATIVE_ADDR: "행정동 대표주소",
+    INFO_LD_REPRESENTATIVE_ADDR: "법정동 대표주소",
+    INFO_RI_REPRESENTATIVE_ADDR: "리 대표주소",
+    INFO_ROAD_REPRESENTATIVE_ADDR: "도로명 대표주소",
+}
+
 
 class ErrList:
-    err_str_map = {
-        ERR_BLD_HASH: "BLD_HASH_ERROR",
-        ERR_JIBUN_HASH: "JIBUN_HASH_ERROR",
-        ERR_NOT_ADDRESS: "NOT_ADDRESS_ERROR",
-        ERR_ROAD_HASH: "ROAD_HASH_ERROR",
-        ERR_RUNTIME: "RUNTIME_ERROR",
-        ERR_UNRECOGNIZABLE_ADDRESS: "UNRECOGNIZABLE_ADDRESS_ERROR",
-        ERR_NOT_FOUND: "NOTFOUND_ERROR",
-        ERR_POS_CD_NOT_FOUND: "POS_CD_NOT_FOUND_ERROR",
-        ERR_ROAD_NOT_FOUND: "ROAD_NOT_FOUND_ERROR",
-        ERR_RI_NOT_FOUND: "RI_NOT_FOUND_ERROR",
-        ERR_DONG_NOT_FOUND: "DONG_NOT_FOUND_ERROR",
-        ERR_H23_NOT_FOUND: "H23_NOT_FOUND_ERROR",
-        ERR_H1_NOT_FOUND: "H1_NOT_FOUND_ERROR",
-        ERR_REGION_NOT_FOUND: "REGION_NOT_FOUND_ERROR",
-        ERR_REPRESENTATIVE_ADDRESS_NOT_FOUND: "REPRESENTATIVE_ADDRESS_NOT_FOUND_ERROR",
-        ERR_H1_NM_NOT_FOUND: "H1_NM_NOT_FOUND_ERROR",
-        ERR_ROAD_NM_NOT_FOUND: "ROAD_NM_NOT_FOUND_ERROR",
-        ERR_BLD_NM_NOT_FOUND: "BLD_NAME_NOT_FOUND_ERROR",
-        ERR_BLD_DONG_NOT_FOUND: "ERR_BLD_DONG_NOT_FOUND",
-        ERR_ROAD_NOT_UNIQUE_H23_NM: "ROAD_NOT_UNIQUE_H23_NM_ERROR",
-        ERR_NOT_UNIQUE_H1_NM: "NOT_UNIQUE_H1_NM_ERROR",
-        ERR_NOT_UNIQUE_ROAD_CD: "NOT_UNIQUE_ROAD_CD_ERROR",
-        ERR_NEAR_ROAD_BLD_NOT_FOUND: "NEAR_ROAD_BLD_NOT_FOUND_ERROR",
-        ERR_NEAR_JIBUN_NOT_FOUND: "NEAR_JIBUN_NOT_FOUND_ERROR",
-        ERR_NAME_RI: "RI_NAME_ERROR",
-        ERR_NAME_H4: "H4_NAME_ERROR",
-        ERR_NAME_H23: "H23_NAME_ERROR",
-        INFO_JIBUN_ADDRESS: "JIBUN_ADDRESS_INFO",
-        INFO_BLD_ADDRESS: "BLD_ADDRESS_INFO",
-        INFO_ROAD_ADDRESS: "ROAD_ADDRESS_INFO",
-        INFO_RI_END_ADDRESS: "RI_END_ADDRESS_INFO",
-        INFO_ROAD_END_ADDRESS: "ROAD_END_ADDRESS_INFO",
-        INFO_H4_END_ADDRESS: "H4_END_ADDRESS_INFO",
-        INFO_H23_END_ADDRESS: "H23_END_ADDRESS_INFO",
-        INFO_H1_END_ADDRESS: "H1_END_ADDRESS_INFO",
-        INFO_NEAR_ROAD_BLD_FOUND: "NEAR_ROAD_BLD_FOUND_INFO",
-        INFO_NEAR_JIBUN_FOUND: "NEAR_JIBUN_FOUND_INFO",
-        INFO_SIMILAR_BLD_FOUND: "SIMILAR_BLD_FOUND_INFO",
-    }
 
     # errs = []
     def __init__(self):
@@ -103,6 +118,7 @@ class ErrList:
         """
         self.errs.append({"err_cd": err_cd, "detail": detail})
 
+    @staticmethod
     def to_err_str(self, err_cd=None) -> str:
         """
         주어진 오류 코드를 메시지로 변환합니다.
@@ -117,7 +133,7 @@ class ErrList:
         if isinstance(err_cd, list):
             return ", ".join([self.to_err_str(e) for e in err_cd])
         elif isinstance(err_cd, int):
-            return self.err_str_map.get(err_cd, "UNKNOWN ERROR")
+            return ERR_STR_MAP.get(err_cd, "UNKNOWN ERROR")
 
         return "UNKNOWN ERROR"
 
@@ -207,7 +223,7 @@ class ErrList:
             else:
                 for err in self.errs:
                     err_cd = err.get("err_cd", "")
-                    err_str = self.err_str_map.get(err_cd, "UNKNOWN ERROR")
+                    err_str = ERR_STR_MAP.get(err_cd, "UNKNOWN ERROR")
                     detail = err.get("detail", "")
                     if detail:
                         messages.append(f"{err_str}: {detail}")
@@ -246,7 +262,7 @@ class ErrList:
             ERR_H23_NOT_FOUND: "시군구 없음",
             ERR_ROAD_NOT_FOUND: "도로명 없음",
             ERR_RI_NOT_FOUND: "리 없음",
-            ERR_DONG_NOT_FOUND: "행정동 없음",
+            ERR_DONG_NOT_FOUND: "행(법)정동 없음",
             ERR_H23_NOT_FOUND: "시군구 없음",
             ERR_H1_NOT_FOUND: "광역시도 없음",
             ERR_REGION_NOT_FOUND: "지역 없음",
@@ -258,4 +274,4 @@ class ErrList:
         if err_cd in human_readable_map:
             return human_readable_map[err_cd]
 
-        return self.err_str_map.get(err_cd, "UNKNOWN ERROR")
+        return ERR_STR_MAP.get(err_cd, "UNKNOWN ERROR")

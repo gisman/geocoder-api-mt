@@ -3,6 +3,7 @@ import logging
 import threading
 from cachetools import LRUCache
 
+from src.geocoder.address_cls import AddressCls
 from src.geocoder.geocoder import Geocoder
 from src.geocoder.util.HSimplifier import HSimplifier
 from src.geocoder.util.BldSimplifier import BldSimplifier
@@ -710,7 +711,7 @@ class BaseUpdater:
         self, address, merge_if_exists=True, force_delete=False, batch=None
     ):
         hash, toks, addressCls, errmsg = self.geocoder.addressHash(address)
-        if addressCls != self.geocoder.BLD_ADDRESS:
+        if addressCls != AddressCls.BLD_ADDRESS:
             logging.debug(f"Address {address} does not have a building name.")
             return 0
 

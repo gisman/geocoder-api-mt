@@ -123,6 +123,25 @@ class Tokens:
     def get(self, position):
         return self.toks[position]
 
+    def get_text_after(self, t: str, begin: int = 0, count: int = 1) -> str:
+        pos = self.index(t, begin)
+        if pos == -1:
+            return ""
+        pos += 1  # 다음 토큰부터 시작
+
+        if count == -1:
+            count = len(self.toks)
+        count = min(count, len(self.toks) - pos)
+        texts = []
+        for i in range(count):
+            texts.append(self.get(pos + i).val)
+
+        return " ".join(texts)
+
+    def get_text(self, t: str, begin: int = 0) -> str:
+        pos = self.index(t, begin)
+        return self.toks[pos].val if pos != -1 else ""
+
     def prev(self, position):
         if position == 0:
             return Token("", TOKEN_UNKNOWN)

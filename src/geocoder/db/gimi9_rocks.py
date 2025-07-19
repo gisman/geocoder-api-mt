@@ -119,6 +119,15 @@ class RocksDBLibrary:
                 POINTER(c_char_p),
             ]
 
+            # rocksdb_open_as_secondary
+            self.lib.rocksdb_open_as_secondary.restype = c_void_p
+            self.lib.rocksdb_open_as_secondary.argtypes = [
+                c_void_p,  # const rocksdb_options_t* options
+                c_char_p,  # const char* name
+                c_char_p,  # const char* secondary_path
+                POINTER(c_char_p),  # char** errptr
+            ]
+
             self.lib.rocksdb_close.restype = None
             self.lib.rocksdb_close.argtypes = [c_void_p]
 
@@ -354,7 +363,12 @@ class Gimi9RocksDB(DbBase):
         self.open(db_name, **kwargs)
 
     def open(
-        self, db_path: str, create_if_missing: bool = True, read_only: bool = False
+        self,
+        db_path: str,
+        create_if_missing: bool = True,
+        read_only: bool = False,
+        open_secondary: bool = False,
+        secondary_path: Optional[str] = None,
     ) -> None:
         """
         데이터베이스 열기
@@ -370,19 +384,29 @@ class Gimi9RocksDB(DbBase):
 
         # Options 생성
         self.options = self.lib.rocksdb_options_create()
-        if create_if_missing:
+        if not read_only and create_if_missing:
             self.lib.rocksdb_options_set_create_if_missing(self.options, 1)
 
         # DB 열기
         err = c_char_p()
-        if read_only:
-            self.db = self.lib.rocksdb_open_for_read_only(
-                self.options, db_path.encode("utf-8"), ctypes.byref(err)
+        if open_secondary:
+            # 읽기 전용 모드에서 secondary DB 열기
+            self.db = self.lib.rocksdb_open_as_secondary(
+                self.options,
+                db_path.encode("utf-8"),
+                secondary_path.encode("utf-8"),
+                ctypes.byref(err),
             )
+            self.secondary_path = secondary_path
         else:
-            self.db = self.lib.rocksdb_open(
-                self.options, db_path.encode("utf-8"), ctypes.byref(err)
-            )
+            if read_only:
+                self.db = self.lib.rocksdb_open_for_read_only(
+                    self.options, db_path.encode("utf-8"), ctypes.byref(err)
+                )
+            else:
+                self.db = self.lib.rocksdb_open(
+                    self.options, db_path.encode("utf-8"), ctypes.byref(err)
+                )
 
         if err.value:
             error_msg = err.value.decode("utf-8")

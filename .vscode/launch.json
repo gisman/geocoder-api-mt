@@ -24,6 +24,7 @@
                     "${workspaceFolder}/src/*.py"
                 ]
             },
+            // "justMyCode": false,
             "justMyCode": true,
             "env": {
                 // "GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks_debug_navi202504/",
@@ -38,8 +39,46 @@
                 "LOG_LEVEL": "INFO",
                 // "LOG_LEVEL": "DEBUG",
                 "USE_HASH_CACHE": "true",
+                "THREAD_POOL_SIZE": "2",
+            },
+        },
+        {
+            "name": "Build Server",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/api_fast.py",
+            "args": [
+                // "4039"
+                // "4029"
+                // "4019"
+                "4009"
+                // "4001"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "autoReload": {
+                "enable": false,
+                "pattern": [
+                    "${workspaceFolder}/src/*.py"
+                ]
+            },
+            // "justMyCode": false,
+            "justMyCode": true,
+            "env": {
+                // "GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks_debug_navi202504/",
+                "PYTHON_GIL": "0",
+                "READONLY": "false",
+                "GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks-debug",
+                "REVERSE_GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks-reverse-geocoder-debug",
+                "HD_HISTORY_DB": "/disk/nvme1t/geocoder-api-db/rocks_hd_history-debug",
+                "BIGCACHE_DB": "/disk/nvme1t/geocoder-api-db/bigcache-debug",
+                // "BIGCACHE_DB": "/disk/nvme1t/geocoder-api-db/bigcache_debug",
+                "FULL_HISTORY_LIST": "true",
+                "LOG_LEVEL": "INFO",
+                // "LOG_LEVEL": "DEBUG",
+                "USE_HASH_CACHE": "true",
                 "THREAD_POOL_SIZE": "8",
             },
-        }
+        }        
     ]
 }
