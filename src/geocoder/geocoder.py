@@ -88,37 +88,37 @@ class Geocoder:
     hsimplifier = HSimplifier()
     hcodeMatcher = HCodeMatcher()
 
-    # 대표 주소 검사 순서
-    BASE_ADDRESS_ORDER = [
-        AddressCls.ROAD_END_ADDRESS,
-        AddressCls.RI_END_ADDRESS,
-        AddressCls.H4_END_ADDRESS,
-        AddressCls.H23_END_ADDRESS,
-        AddressCls.H1_END_ADDRESS,
-    ]
+    # # 대표 주소 검사 순서
+    # BASE_ADDRESS_ORDER = [
+    #     AddressCls.ROAD_END_ADDRESS,
+    #     AddressCls.RI_END_ADDRESS,
+    #     AddressCls.H4_END_ADDRESS,
+    #     AddressCls.H23_END_ADDRESS,
+    #     AddressCls.H1_END_ADDRESS,
+    # ]
 
-    END_WITH_TOKEN_INFO = {
-        AddressCls.ROAD_END_ADDRESS: {
-            "end_with": TOKEN_ROAD,
-            "pos_cd_filter": [ROAD_ADDR_FILTER],
-        },
-        AddressCls.RI_END_ADDRESS: {
-            "end_with": TOKEN_RI,
-            "pos_cd_filter": [RI_ADDR_FILTER],
-        },
-        AddressCls.H4_END_ADDRESS: {
-            "end_with": TOKEN_H4,
-            "pos_cd_filter": [HD_ADDR, LD_ADDR_FILTER],
-        },
-        AddressCls.H23_END_ADDRESS: {
-            "end_with": TOKEN_H23,
-            "pos_cd_filter": [H23_ADDR_FILTER],
-        },
-        AddressCls.H1_END_ADDRESS: {
-            "end_with": TOKEN_H1,
-            "pos_cd_filter": [H1_ADDR_FILTER],
-        },
-    }
+    # END_WITH_TOKEN_INFO = {
+    #     AddressCls.ROAD_END_ADDRESS: {
+    #         "end_with": TOKEN_ROAD,
+    #         "pos_cd_filter": [ROAD_ADDR_FILTER],
+    #     },
+    #     AddressCls.RI_END_ADDRESS: {
+    #         "end_with": TOKEN_RI,
+    #         "pos_cd_filter": [RI_ADDR_FILTER],
+    #     },
+    #     AddressCls.H4_END_ADDRESS: {
+    #         "end_with": TOKEN_H4,
+    #         "pos_cd_filter": [HD_ADDR, LD_ADDR_FILTER],
+    #     },
+    #     AddressCls.H23_END_ADDRESS: {
+    #         "end_with": TOKEN_H23,
+    #         "pos_cd_filter": [H23_ADDR_FILTER],
+    #     },
+    #     AddressCls.H1_END_ADDRESS: {
+    #         "end_with": TOKEN_H1,
+    #         "pos_cd_filter": [H1_ADDR_FILTER],
+    #     },
+    # }
 
     def __init__(self):
         self._main_db = Gimi9RocksDB(config.GEOCODE_DB, read_only=config.READONLY)
@@ -286,7 +286,11 @@ class Geocoder:
             # for hash_info in possible_hash_list:
             hash = hash_info.get_hash()
             val = self.most_similar_address(
-                toks, hash, hash_info.get_addressCls(), err_list=err_list
+                toks,
+                hash,
+                hash_info.get_addressCls(),
+                hash_info.get_pos_cd_filter(),
+                err_list=err_list,
             )
             err_failed = hash_info.get_err_failed()
             err_detail = hash_info.get_err_detail()
@@ -454,8 +458,10 @@ class Geocoder:
                     for r in candidate_addresses
                     if r.get("road_cd") and len(r["road_cd"]) == 12
                 ]
-                # 도로명으로 시작하는 주소인 경우 h23_nm이 같아야 함
-                # 그렇지 않으면 None 반환
+
+                # 도로명으로 시작하는 주소인 경우 h23_nm이 같아야 함.
+                # 시군구를 제거하고 시도하는 경우에 해당될 수 있음. possible_hash 방식으로 변경 후 원래 주소의 toks를 변경하지 않고 전달 함.
+                # 너무 복잡하니까 그냥 둔다.
                 if toks.get(0).t == TOKEN_ROAD:
                     h23_nm_set = {r["h23_nm"] for r in candidate_addresses}
                     if len(h23_nm_set) > 1:
@@ -466,6 +472,21 @@ class Geocoder:
                         )
                         self.imoprtant_error = True
                         return []
+
+                if addressCls == AddressCls.ROAD_ADDRESS and toks.hasTypes(TOKEN_H23):
+                    h23_nm_set = {r["h23_nm"] for r in candidate_addresses}
+                    h23_hash = self.hsimplifier.h23Hash(toks.get_text(TOKEN_H23))
+                    # 도로명 주소 후보자의 h23_nm이 모두 같아야 함
+                    if len(h23_nm_set) > 1:
+                        self.imoprtant_error = True
+                        return []
+                    else:
+                        # 경기도이며 h23_nm이 모두 같다면 입력 주소의 h23_nm과 후보자의 h23_nm이 일치해야 함
+                        if h1_nm == "경기" and h23_hash != self.hsimplifier.h23Hash(
+                            next(iter(h23_nm_set))
+                        ).replace(" ", ""):
+                            self.imoprtant_error = True
+                            return []
 
             elif addressCls == AddressCls.BLD_ADDRESS:
                 candidate_addresses = [
@@ -537,7 +558,7 @@ class Geocoder:
                 self.append_err(ERR_NOT_UNIQUE_H1_NM, str(h1_nm_set), err_list=err_list)
                 return []
 
-        if addressCls == "JIBUN_ADDRESS" and toks.hasTypes(TOKEN_RI):
+        if addressCls == addressCls.JIBUN_ADDRESS and toks.hasTypes(TOKEN_RI):
             # ri가 있는 경우 ri_nm이 같아야 함
             ri_nm_set = {r["ri_nm"] for r in candidate_addresses if "ri_nm" in r}
             if len(ri_nm_set) > 1:

@@ -2,6 +2,7 @@ from src.geocoder.address_cls import AddressCls
 from src.geocoder.errs import *
 from src.geocoder.hasher import Hasher
 from src.geocoder.tokens import *
+from src.geocoder.pos_cd import *
 import src.config as config
 from .errs import ERR_STR_MAP
 
@@ -9,6 +10,7 @@ from .errs import ERR_STR_MAP
 class PossibleHash:
     hash: str = None
     addressCls: str = None
+    pos_cd_filter: set[str] = None  # 필터링할 pos_cd 값들
     err_failed: str = None
     err_detail: str = None
     info_success: str = None
@@ -19,6 +21,7 @@ class PossibleHash:
         self,
         hash: str,
         addressCls: str,
+        pos_cd_filter: set[str] = None,
         err_failed: str = None,
         err_detail: str = None,
         info_success: str = None,
@@ -27,6 +30,7 @@ class PossibleHash:
     ):
         self.hash = hash
         self.addressCls = addressCls
+        self.pos_cd_filter = pos_cd_filter or set()
         self.err_failed = err_failed
         self.err_detail = err_detail
         self.info_success = info_success
@@ -37,6 +41,7 @@ class PossibleHash:
         return {
             "hash": self.hash,
             "addressCls": self.addressCls,
+            "pos_cd_filter": self.pos_cd_filter,
             "err_failed": self.err_failed,
             "err_detail": self.err_detail,
             "info_success": self.info_success,
@@ -49,6 +54,9 @@ class PossibleHash:
 
     def get_addressCls(self):
         return self.addressCls
+
+    def get_pos_cd_filter(self):
+        return self.pos_cd_filter
 
     def get_err_failed(self):
         return self.err_failed
@@ -66,7 +74,7 @@ class PossibleHash:
         return self.info_success is not None
 
     def __str__(self):
-        return f"""{self.hash}, {self.addressCls}, 
+        return f"""{self.hash}, {self.addressCls}, {self.pos_cd_filter}
     failed=({ERR_STR_MAP.get(self.err_failed)}, {self.err_detail}), 
     success=({ERR_STR_MAP.get(self.info_success)}, {self.info_detail}))"""
 
@@ -128,11 +136,12 @@ def possible_hashs(
 
     """
 
-    hash_infos = []
+    # hash_infos = []
 
     if addressCls == AddressCls.NOT_ADDRESS:
         return []
 
+    # 도로명에서 끝나는 주소
     if addressCls == AddressCls.ROAD_END_ADDRESS:
         road_nm = toks.get_text(TOKEN_ROAD)
         yield PossibleHash(
@@ -144,6 +153,7 @@ def possible_hashs(
             info_detail=road_nm,
         )
 
+    # 리에서 끝나는 주소
     if addressCls == AddressCls.RI_END_ADDRESS:
         ri_nm = toks.get_text(TOKEN_RI)
         yield PossibleHash(
@@ -155,6 +165,7 @@ def possible_hashs(
             info_detail=ri_nm,
         )
 
+    # 동에서 끝나는 주소
     if addressCls == AddressCls.H4_END_ADDRESS:
         h4_nm = toks.get_text(TOKEN_H4)
         yield PossibleHash(
@@ -166,6 +177,7 @@ def possible_hashs(
             info_detail=h4_nm,
         )
 
+    # 시군구에서 끝나는 주소
     if addressCls == AddressCls.H23_END_ADDRESS:
         h23_nm = toks.get_text(TOKEN_H23)
         yield PossibleHash(
@@ -177,6 +189,7 @@ def possible_hashs(
             info_detail=h23_nm,
         )
 
+    # 광역시도에서 끝나는 주소
     if addressCls == AddressCls.H1_END_ADDRESS:
         h1_nm = toks.get_text(TOKEN_H1)
         yield PossibleHash(
@@ -289,7 +302,7 @@ def possible_hashs(
             info_detail=(f"건물명 {bld_nm} 제외" if bld_nm else ""),
         )
 
-    # 인근 주소
+    # 인근 지번 주소
     if addressCls == AddressCls.JIBUN_ADDRESS:
         hashs = get_near_jibun_hashs(hash)
         for h, bng in hashs:
@@ -301,6 +314,7 @@ def possible_hashs(
                 info_success=INFO_NEAR_JIBUN_FOUND,
                 info_detail=bng,
             )
+    # 인근 도로명 주소
     elif addressCls == AddressCls.ROAD_ADDRESS:
         hashs = get_near_road_bld_hashs(hash)
         for h, bld_no in hashs:
@@ -316,12 +330,6 @@ def possible_hashs(
     combinations = address_combination(toks, addressCls, hasher=hasher)
     for h in combinations:
         yield h
-        # yield PossibleHash(
-        #     hash=h["hash"],
-        #     addressCls=h["addressCls"],
-        #     err_failed=h["err"],
-        #     err_detail=h.get("err_detail", ""),
-        # )
 
     # # 리 빼고 인근 주소
     # if toks.hasTypes(TOKEN_RI):
@@ -377,6 +385,17 @@ def possible_hashs(
             info_detail=toks.get_text_after(TOKEN_ROAD, count=2),
         )
 
+    # 리 이하 주소               경기도 김포시 신곡리 532번지 66호 1층 1호
+    if toks.hasTypes(TOKEN_RI) and toks.hasTypes(TOKEN_BNG):
+        yield PossibleHash(
+            hash=jibunAddress.hash(toks, start_with=TOKEN_RI),
+            addressCls=AddressCls.JIBUN_ADDRESS,
+            err_failed=ERR_REGION_NOT_FOUND,
+            err_detail=jibunAddress.hash(toks, start_with=TOKEN_RI),
+            info_success=INFO_JIBUN_ADDRESS,
+            info_detail=toks.get_text_after(TOKEN_RI, count=2),
+        )
+
     # 대표주소
     # 길대표
     if toks.hasTypes(TOKEN_ROAD):
@@ -384,6 +403,7 @@ def possible_hashs(
         yield PossibleHash(
             hash=roadAddress.hash(toks, end_with=TOKEN_ROAD),
             addressCls=AddressCls.ROAD_END_ADDRESS,
+            pos_cd_filter={ROAD_ADDR_FILTER},
             err_failed=ERR_ROAD_NOT_FOUND,
             err_detail=f"도로명을 찾을 수 없음: {road_nm}",
             info_success=INFO_ROAD_REPRESENTATIVE_ADDR,
@@ -397,6 +417,7 @@ def possible_hashs(
         yield PossibleHash(
             hash=roadAddress.hash(toks, end_with=TOKEN_ROAD, ignore=[TOKEN_RI]),
             addressCls=AddressCls.ROAD_END_ADDRESS,
+            pos_cd_filter={ROAD_ADDR_FILTER},
             err_failed=ERR_ROAD_NOT_FOUND,
             err_detail=f"길 이름으로 끝나는 주소: {road_nm}",
             info_success=INFO_ROAD_REPRESENTATIVE_ADDR,
@@ -408,6 +429,7 @@ def possible_hashs(
         yield PossibleHash(
             hash=jibunAddress.hash(toks, end_with=TOKEN_RI),
             addressCls=AddressCls.RI_END_ADDRESS,
+            pos_cd_filter={RI_ADDR_FILTER},
             err_failed=ERR_RI_NOT_FOUND,
             err_detail=f"리 이름을 찾을 수 없음: {ri_nm}",
             info_success=INFO_RI_REPRESENTATIVE_ADDR,
@@ -420,6 +442,7 @@ def possible_hashs(
         yield PossibleHash(
             hash=jibunAddress.hash(toks, end_with=TOKEN_H4),
             addressCls=AddressCls.H4_END_ADDRESS,
+            pos_cd_filter={HD_ADDR, LD_ADDR_FILTER},
             err_failed=ERR_DONG_NOT_FOUND,
             err_detail=h4_nm,
             info_success=INFO_HD_REPRESENTATIVE_ADDR,
@@ -432,6 +455,7 @@ def possible_hashs(
         yield PossibleHash(
             hash=jibunAddress.hash(toks, end_with=TOKEN_H23),
             addressCls=AddressCls.H23_END_ADDRESS,
+            pos_cd_filter={H23_ADDR_FILTER},
             err_failed=ERR_H23_NOT_FOUND,
             err_detail=h23_nm,
             info_success=INFO_H23_REPRESENTATIVE_ADDR,
@@ -444,6 +468,7 @@ def possible_hashs(
         yield PossibleHash(
             hash=hsimplifier.h1Hash(toks.get(0).val),
             addressCls=AddressCls.H1_END_ADDRESS,
+            pos_cd_filter={H1_ADDR_FILTER},
             err_failed=ERR_H1_NOT_FOUND,
             err_detail=h1_nm,
             info_success=INFO_H1_REPRESENTATIVE_ADDR,
@@ -577,7 +602,7 @@ def get_near_road_bld_hashs(hash):
                 0 if is_bld1_even else 1
             ):  # 현재 건번과 홀짝 같은 것만 추가
                 near_road_bld_hashs.append((f"{hash_head}_{bld1+i}-0", f"{bld1+i}-0"))
-            if (bld1 - i) % 2 == (
+            if bld1 - i > 0 and (bld1 - i) % 2 == (
                 0 if is_bld1_even else 1
             ):  # 현재 건번과 홀짝 같은 것만 추가
                 near_road_bld_hashs.append((f"{hash_head}_{bld1-i}-0", f"{bld1-i}-0"))
@@ -622,7 +647,11 @@ def address_combination(toks0: Tokens, addressCls0: str = None, hasher: Hasher =
     #         )
 
     # 동 제거한 주소
-    if toks0.hasTypes(TOKEN_H4) and addressCls0 == AddressCls.ROAD_ADDRESS:
+    if (
+        toks0.hasTypes(TOKEN_H4)
+        and toks0.hasTypes(TOKEN_H23)
+        and addressCls0 == AddressCls.ROAD_ADDRESS
+    ):
         address = token_removed_address(toks0, TOKEN_H4)
         hash, toks, addressCls, err = hasher.addressHash(address)
         if hash and addressCls == addressCls0:
@@ -630,6 +659,7 @@ def address_combination(toks0: Tokens, addressCls0: str = None, hasher: Hasher =
                 PossibleHash(
                     hash=hash,
                     addressCls=addressCls,
+                    pos_cd_filter={ROAD_ADDR_FILTER},
                     err_failed=ERR_NAME_H4,
                     err_detail=toks0.get(toks0.index(TOKEN_H4)).val,
                     info_success=INFO_ROAD_ADDRESS,
@@ -638,7 +668,11 @@ def address_combination(toks0: Tokens, addressCls0: str = None, hasher: Hasher =
             )
 
     # 시군구 제거한 주소
-    if toks0.hasTypes(TOKEN_H23):
+    if (
+        toks0.hasTypes(TOKEN_H23)
+        and toks0.hasTypes(TOKEN_H4)
+        and toks0.hasTypes(TOKEN_H1)  # 다른 광역시도로 맵핑 방지
+    ):
         address = token_removed_address(toks0, TOKEN_H23)
         hash, toks, addressCls, err = hasher.addressHash(address)
         if hash and addressCls == addressCls0:

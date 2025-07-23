@@ -15,8 +15,17 @@ import json
 import time
 import logging
 import numpy as np
-import rocksdb3
-from shapely.geometry import box
+
+# import rocksdb3
+import sys
+import os
+
+# Add the parent directory of 'src' to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from src.geocoder.db.gimi9_rocks import Gimi9RocksDB
+from shapely.geometry import box, MultiPolygon
+from shapely.validation import make_valid
 from tqdm import tqdm
 import sys
 from polygon_geohasher.polygon_geohasher import polygon_to_geohashes
@@ -42,7 +51,8 @@ def open_rocksdb(db_path, create_if_missing=True):
         RocksDB 인스턴스
     """
     try:
-        db = rocksdb3.open_default(db_path)
+        db = Gimi9RocksDB(db_path)
+        # db = rocksdb3.open_default(db_path)
         return db
 
     except Exception as e:
@@ -66,9 +76,159 @@ def get_equal_data(existing_data, attr_dict):
     return None
 
 
+def process_region_to_rocksdb(shp_file, db_path, yyyymm, batch_size=1000):
+    """
+    Shapefile을 읽어 형상을 simplify하여 RocksDB에 저장합니다.
+
+    Args:
+        shp_file: Shapefile 경로
+        db_path: RocksDB 데이터베이스 경로
+        region_prefix: 키 접두사
+        batch_size: 한 번에 처리할 피처 수
+    """
+
+    logger.info(f"Reading shapefile: {shp_file}")
+
+    # RocksDB 열기
+    db = open_rocksdb(db_path)
+
+    CODE: str = ""  # 코드 필드명
+    REGION_PREFIX: str = ""  # 지역 접두사
+    TOLERANCE: float = 0.0001  # 단순화 허용 오차
+
+    if shp_file.endswith("TL_SCCO_GEMD.shp"):
+        CODE = "EMD_CD"
+        REGION_PREFIX = "hd"
+        TOLERANCE = 10 / 111320  # 10m tolerance in degrees
+    elif shp_file.endswith("TL_SCCO_SIG.shp"):
+        CODE = "SIG_CD"
+        REGION_PREFIX = "h23"
+        TOLERANCE = 20 / 111320  # 20m tolerance in degrees
+    elif shp_file.endswith("TL_SCCO_CTPRVN.shp"):
+        CODE = "CTPRVN_CD"
+        REGION_PREFIX = "h1"
+        TOLERANCE = 50 / 111320  # 50m tolerance in degrees
+    else:
+        logger.error(f"Unsupported shapefile: {shp_file}")
+        raise ValueError(f"Unsupported shapefile: {shp_file}")
+
+    # 행정동 geohash로 검색
+    # TL_SCCO_GEMD.shp    행정동
+    # TL_SCCO_SIG.shp     시군구
+    # TL_SCCO_CTPRVN.shp  광역시도
+
+    # geohash가 업어서 검색 불가
+    # TL_KODIS_BAS.shp    기초구역
+    # TL_SCCO_EMD.shp     법정동
+    # TL_SCCO_LI.shp      리
+    # TL_SPPN_MAKAREA.shp 지점번호표기 의무지역
+
+    try:
+        # Shapefile 읽기
+        gdf = gpd.read_file(shp_file, encoding="cp949")
+        logger.info(f"Loaded {len(gdf)} features")
+
+        # CRS가 EPSG:4326(WGS84)이 아닌 경우 변환
+        if gdf.crs != "EPSG:4326":
+            logger.info(f"Converting CRS from {gdf.crs} to EPSG:4326")
+            gdf.set_crs("EPSG:5179", inplace=True)  # 원래 CRS 설정
+            gdf = gdf.to_crs("EPSG:4326")
+
+        # 일괄 쓰기 및 메모리 관리를 위한 배치 처리
+        # wb = rocksdb.WriteBatch()
+        batch_count = 0
+
+        # 진행률 표시
+        logger.info(f"Add features {REGION_PREFIX}, yyyymm {yyyymm}...")
+
+        for idx, row in tqdm(gdf.iterrows(), total=len(gdf)):
+            geom = row.geometry
+            attr_dict = row.drop("geometry").to_dict()
+
+            if geom.geom_type == "Point":
+                continue  # 포인트는 처리하지 않음
+
+            # Simplify the geometry to reduce complexity
+            if not geom.is_valid:
+                geom = make_valid(geom)
+
+            simplified_geom = geom.simplify(
+                tolerance=TOLERANCE, preserve_topology=False
+            )  # 10m tolerance in degrees
+
+            if not simplified_geom.is_valid:
+                simplified_geom = make_valid(geom)
+
+            if simplified_geom.is_empty or not simplified_geom.is_valid:
+                continue  # Skip invalid or empty geometries
+
+            # .js의 WKT 라이브러리가 MultiCollection을 지원하지 않으므로 MultiPolygon으로 변환
+            if hasattr(simplified_geom, "geoms"):
+                # print(
+                #     [
+                #         g.geom_type
+                #         for g in simplified_geom.geoms
+                #         if g.geom_type == "Point"
+                #     ]
+                # )
+                polygons = [
+                    geom
+                    for geom in simplified_geom.geoms
+                    if geom != geom.geom_type in ("Polygon", "MultiPolygon")
+                ]
+                if len(polygons) == 1 and polygons[0].geom_type == "MultiPolygon":
+                    simplified_geom = MultiPolygon(polygons[0])
+                else:
+                    simplified_geom = MultiPolygon(polygons)
+            geom = simplified_geom
+
+            # h = geohash.encode(y, x, depth)
+            # key = h
+            key = f"{REGION_PREFIX}-{yyyymm}-{attr_dict[CODE]}"
+
+            attr_dict["wkt"] = geom.wkt
+            attr_dict["yyyymm"] = yyyymm
+            db.put(key.encode(), json.dumps(attr_dict).encode())
+
+            # stats["total_geohashes"] += 1
+            batch_count += 1
+            # stats["processed_features"] += 1
+    except Exception as e:
+        logger.error(f"Error processing shapefile: {str(e)}")
+        raise
+    finally:
+        # RocksDB는 명시적으로 닫을 필요가 없음
+        pass
+
+        # 남은 배치 쓰기
+        # if batch_count > 0:
+        #     db.write(wb)
+
+        # # 메타데이터 작성
+        # stats["end_time"] = time.time()
+        # stats["elapsed_time"] = stats["end_time"] - stats["start_time"]
+
+        # metadata = {
+        #     "count": stats["total_geohashes"],
+        #     "features": stats["total_features"],
+        #     "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        #     "elapsed_time": stats["elapsed_time"],
+        #     "description": "Geohash database generated from shapefile",
+        # }
+
+        # # 메타데이터 저장
+        # db.put(b"__metadata__", json.dumps(metadata).encode())
+
+        # logger.info(f"Processed {stats['processed_features']} features")
+        # logger.info(f"Generated {stats['total_geohashes']} geohashes")
+        # logger.info(f"Time elapsed: {stats['elapsed_time']:.2f} seconds")
+
+        # return stats
+
+
 def process_shapefile_to_rocksdb(shp_file, db_path, depth, key_prefix, batch_size=1000):
     """
-    Shapefile을 처리하여 geohash를 생성하고 바로 RocksDB에 저장합니다.
+    Shapefile을 읽어 geohash를 생성하고 바로 RocksDB에 저장합니다.
 
     Args:
         shp_file: Shapefile 경로
@@ -237,6 +397,7 @@ def main():
     parser.add_argument(
         "--depth", type=int, default=7, help="Geohash precision/depth (default: 7)"
     )
+    # 사용하지 않음
     parser.add_argument(
         "--key_prefix", default="", help="Key prefix for geohash (default: none)"
     )
@@ -245,6 +406,11 @@ def main():
         type=int,
         default=1000,
         help="Batch size for processing (default: 1000)",
+    )
+    parser.add_argument(
+        "-r",
+        action="store_true",
+        help="영역 형상 추가 (default: hd)",
     )
 
     args = parser.parse_args()
@@ -261,27 +427,36 @@ def main():
     db_path = args.output_dir
 
     try:
-        # Shapefile 처리 및 RocksDB 저장
-        stats = process_shapefile_to_rocksdb(
-            args.shp, db_path, args.depth, args.key_prefix, args.batch_size
-        )
+        if args.r:
+            # region_prefix = args.region
+            # --shp=/disk/hdd-lv/juso-data/전체분/202305/map/50000/TL_SCCO_GEMD.shp
+            yyyymm = args.shp.split("/")[-4]  # 예: 202305
+            process_region_to_rocksdb(args.shp, db_path, yyyymm, args.batch_size)
 
-        # 메타데이터 파일 작성 (RocksDB 외부에도 저장)
-        metadata = {
-            "count": stats["total_geohashes"],
-            "features": stats["total_features"],
-            "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-            "elapsed_time": stats["elapsed_time"],
-            "description": "Geohash database generated from shapefile",
-        }
+            logger.info(f"Region add complete! Database saved to {db_path}")
+            return 0
+        else:
+            # Shapefile 처리 및 RocksDB 저장
+            stats = process_shapefile_to_rocksdb(
+                args.shp, db_path, args.depth, args.key_prefix, args.batch_size
+            )
 
-        with open(
-            os.path.join(args.output_dir, "metadata.json"), "w", encoding="utf-8"
-        ) as f:
-            json.dump(metadata, f, ensure_ascii=False, indent=2)
+            # 메타데이터 파일 작성 (RocksDB 외부에도 저장)
+            metadata = {
+                "count": stats["total_geohashes"],
+                "features": stats["total_features"],
+                "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "elapsed_time": stats["elapsed_time"],
+                "description": "Geohash database generated from shapefile",
+            }
 
-        logger.info(f"Process completed successfully! Database saved to {db_path}")
-        return 0
+            with open(
+                os.path.join(args.output_dir, "metadata.json"), "w", encoding="utf-8"
+            ) as f:
+                json.dump(metadata, f, ensure_ascii=False, indent=2)
+
+            logger.info(f"Process completed successfully! Database saved to {db_path}")
+            return 0
 
     except Exception as e:
         logger.error(f"Error: {str(e)}")

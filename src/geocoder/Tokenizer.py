@@ -60,6 +60,7 @@ class Tokenizer:
         re_road_거리 (re.Pattern): 거리 정보를 추출하기 위한 정규 표현식.
         re_road_ETC길 (re.Pattern): 기타 도로명 정보를 추출하기 위한 정규 표현식.
         re_road_in_bracket (re.Pattern): []로 둘러싸인 도로명 주소. "[ 상리길 8 ]" 레거시 시스템에서 유래 추정
+        re_address_in_quote (re.Pattern): 주소 문자열을 따옴표로 둘러싼 경우를 처리하기 위한 정규 표현식.
 
         roadPrefix (list): 도로명 접두사를 정렬한 리스트.
         numRoadPatterns (set): 숫자로 시작하는 도로명 패턴을 담고 있는 리스트.
@@ -228,6 +229,7 @@ class Tokenizer:
         self.re_road_in_bracket = re.compile(
             r"\[\S?(.+\S+.?\d?)\S?\]"
         )  # [ 상리길 8 ] 레거시 시스템에서 유래 추정
+        self.re_address_in_quote = re.compile(r"^[\"'](.+)[\"']$")
         self.roadPrefix = [
             self.re_road_이름1길,
             self.re_road_이름1길2,
@@ -307,7 +309,11 @@ class Tokenizer:
                 if pos == 0 and tkn.val.startswith("세종"):
                     tkn.val = "세종"
                     tkn.t = TOKEN_H23
-                elif pos > 0 and tkn.val.startswith("광주") and toks.hasTypes(TOKEN_H1):
+                elif (
+                    pos > 0
+                    and tkn.val.startswith("광주")
+                    and toks.hasTypes(TOKEN_H1, end=pos - 1)
+                ):
                     tkn.t = TOKEN_H23
                 else:
                     tkn.t = TOKEN_H1
@@ -509,6 +515,22 @@ class Tokenizer:
             if toks[pos].strip() == "":
                 toks.delete(pos)
 
+    def __removeQuoteAroundAddress(self, address) -> str:
+        """
+        주소 문자열에서 둘러싼 따옴표를 제거합니다.
+
+        매개변수:
+            address (str): 주소 문자열입니다.
+
+        반환값:
+            str: 따옴표가 제거된 주소 문자열입니다.
+        """
+        match = self.re_address_in_quote.match(address)
+        if match:
+            matched = match.group(1)
+            address = address.replace(match.group(0), matched).strip()
+        return address
+
     def __removeBracketAroundRoadAddress(self, address) -> str:
         """
         도로명 주소를 둘러싼 괄호를 제거합니다.
@@ -556,7 +578,8 @@ class Tokenizer:
         """
         # 주소 전처리. [ 상리길 8 ] 0001동 0000호 에서 [] 제거
         address = self.__removeBracketAroundRoadAddress(address)
-
+        # 둘러싼 따옴표 제거
+        address = self.__removeQuoteAroundAddress(address)
         toks = Tokens(self.re_tokenize_split.split(address))
         self.__removeWhiteSpaces(toks)
         self.__removeDotChar(toks)

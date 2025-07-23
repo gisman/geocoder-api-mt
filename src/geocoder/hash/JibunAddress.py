@@ -10,7 +10,7 @@ class JibunAddress:
 
     re산n = re.compile(r"산\d+$")
 
-    def hash(self, toks, end_with=TOKEN_BNG):
+    def hash(self, toks, start_with=None, end_with=TOKEN_BNG):
         """
         주어진 토큰 목록을 해시 문자열로 변환합니다.
 
@@ -23,8 +23,14 @@ class JibunAddress:
         h5 = ""
         bng = ""
 
+        start = 0
+        if start_with:
+            start = toks.index(start_with)
+        if start < 0:
+            start = 0
+
         length = len(toks)
-        for n in range(length):
+        for n in range(start, length):
             tkn = toks.get(n)
             if end_with == TOKEN_H1 and h1 == "":
                 h1 = self.hSimplifier.h1Hash(tkn.val)

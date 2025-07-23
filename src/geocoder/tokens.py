@@ -234,11 +234,14 @@ class Tokens:
 
         return "|".join(vals)
 
-    def hasTypes(self, t):
+    def hasTypes(self, t, end: int = None):
+        pos = 0
         for tkn in self.toks:
+            if end is not None and pos >= end:
+                break
             if tkn.t == t:
                 return True
-
+            pos += 1
         return False
 
     def to_address(self):
