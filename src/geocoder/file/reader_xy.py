@@ -29,6 +29,7 @@ class ReaderXY(Reader):
                     nrows=row_count,
                     dtype=str,  # 모든 컬럼을 문자열로 읽기
                     na_filter=False,  # NaN 값을 빈 문자열로 처리
+                    on_bad_lines="skip",  # 잘못된 행 건너뛰기
                 )
             else:
                 self.df = pd.read_csv(
@@ -41,6 +42,7 @@ class ReaderXY(Reader):
                     skiprows=start_row,
                     dtype=str,
                     na_filter=False,
+                    on_bad_lines="skip",  # 잘못된 행 건너뛰기
                 )
         except Exception as e:
             raise ValueError(f"CSV 파일을 읽는 중 오류가 발생했습니다: {e}")

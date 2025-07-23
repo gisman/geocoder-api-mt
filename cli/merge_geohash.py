@@ -5,7 +5,16 @@ import os
 import json
 import time
 import logging
-import rocksdb3
+
+# import rocksdb3
+import sys
+import os
+
+# Add the parent directory of 'src' to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from src.geocoder.db.gimi9_rocks import Gimi9RocksDB
+
 from tqdm import tqdm
 import sys
 
@@ -66,7 +75,8 @@ def open_rocksdb(db_path, create_if_missing=True):
         RocksDB 인스턴스
     """
     try:
-        db = rocksdb3.open_default(db_path)
+        db = Gimi9RocksDB(db_path)
+        # db = rocksdb3.open_default(db_path)
         return db
 
     except Exception as e:
@@ -190,13 +200,14 @@ def merge_geohash_dbs(base_db_path, input_db_paths):
 
             # 모든 키 처리
             for key, val in tqdm(
-                input_db.get_iter(),
+                input_db,
+                # input_db.get_iter(),
                 total=key_count,
                 desc=f"Merging {os.path.basename(input_path)}",
             ):
                 key_bytes = key
                 # 메타데이터 키 건너뛰기
-                if key_bytes == b"__metadata__":
+                if key_bytes == "__metadata__":
                     continue
 
                 # 입력 DB에서 값 가져오기
@@ -300,7 +311,7 @@ def merge_data(existing_data, new_data):
     return result
 
 
-def update_metadata(base_db, input_db):
+def update_metadata(base_db: Gimi9RocksDB, input_db):
     """
     데이터베이스 메타데이터를 업데이트합니다.
 
@@ -323,9 +334,9 @@ def update_metadata(base_db, input_db):
             # 카운트 업데이트
             if "count" in base_metadata and "count" in input_metadata:
                 # 정확한 개수는 이미 위에서 키를 모두 처리하며 계산됨
-                it = base_db.get_iter()
+                # it = base_db.get_iter()
                 # it.seek_to_first()
-                count = sum(1 for k in it if k != b"__metadata__")
+                count = sum(1 for k in base_db if k != b"__metadata__")
                 merged_metadata["count"] = count
 
             # 피처 개수 병합

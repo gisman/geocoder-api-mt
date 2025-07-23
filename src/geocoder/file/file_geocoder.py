@@ -40,7 +40,13 @@ class FileGeocoder:
         """
         self.geocoder = geocoder
         self.reverse_geocoder = reverse_geocoder
-        self.executor = None
+        # self.executor = None
+        if config.THREAD_POOL_SIZE > 0:
+            self.executor = ThreadPoolExecutor(
+                max_workers=config.THREAD_POOL_SIZE
+            )  # 스레드 풀 생성
+        else:
+            self.executor = None
 
         formatter = logging.Formatter("%(asctime)-15s - %(levelname)s - %(message)s")
 
@@ -80,6 +86,7 @@ class FileGeocoder:
         self.uploaded_filename = uploaded_filename
         self.x_col = x_col
         self.y_col = y_col
+        self.source_crs = source_crs
 
     async def prepare(self, filepath, uploaded_filename):
         """
@@ -269,10 +276,12 @@ class FileGeocoder:
         batch_size = (
             config.THREAD_POOL_SIZE * 1000
         )  # config.THREAD_POOL_SIZE  # 병렬 처리
+        if batch_size < 1:  # 스레드풀 없음
+            batch_size = 10000
 
-        # 스레드 풀을 작업 시작 시에만 생성
-        if self.executor is None:
-            self.executor = ThreadPoolExecutor(max_workers=config.THREAD_POOL_SIZE)
+        # # 스레드 풀을 작업 시작 시에만 생성
+        # if self.executor is None:
+        #     self.executor = ThreadPoolExecutor(max_workers=config.THREAD_POOL_SIZE)
 
         try:
             iterator = iter(reader)
@@ -300,22 +309,16 @@ class FileGeocoder:
                 if not batch:
                     break
 
-                # tasks = [
-                #     loop.run_in_executor(
-                #         self.executor,
-                #         geocode_func,
-                #         addr_or_xy,
-                #         full_history_list,
-                #     )
-                #     for addr_or_xy in batch
-                # ]
-
-                # results = await asyncio.gather(*tasks)
-
-                # results = self.executor.map(lambda args: geocode_func(*args), zip(batch, [full_history_list] * len(batch)))
-                results = self.executor.map(
-                    geocode_func, batch, zip(batch, [full_history_list] * len(batch))
-                )
+                if self.executor:
+                    # 스레드 풀을 사용하여 병렬로 지오코딩 작업 수행
+                    results = self.executor.map(
+                        geocode_func,
+                        batch,
+                        zip(batch, [full_history_list] * len(batch)),
+                    )
+                else:
+                    # 스레드 풀이 없으면 동기적으로 실행
+                    results = map(geocode_func, batch, [full_history_list] * len(batch))
 
                 for i, row_result in enumerate(results):
                     line = lines[i]
@@ -333,7 +336,15 @@ class FileGeocoder:
                     writer.write(line, row_result)
 
                     if count < sample_count:
-                        row_result.pop("hd_history", None)
+                        if full_history_list:
+                            # sample은 단축형 행정동 history를 포함합니다.
+                            row_result.pop("hd_history", None)
+                            row_result["hd_history"] = (
+                                self.reverse_geocoder.search_hd_history(
+                                    sample_wgs_x, sample_wgs_y, full_history_list=False
+                                )
+                            )
+
                         row_result[X_AXIS] = sample_wgs_x
                         row_result[Y_AXIS] = sample_wgs_y
                         sample.append(row_result)

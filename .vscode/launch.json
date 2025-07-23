@@ -12,8 +12,8 @@
             "args": [
                 // "4039"
                 // "4029"
-                "4019"
-                // "4009"
+                // "4019"
+                "4009"
                 // "4001"
             ],
             "cwd": "${workspaceFolder}",
@@ -32,14 +32,16 @@
                 "READONLY": "true",
                 "GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks",
                 "REVERSE_GEOCODE_DB": "/disk/nvme1t/geocoder-api-db/rocks-reverse-geocoder",
-                "HD_HISTORY_DB": "/disk/nvme1t/geocoder-api-db/rocks_hd_history",
+                "HD_HISTORY_DB": "/disk/nvme1t/geocoder-api-db/rocks_hd_history-debug",
                 "BIGCACHE_DB": "/disk/nvme1t/geocoder-api-db/bigcache",
                 // "BIGCACHE_DB": "/disk/nvme1t/geocoder-api-db/bigcache_debug",
                 "FULL_HISTORY_LIST": "true",
                 "LOG_LEVEL": "INFO",
                 // "LOG_LEVEL": "DEBUG",
-                "USE_HASH_CACHE": "true",
-                "THREAD_POOL_SIZE": "8",
+                "USE_HASH_CACHE": "false",
+                // "USE_HASH_CACHE": "true",
+                "THREAD_POOL_SIZE": "0",
+                // "THREAD_POOL_SIZE": "8",
             },
         },
         {
@@ -79,6 +81,40 @@
                 "USE_HASH_CACHE": "true",
                 "THREAD_POOL_SIZE": "8",
             },
-        }        
+        },
+        {
+            "name": "Merge Geohash",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cli/merge_geohash.py",
+            "args": [
+                "--base=/disk/nvme1t/geocoder-api-db/rocks_hd_history-debug",
+                "--input=/disk/hdd-lv/juso-data/전체분/202305/map/11000/TL_SCCO_GEMD"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHON_GIL": "0"
+            }
+        },
+        {
+            "name": "Build Geohash --region Test",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cli/build_geohash.py",
+            "args": [
+                "-r",
+                "--shp=/disk/hdd-lv/juso-data/전체분/202305/map/31000/TL_SCCO_GEMD.shp", //행정동
+                // "--shp=/disk/hdd-lv/juso-data/전체분/202501/map/46000/TL_SCCO_SIG.shp", //시군구
+                "--output_dir=/disk/nvme1t/geocoder-api-db/rocks_hd_history-debug"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHON_GIL": "0"
+            }
+        }
     ]
 }

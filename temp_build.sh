@@ -1,456 +1,475 @@
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202305/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202305/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202306/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202306/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202307/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202307/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202308/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202308/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202309/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202309/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202310/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202310/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202311/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202311/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202312/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202312/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202401/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202401/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202402/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202402/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202403/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202403/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202404/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202404/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202405/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202405/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202406/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202406/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202407/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202407/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202408/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202408/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202409/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202409/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202410/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202410/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202411/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202411/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202412/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202412/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202501/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202501/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202502/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202502/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202503/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202503/52000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/11000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/11000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/26000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/26000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/27000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/27000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/28000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/28000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/29000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/29000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/30000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/30000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/31000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/31000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/36000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/36000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/41000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/41000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/42000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/42000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/43000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/43000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/44000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/44000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/45000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/45000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/46000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/46000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/47000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/47000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/48000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/48000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/50000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/50000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/51000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/51000/TL_SCCO_GEMD --depth=7
-python cli/build_geohash.py --shp=/disk/ssd2t/juso-data/행정동/202504/52000/TL_SCCO_GEMD.shp --output_dir=/disk/ssd2t/juso-data/행정동/202504/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202305/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202305/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202306/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202306/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202307/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202307/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202308/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202308/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202309/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202309/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202310/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202310/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202311/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202311/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202312/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202312/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202401/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202401/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202402/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202402/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202403/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202403/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202404/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202404/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202405/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202405/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202406/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202406/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202407/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202407/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202408/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202408/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202409/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202409/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202410/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202410/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202411/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202411/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202412/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202412/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202501/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202501/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202502/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202502/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202503/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202503/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202504/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202504/map/52000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/11000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/11000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/26000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/26000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/27000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/27000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/28000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/28000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/29000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/29000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/30000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/30000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/31000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/31000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/36000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/36000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/41000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/41000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/42000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/42000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/43000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/43000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/44000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/44000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/45000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/45000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/46000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/46000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/47000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/47000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/48000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/48000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/50000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/50000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/51000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/51000/TL_SCCO_GEMD --depth=7
+python -Xgil=0 cli/build_geohash.py --shp=/disk/hdd-lv/juso-data/전체분/202505/map/52000/TL_SCCO_GEMD.shp --output_dir=/disk/hdd-lv/juso-data/전체분/202505/map/52000/TL_SCCO_GEMD --depth=7

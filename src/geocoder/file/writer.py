@@ -33,7 +33,7 @@ class Writer:
                 "pos_cd",
                 "errmsg",
             ]
-            # + hd_history_cols
+            + hd_history_cols
         )
 
         filename = os.path.basename(filepath)
@@ -71,6 +71,12 @@ class Writer:
         # merge prefix and row
         row_out.update(prefix)
 
+        # Remove keys from row_out that are not in self.csv_writer.fieldnames
+        row_out = {
+            key: value
+            for key, value in row_out.items()
+            if key in self.csv_writer.fieldnames
+        }
         self.csv_writer.writerow(row_out)
 
     def writeheader(self):

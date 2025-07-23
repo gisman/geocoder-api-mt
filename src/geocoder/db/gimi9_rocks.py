@@ -411,6 +411,7 @@ class Gimi9RocksDB(DbBase):
         if err.value:
             error_msg = err.value.decode("utf-8")
             self.lib.rocksdb_free(err)
+            print(f"RocksDB 데이터베이스 열기 실패: {db_path}")
             raise RocksDBError(f"데이터베이스 열기 실패: {error_msg}")
 
         print(f"RocksDB 데이터베이스 열기 성공: {db_path}")

@@ -17,7 +17,7 @@ import os
 import shutil
 import uvicorn
 import sys
-from typing import List, Optional
+from typing import List, Optional, Union
 from pydantic import BaseModel, Field
 from datetime import datetime, timezone, timedelta
 
@@ -63,7 +63,7 @@ class GeocodeFileItem(GeocodeBaseModel):
     uploaded_filename: str = None
     download_dir: str
     target_crs: str = "EPSG:4326"
-    sample_count: int = 100  # 샘플 개수, 기본값은 100
+    sample_count: int = 1000  # 샘플 개수, 기본값은 1000
 
 
 class GeocodeFileXYItem(GeocodeFileItem):
@@ -128,6 +128,25 @@ class HdHistoryResult(GeocodeBaseModel):
     EMD_ENG_NM: Optional[str] = Field(None, description="행정동 영어 이름")
     from_yyyymm: Optional[str] = Field(None, description="시작 년월 (YYYYMM)")
     to_yyyymm: Optional[str] = Field(None, description="종료 년월 (YYYYMM)")
+
+
+class RegionResultSlim(GeocodeBaseModel):
+    wkt: Optional[str] = Field(None, description="영역 WKT")
+    yyyymm: Optional[str] = Field(None, description="데이터 년월 (YYYYMM)")
+    name: Optional[str] = Field(None, description="region 이름")
+    code: Optional[str] = Field(None, description="region 코드")
+    success: bool = Field(False, description="행정동 검색 성공 여부")
+
+
+class RegionResult(RegionResultSlim):
+    EMD_CD: Optional[str] = Field(None, description="행정동 코드")
+    EMD_KOR_NM: Optional[str] = Field(None, description="행정동 한글 이름")
+    EMD_ENG_NM: Optional[str] = Field(None, description="행정동 영어 이름")
+    # wkt: Optional[str] = Field(None, description="영역 WKT")
+    # yyyymm: Optional[str] = Field(None, description="데이터 년월 (YYYYMM)")
+    # name: Optional[str] = Field(None, description="region 이름")
+    # code: Optional[str] = Field(None, description="region 코드")
+    # success: bool = Field(False, description="행정동 검색 성공 여부")
 
 
 class RoadAddrResult(GeocodeBaseModel):
@@ -753,6 +772,87 @@ async def get_user_token_stats(
     }
 
     return public_stats
+
+
+@router.get("/get_region_list", response_model=List[RegionResultSlim])
+async def get_region_list(
+    request: Request,
+    type: str = "hd",
+    code_list: str = "1100000000,2300000001",
+    yyyymm: str = None,
+    token: str = "",
+    token_stats: dict = Depends(get_token_stats),
+):
+    """
+    ## 주어진 코드로 영역을 찾아 전송합니다.
+
+    ### Args:
+    * type (str): 영역 유형. 기본값은 "hd" (행정동)입니다.
+    * code (str): 행정동 코드. 기본값은 "1100000000"
+    * yyyymm (str, optional): 특정 년월(YYYYMM)의 행정동 등 영역을 조회합니다. 기본값은 None입니다.
+
+    ### Returns:
+    * 행정동 정보.
+
+    """
+    val_list = []
+    code_list = code_list.split(",")
+    tasks = [
+        ApiHandler().get_region(type, code, yyyymm, slim=True) for code in code_list
+    ]
+    val_list = await asyncio.gather(*tasks)
+    return val_list
+
+
+@router.get("/get_region", response_model=RegionResult)
+async def get_region(
+    request: Request,
+    type: str = "hd",
+    code: str = "1100000000",
+    yyyymm: str = None,
+    token: str = "",
+    token_stats: dict = Depends(get_token_stats),
+):
+    """
+    ## 주어진 코드로 영역을 찾아 전송합니다.
+
+    ### Args:
+    * type (str): 영역 유형. 기본값은 "hd" (행정동)입니다.
+    * code (str): 행정동 코드. 기본값은 "1100000000"
+    * yyyymm (str, optional): 특정 년월(YYYYMM)의 행정동 등 영역을 조회합니다. 기본값은 None입니다.
+
+    ### Returns:
+    * 행정동 정보.
+
+    """
+    val = await ApiHandler().get_region(type, code, yyyymm)
+    return val
+
+
+@router.get("/region", response_model=RegionResult)
+async def region(
+    request: Request,
+    type: str = "hd",
+    x: float = 127.075074,
+    y: float = 37.143834,
+    yyyymm: str = None,
+    token: str = "",
+    token_stats: dict = Depends(get_token_stats),
+):
+    """
+    ## 주어진 좌표에 대한 행정동을 조회합니다.
+
+    ### Args:
+    * x (float): x 좌표 (경도).
+    * y (float): y 좌표 (위도).
+    * yyyymm (str, optional): 특정 년월(YYYYMM) 형식으로 행정동 변동 이력을 조회합니다. 기본값은 None입니다.
+
+    ### Returns:
+    * 행정동 정보 또는 행정동 정보 목록.
+
+    """
+    val = await ApiHandler().region(type, x, y, yyyymm)
+    return val
 
 
 @router.get("/hd_history", response_model=List[HdHistoryResult])
@@ -1825,7 +1925,12 @@ app.include_router(router)
 class ApiHandler:
     geocoder = Geocoder()
     reverse_geocoder = ReverseGeocoder()
-    executor = ThreadPoolExecutor(max_workers=config.THREAD_POOL_SIZE)  # 스레드 풀 생성
+    if config.THREAD_POOL_SIZE > 0:
+        executor = ThreadPoolExecutor(
+            max_workers=config.THREAD_POOL_SIZE
+        )  # 스레드 풀 생성
+    else:
+        executor = None
 
     tf = Transformer.from_crs(
         CRS.from_string("EPSG:5179"), CRS.from_string("EPSG:4326"), always_xy=True
@@ -1833,6 +1938,16 @@ class ApiHandler:
 
     def read_key(self, key):
         val = ApiHandler.geocoder.db.get(key)
+        return val
+
+    async def get_region(
+        self, type: str, code: str, yyyymm: str = None, slim: bool = False
+    ):
+        val = self.reverse_geocoder.get_region(type, code, yyyymm, slim)
+        return val
+
+    async def region(self, type: str, x: float, y: float, yyyymm: str = None):
+        val = self.reverse_geocoder.search_region(type, x, y, yyyymm)
         return val
 
     async def hd_history(
@@ -1871,6 +1986,11 @@ class ApiHandler:
             val[X_AXIS] = x1
             val[Y_AXIS] = y1
 
+            hd_history = self.reverse_geocoder.search_hd_history(
+                x1, y1, full_history_list=False
+            )
+            val["hd_history"] = hd_history
+
         val["inputaddr"] = addr
         return val
 
@@ -1890,9 +2010,14 @@ class ApiHandler:
         # # 모든 지오코딩 작업이 완료될 때까지 대기
         # results = await asyncio.gather(*tasks)
 
-        execute_results = self.executor.map(
-            self._geocode_worker, (addr for addr in limited_addrs)
-        )
+        if self.executor:
+            # 스레드 풀을 사용하여 병렬로 지오코딩 작업 수행
+            execute_results = self.executor.map(
+                self._geocode_worker, (addr for addr in limited_addrs)
+            )
+        else:
+            # 스레드 풀이 없으면 동기적으로 실행
+            execute_results = map(self._geocode_worker, limited_addrs)
 
         success_count = 0
         hd_success_count = 0
@@ -1900,6 +2025,38 @@ class ApiHandler:
 
         for i, val in enumerate(execute_results):
             # for val in results:
+            # Keep only minimal values in val
+            unused_keys = [
+                "bld_x",
+                "bld_y",
+                "extras",
+                # "toksString",
+                "undgrnd_yn",
+                "x",
+                "y",
+                "bng1",
+                "bng2",
+                "h1",
+                "h1_nm",
+                "h2_cd",
+                "h23_nm",
+                # "hash",
+                "hc",
+                "lc",
+                "ld_cd",
+                "ld_nm",
+                "rc",
+                "ri_nm",
+                "road_cd",
+                "road_nm",
+                "san",
+                "similar_hash",
+            ]
+
+            for key in unused_keys:
+                if key in val:
+                    del val[key]
+
             results.append(val)
             if val.get("success") and val.get("pos_cd", "") in POS_CD_SUCCESS:
                 success_count += 1

@@ -11,8 +11,19 @@ import pyogrio
 # from shapely import geometry
 import shapely
 from shapely import wkt
-from shapely.geometry import shape, mapping
+from shapely.geometry import (
+    shape,
+    mapping,
+    Point,
+    LineString,
+    Polygon,
+    MultiPoint,
+    MultiLineString,
+    MultiPolygon,
+    GeometryCollection,
+)
 from shapely.ops import transform
+
 import pyproj
 from pyproj import Transformer
 import logging
@@ -28,6 +39,52 @@ import src.config as config
 # 생성
 # 검색
 # 업데이트
+
+
+def _round_coordinates_to_precision(geometry, precision):
+    """
+    Shapely 지오메트리 객체의 모든 좌표를 지정된 소수점 정밀도로 반올림합니다.
+    """
+    if geometry.is_empty:
+        return geometry
+
+    if geometry.geom_type == "Point":
+        return Point(round(geometry.x, precision), round(geometry.y, precision))
+    elif geometry.geom_type == "LineString":
+        coords = [
+            (round(x, precision), round(y, precision)) for x, y in geometry.coords
+        ]
+        return LineString(coords)
+    elif geometry.geom_type == "Polygon":
+        exterior_coords = [
+            (round(x, precision), round(y, precision))
+            for x, y in geometry.exterior.coords
+        ]
+        interiors = []
+        for interior in geometry.interiors:
+            interiors.append(
+                [(round(x, precision), round(y, precision)) for x, y in interior.coords]
+            )
+        return Polygon(exterior_coords, interiors if interiors else None)
+    elif geometry.geom_type in [
+        "MultiPoint",
+        "MultiLineString",
+        "MultiPolygon",
+        "GeometryCollection",
+    ]:
+        # 재귀적으로 각 서브-지오메트리에 대해 함수를 호출합니다.
+        geometries = [
+            _round_coordinates_to_precision(part, precision) for part in geometry.geoms
+        ]
+        if geometry.geom_type == "MultiPoint":
+            return MultiPoint(geometries)
+        elif geometry.geom_type == "MultiLineString":
+            return MultiLineString(geometries)
+        elif geometry.geom_type == "MultiPolygon":
+            return MultiPolygon(geometries)
+        elif geometry.geom_type == "GeometryCollection":
+            return GeometryCollection(geometries)
+    return geometry  # 지원하지 않는 지오메트리 타입은 그대로 반환
 
 
 class ReverseGeocoder:
@@ -101,8 +158,126 @@ class ReverseGeocoder:
     # def open(self, db):
     #     self.db = db
 
+    def get_region(
+        self, type: str, region_cd: str, yyyymm: str = None, slim: bool = False
+    ):
+        """
+        주어진 행정동 코드에 대한 행정동 정보를 검색합니다.
+        """
+        PRECISION: int = 6
+
+        region_key = f"{type}-{yyyymm}-{region_cd}"
+        region = self.hd_db.get(region_key.encode())
+        if region:
+            val = json.loads(region)
+
+            geom = wkt.loads(val.get("wkt", ""))
+            # 2. 지오메트리 객체의 좌표 정밀도 변경
+            val["wkt"] = wkt.dumps(geom, rounding_precision=PRECISION)
+
+            # rounded_geom = _round_coordinates_to_precision(geom, precision=PRECISION)
+
+            if type == "hd":
+                if slim:
+                    val["name"] = val.pop("EMD_KOR_NM", "")
+                    val["code"] = val.pop("EMD_CD", "")
+                    val.pop("EMD_ENG_NM", "")
+                else:
+                    val["name"] = val.get("EMD_KOR_NM", "")
+                    val["code"] = val.get("EMD_CD", "")
+
+            elif type == "h23":
+                if slim:
+                    val["name"] = val.pop("SIG_KOR_NM", "")
+                    val["code"] = val.pop("SIG_CD", "")
+                    val.pop("SIG_ENG_NM", "")
+                else:
+                    val["name"] = val.get("SIG_KOR_NM", "")
+                    val["code"] = val.get("SIG_CD", "")
+
+            elif type == "h1":
+                if slim:
+                    val["name"] = val.pop("CTP_KOR_NM", "")
+                    val["code"] = val.pop("CTPRVN_CD", "")
+                    val.pop("CTP_ENG_NM", "")
+                else:
+                    val["name"] = val.get("CTP_KOR_NM", "")
+                    val["code"] = val.get("CTPRVN_CD", "")
+
+            val["success"] = True
+
+            return val
+
+    def search_region(self, type: str, x: float, y: float, yyyymm: str = None):
+        """
+        주어진 좌표 (x, y)에 대한 행정동 이력을 검색합니다.
+
+        Args:
+            x (float): x 좌표 (경도).
+            y (float): y 좌표 (위도).
+
+        Returns:
+            list: 행정동 정보
+        """
+
+        try:
+            # 행정동 hash 검색
+            key = geohash.encode(y, x, precision=self.HD_GEOHASH_PRECISION)
+
+            o = self.hd_db.get(key.encode())
+            if o:
+                hd_list = json.loads(o)
+                for hd_item in hd_list:
+                    if (
+                        yyyymm
+                        and yyyymm <= config.HD_HISTORY_END_YYYYMM
+                        and yyyymm >= config.HD_HISTORY_START_YYYYMM
+                    ):
+                        if (
+                            yyyymm < hd_item["from_yyyymm"]
+                            or yyyymm > hd_item["to_yyyymm"]
+                        ):
+                            # yyyymm이 범위에 포함되지 않으면 제외
+                            continue
+
+                    # contains test
+                    geom = shapely.from_wkt(hd_item.get("intersection_wkt", ""))
+                    if self.geom_contains_point(geom, x, y):
+                        if yyyymm >= hd_item.get(
+                            "from_yyyymm"
+                        ) and yyyymm <= hd_item.get("to_yyyymm"):
+                            region_cd = hd_item["EMD_CD"]
+                            if type == "hd":
+                                # 행정동 코드로 검색
+                                region_cd = region_cd  # 행정동 코드로 변환
+                            elif type == "h23":
+                                # 시군구 코드로 검색
+                                region_cd = region_cd[:5]  # 시군구 코드로 변환
+                            elif type == "h1":
+                                # 도/특별시/광역시 코드로 검색
+                                region_cd = region_cd[:2]
+                            else:
+                                raise ValueError(f"Unknown type: {type}")
+
+                            result = self.get_region(type, region_cd, yyyymm)
+                            result.update(
+                                {
+                                    "success": True,
+                                }
+                            )
+                            return result
+
+        except Exception as e:
+            return {"success": False}
+
+        return {"success": False}
+
     def search_hd_history(
-        self, x: float, y: float, yyyymm: str = None, full_history_list: bool = False
+        self,
+        x: float,
+        y: float,
+        yyyymm: str = None,
+        full_history_list: bool = False,
     ):
         """
         주어진 좌표 (x, y)에 대한 행정동 이력을 검색합니다.
@@ -121,6 +296,7 @@ class ReverseGeocoder:
             o = self.hd_db.get(key.encode())
             if o:
                 hd_list = json.loads(o)
+
                 for hd_item in hd_list:
                     if (
                         yyyymm
