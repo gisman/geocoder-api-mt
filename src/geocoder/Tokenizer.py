@@ -614,7 +614,7 @@ class Tokenizer:
             h4pos = self.__splitH4(toks, h4pos)
 
         # RI 분리
-        if h4pos > 0 and toks.index(TOKEN_BLD) == h4pos + 1:
+        if h4pos > -1 and toks.index(TOKEN_BLD) == h4pos + 1:
             bldPos = toks.index(TOKEN_BLD)
             bldTok = toks.get(bldPos)
             m = self.re_tokenize_ri_n_err.match(
