@@ -578,6 +578,8 @@ class Tokenizer:
         """
         # 주소 전처리. [ 상리길 8 ] 0001동 0000호 에서 [] 제거
         address = self.__removeBracketAroundRoadAddress(address)
+        # 전각문자 "ㅡ"를 "-"로 변환
+        address = address.replace("ㅡ", "-")
         # 둘러싼 따옴표 제거
         address = self.__removeQuoteAroundAddress(address)
         toks = Tokens(self.re_tokenize_split.split(address))

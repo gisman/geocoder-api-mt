@@ -750,7 +750,7 @@ class FileGeocoder:
             self.enrich_geocode_result(full_history_list, val)
         else:
             val = {
-                "success": False,
+                "success": "실패",
                 X_AXIS: None,
                 Y_AXIS: None,
                 "h1_cd": "",
