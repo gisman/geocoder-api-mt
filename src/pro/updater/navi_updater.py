@@ -51,9 +51,9 @@ JIBUN_CACHE_COLS = [
 class NaviUpdater(BaseUpdater):
     """
     A class that represents a monthly updater for the geocoder.
-    1. 매달 juso.go.kr에서 "위치정보요약DB" 전체분 파일을 수작업으로 다운로드 받은 후 실행한다.
+    1. 매달 juso.go.kr에서 "내비게이션용DB_전체분" 전체분 파일을 수작업으로 다운로드 받은 후 실행한다.
     2. 실행 전에 압축을 풀어야 함 navi_busan.txt 등의 파일이 생성됨.
-    3. 파일의 위치는 ~/projects/geocoder-api/juso-data/전체분/navi
+    3. 파일의 위치는 ~/projects/geocoder-api/juso-data/전체분/{YYYYMM}/navi
 
     Attributes:
         name (str): 다운받은 파일명.

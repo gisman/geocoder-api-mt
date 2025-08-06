@@ -72,14 +72,14 @@ ERR_STR_MAP = {
     ERR_ROAD_NM_NOT_FOUND: "ROAD_NM_NOT_FOUND_ERROR",
     ERR_BLD_NM_NOT_FOUND: "BLD_NAME_NOT_FOUND_ERROR",
     ERR_BLD_DONG_NOT_FOUND: "ERR_BLD_DONG_NOT_FOUND",
-    ERR_ROAD_NOT_UNIQUE_H23_NM: "ROAD_NOT_UNIQUE_H23_NM_ERROR",
-    ERR_NOT_UNIQUE_H1_NM: "NOT_UNIQUE_H1_NM_ERROR",
-    ERR_NOT_UNIQUE_ROAD_CD: "NOT_UNIQUE_ROAD_CD_ERROR",
-    ERR_NEAR_ROAD_BLD_NOT_FOUND: "NEAR_ROAD_BLD_NOT_FOUND_ERROR",
-    ERR_NEAR_JIBUN_NOT_FOUND: "NEAR_JIBUN_NOT_FOUND_ERROR",
-    ERR_NAME_RI: "RI_NAME_ERROR",
-    ERR_NAME_H4: "H4_NAME_ERROR",
-    ERR_NAME_H23: "H23_NAME_ERROR",
+    ERR_ROAD_NOT_UNIQUE_H23_NM: "여러 시군구에서 발견됨",
+    ERR_NOT_UNIQUE_H1_NM: "여러 광역시도에서 발견됨",
+    ERR_NOT_UNIQUE_ROAD_CD: "도로명 유일하지 않음",
+    ERR_NEAR_ROAD_BLD_NOT_FOUND: "인근 도로명 주소를 찾을 수 없음",
+    ERR_NEAR_JIBUN_NOT_FOUND: "인근 지번 주소를 찾을 수 없음",
+    ERR_NAME_RI: "리 이름 오류",
+    ERR_NAME_H4: "동 이름 오류",
+    ERR_NAME_H23: "시군구 이름 오류",
     INFO_JIBUN_ADDRESS: "지번 주소",
     INFO_BLD_ADDRESS: "건물 주소",
     INFO_ROAD_ADDRESS: "도로명 주소",
@@ -117,6 +117,16 @@ class ErrList:
             err_cd (str or int): 오류 코드.
         """
         self.errs.append({"err_cd": err_cd, "detail": detail})
+
+    def last_err(self):
+        """
+        마지막 오류 코드를 반환합니다.
+        Returns:
+            dict: 마지막 오류 코드와 상세 정보.
+        """
+        if not self.errs:
+            return None
+        return self.errs[-1]
 
     @staticmethod
     def to_err_str(self, err_cd=None) -> str:

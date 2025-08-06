@@ -1570,10 +1570,10 @@ async def delete_all_pnu():
     try:
         output = StringIO()  # Create a string write buffer
         if not await updater.delete_all(output):
-            logging.error(f"ERROR: update_jibun_in_pnu fail")
+            logging.error(f"ERROR: delete_all_pnu fail")
             raise HTTPException(
                 status_code=500,
-                detail=f"Failed to update jibun in pnu data",
+                detail=f"Failed to delete jibun in pnu data",
             )
 
         logging.info(f"delete_all_pnu finished")

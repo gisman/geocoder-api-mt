@@ -15,6 +15,7 @@ class PossibleHash:
     err_detail: str = None
     info_success: str = None
     info_detail: str = None
+    prev_errs: set[int] = None
     # err_msg_when_success: bool = False
 
     def __init__(
@@ -26,6 +27,7 @@ class PossibleHash:
         err_detail: str = None,
         info_success: str = None,
         info_detail: str = None,
+        prev_errs: set[int] = None,
         # err_msg_when_success: bool = False,
     ):
         self.hash = hash
@@ -35,7 +37,14 @@ class PossibleHash:
         self.err_detail = err_detail
         self.info_success = info_success
         self.info_detail = info_detail
+        self.prev_errs = prev_errs
         # self.err_msg_when_success = err_msg_when_success
+
+    def pass_condition(self, prev_err: int):
+        if self.prev_errs and prev_err in self.prev_errs:
+            return True
+
+        return False
 
     def to_dict(self):
         return {
@@ -325,6 +334,7 @@ def possible_hashs(
                 err_detail=bld_no,
                 info_success=INFO_NEAR_ROAD_BLD_FOUND,
                 info_detail=bld_no,
+                prev_errs={ERR_ROAD_NOT_UNIQUE_H23_NM},
             )
 
     combinations = address_combination(toks, addressCls, hasher=hasher)

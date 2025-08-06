@@ -148,6 +148,10 @@ class Geocoder:
             self.hcodeMatcher,
         )
 
+    @property
+    def db(self):
+        return self._main_db
+
     def _get_db(self):
         """
         현재 스레드에 해당하는 데이터베이스를 반환합니다.
@@ -269,6 +273,7 @@ class Geocoder:
 
         # possible_hash_list = self.possible_hashs(toks, hash, addressCls)
 
+        last_err_for_hash_condition = None
         hash_info: PossibleHash = None
         for hash_info in possible_hashs(
             toks,
@@ -285,6 +290,11 @@ class Geocoder:
             logger.debug(f"trying hash_info: {str(hash_info)}")
             # for hash_info in possible_hash_list:
             hash = hash_info.get_hash()
+
+            # last_err 조건 검사
+            if hash_info.pass_condition(last_err_for_hash_condition):
+                continue
+
             val = self.most_similar_address(
                 toks,
                 hash,
@@ -360,10 +370,21 @@ class Geocoder:
 
                 return val
             else:
-                self._append_err(err_list, err_failed, err_detail)
+                last_err_for_hash_condition = err_list.last_err().get("err_cd")
+                # self._append_err(err_list, err_failed, err_detail)
 
-        self._append_err(err_list, ERR_NOT_FOUND)
-        return None
+        # self._append_err(err_list, ERR_NOT_FOUND)
+        errmsg = self._err_message(err_list, addressCls.value, "")
+        val = {
+            "success": False,
+            "errmsg": errmsg,
+            "hash": hash,
+            "address": address,
+            "addressCls": hash_info.get_addressCls().value or addressCls.value,
+            "toksString": self.tokenizer.getToksString(toks),
+        }
+
+        return val
 
     def get_h1(self, val):
         """

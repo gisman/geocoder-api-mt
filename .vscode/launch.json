@@ -12,8 +12,8 @@
             "args": [
                 // "4039"
                 // "4029"
-                // "4019"
-                "4009"
+                "4019"
+                // "4009"
                 // "4001"
             ],
             "cwd": "${workspaceFolder}",
@@ -36,8 +36,8 @@
                 "BIGCACHE_DB": "/disk/nvme1t/geocoder-api-db/bigcache",
                 // "BIGCACHE_DB": "/disk/nvme1t/geocoder-api-db/bigcache_debug",
                 "FULL_HISTORY_LIST": "true",
-                "LOG_LEVEL": "INFO",
-                // "LOG_LEVEL": "DEBUG",
+                // "LOG_LEVEL": "INFO",
+                "LOG_LEVEL": "DEBUG",
                 "USE_HASH_CACHE": "false",
                 // "USE_HASH_CACHE": "true",
                 "THREAD_POOL_SIZE": "0",
