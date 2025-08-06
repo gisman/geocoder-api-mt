@@ -258,7 +258,7 @@ class FileGeocoder:
             hd_history_cols = self.get_hd_history_headers(
                 config.HD_HISTORY_START_YYYYMM, config.HD_HISTORY_END_YYYYMM
             )
-            headers.extend(hd_history_cols)
+            # headers.extend(hd_history_cols)
         try:
             writer = Writer(
                 f"{download_dir}{filename}.csv",
