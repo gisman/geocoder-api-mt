@@ -241,7 +241,7 @@ class Geocoder:
         # builder 호환성을 위해 유지
         return self.hasher.addressHash(addr)
 
-    def search(self, addr):
+    def search(self, addr, address_hint_info={}):
         if not isinstance(addr, str):
             return None
 
@@ -257,6 +257,19 @@ class Geocoder:
             return None
 
         hash, toks, addressCls, err = self.hasher.addressHash(address)
+        if address_hint_info:
+            if not toks.hasTypes(TOKEN_H1) and not toks.hasTypes(TOKEN_H23):
+                # h1, h23이 없는 경우
+                address = f'{address_hint_info.get("h1", "")} {address_hint_info.get("h23", "")} {address}'.strip()
+            elif not toks.hasTypes(TOKEN_H1):
+                # h1이 없는 경우
+                address = f'{address_hint_info.get("h1", "")} {address}'.strip()
+            elif not toks.hasTypes(TOKEN_H23):
+                # h23이 없는 경우
+                address = f'{address} {address_hint_info.get("h23", "")}'.strip()
+
+            hash, toks, addressCls, err = self.hasher.addressHash(address)
+
         self._append_err_by_addressCls(err_list, addressCls)
 
         logger.debug(f"address: {address}, \n hash: {hash}, addressCls: {addressCls}")

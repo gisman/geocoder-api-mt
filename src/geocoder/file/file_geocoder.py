@@ -11,7 +11,7 @@ from pyproj import Transformer, CRS
 import json
 import logging
 
-from src.geocoder import errs
+from src.geocoder import errs, tokens
 from src.geocoder.file.reader_xy import ReaderXY
 
 from .reader import Reader
@@ -29,7 +29,10 @@ Y_AXIS = "y_axis"
 
 class FileGeocoder:
     def __init__(
-        self, geocoder: Geocoder = None, reverse_geocoder: ReverseGeocoder = None
+        self,
+        geocoder: Geocoder = None,
+        reverse_geocoder: ReverseGeocoder = None,
+        address_hint: str = None,
     ):
         """
         FileGeocoder 객체를 초기화합니다.
@@ -40,6 +43,17 @@ class FileGeocoder:
         """
         self.geocoder = geocoder
         self.reverse_geocoder = reverse_geocoder
+        self.address_hint = address_hint
+
+        if address_hint:
+            hash, toks, addressCls, err = geocoder.addressHash(address_hint)
+            self.address_hint_info = {
+                "h1": toks.get_text(tokens.TOKEN_H1),
+                "h23": toks.get_text(tokens.TOKEN_H23),
+            }
+        else:
+            self.address_hint_info = {}
+
         # self.executor = None
         if config.THREAD_POOL_SIZE > 0:
             self.executor = ThreadPoolExecutor(
@@ -745,7 +759,7 @@ class FileGeocoder:
             실패하면 기본 값이 반환됩니다.
             dict["success"]는 반드시 "실패", "성공" 중 하나입니다.
         """
-        val = self.geocoder.search(addr)
+        val = self.geocoder.search(addr, self.address_hint_info)
         if val:
             self.enrich_geocode_result(full_history_list, val)
         else:

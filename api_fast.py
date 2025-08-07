@@ -64,6 +64,7 @@ class GeocodeFileItem(GeocodeBaseModel):
     download_dir: str
     target_crs: str = "EPSG:4326"
     sample_count: int = 1000  # 샘플 개수, 기본값은 1000
+    address_hint: Optional[str] = None  # 주소 힌트, 선택적 필드
 
 
 class GeocodeFileXYItem(GeocodeFileItem):
@@ -647,7 +648,9 @@ async def geocode_file(
     quarter = calculate_quarter_limit(data, token_stats)
 
     file_geocoder = FileGeocoder(
-        geocoder=ApiHandler.geocoder, reverse_geocoder=ApiHandler.reverse_geocoder
+        geocoder=ApiHandler.geocoder,
+        reverse_geocoder=ApiHandler.reverse_geocoder,
+        address_hint=data.address_hint,
     )
     await file_geocoder.prepare(data.filepath, data.uploaded_filename)
     if file_geocoder.address_col == -1:
