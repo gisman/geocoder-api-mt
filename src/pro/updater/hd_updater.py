@@ -89,7 +89,7 @@ class HdUpdater(BaseUpdater):
             try:
                 gdf = gpd.read_file(shp_file, encoding="cp949")
                 # simplify geometry
-                gdf["geometry"] = gdf.simplify(tolerance=5, preserve_topology=True)
+                gdf["geometry"] = gdf.simplify(tolerance=1, preserve_topology=True)
 
                 gdfs.append(gdf)
             except Exception as e:
@@ -174,7 +174,15 @@ class HdUpdater(BaseUpdater):
                 "hd_nm": match.get("EMD_KOR_NM", None),
             }
         else:
-            return {"hd_cd": None, "hd_nm": None}
+            # 가장 가까운 행정동 찾기
+            nearest_match = self.gdf.iloc[
+                possible_matches.distance(target_point).idxmin()
+            ]
+            # self.last_match = nearest_match
+            return {
+                "hd_cd": nearest_match.get("EMD_CD", None),
+                "hd_nm": nearest_match.get("EMD_KOR_NM", None),
+            }
 
     async def update(self, wfile):
         # CPU 바운드 작업을 별도의 스레드로 오프로드

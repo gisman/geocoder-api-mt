@@ -1,15 +1,29 @@
 import asyncio
 import json
+import os
 import re
 
 # import fiona
 # from fiona import transform
 from shapely.ops import transform
+from shapely.geometry import (
+    shape,
+    Point,
+    LineString,
+    Polygon,
+    MultiPoint,
+    MultiLineString,
+    MultiPolygon,
+    GeometryCollection,
+)
+
 import pyproj
 
 # import rocksdb3
 # import aimrocks
+from packages.Fiona import fiona
 from src.geocoder.geocoder import Geocoder
+from src.geocoder.util.pnumatcher import PNUMatcher
 from .updater import BaseUpdater
 from .hd_updater import HdUpdater
 from .z_updater import ZUpdater
@@ -193,10 +207,11 @@ class PnuUpdater(BaseUpdater):
         self.name = name
         self.yyyymm = yyyymm
         # 파일 다운로드 경로 지정
-        if not yyyymm:
-            self.outpath = f"{self.JUSO_DATA_DIR}/연속지적/"
-        else:
-            self.outpath = f"{self.JUSO_DATA_DIR}/연속지적/{self.yyyymm}/shp2/"
+        self.outpath = f"{self.JUSO_DATA_DIR}/전체분/{self.yyyymm}/pnu/"
+        # if not yyyymm:
+        #     self.outpath = f"{self.JUSO_DATA_DIR}/연속지적/"
+        # else:
+        #     self.outpath = f"{self.JUSO_DATA_DIR}/연속지적/{self.yyyymm}/shp2/"
 
     async def delete_all(self, wfile):
         # CPU 바운드 작업을 별도의 스레드로 오프로드
@@ -264,6 +279,174 @@ class PnuUpdater(BaseUpdater):
             bool: True if the update is successful, False otherwise.
         """
         # CPU 바운드 작업을 별도의 스레드로 오프로드
+        return await asyncio.to_thread(self._update_sync, wfile)
+
+    def get_data_yyyymm(self, shp_path):
+        # LSMD_CONT_LDREG_11560_202404.shp
+        filename = os.path.basename(shp_path)
+        # '_'를 기준으로 문자열을 분리하고 마지막 부분을 추출
+        part = filename.split("_")[-1]
+
+        # '.shp'를 제거하고 return
+        return part.replace(".shp", "")
+
+    def _update_sync(self, wfile):
+        self.data_yyyymm = self.get_data_yyyymm(self.name)
+
+        # 파일 읽기
+        # 한 줄씩 객체 생성해서 update_record() 호출
+        self._prepare_updater_logger(f"{self.name}.log")
+
+        h1_cd = self.name_to_h1_cd(self.name)
+
+        self.hu = HdUpdater(self.yyyymm, None)
+        self.hu.cache_shp(h1_cd)
+
+        self.zu = ZUpdater(self.yyyymm, None)
+        self.zu.cache_shp(h1_cd)
+
+        pnu_matcher = PNUMatcher()
+
+        cnt = 0
+        add_count = 0
+        has_xy = 0
+
+        from_crs = pyproj.CRS("EPSG:5186")
+        to_crs = pyproj.CRS("EPSG:5179")
+        # to_crs = pyproj.CRS("EPSG:4326")
+
+        proj_transform = pyproj.Transformer.from_crs(
+            from_crs, to_crs, always_xy=True
+        ).transform
+
+        self.logger.info(f"Update: {self.outpath}{self.name}")
+
+        # for all geometry
+        n = 0
+        batch = WriteBatch()
+        bcount = 0
+        # batch = rocksdb3.WriterBatch()
+        shp_path = f"{self.outpath}{self.name}"
+        with fiona.open(shp_path, "r", encoding="cp949") as shp_file:
+            total_features = len(shp_file)
+            self.logger.info(f"Total features in {self.name}: {total_features:,}")
+            for feature in shp_file:
+                value = dict(feature["properties"])
+                value["A1"] = value["PNU"]  # PNU
+                value["A2"] = value["PNU"][:10]
+                value["A3"] = pnu_matcher.get_ldong_name(value["PNU"][:10]).get(
+                    "법정동명"
+                )  # 서울특별시 영등포구 신길동
+                value["A5"] = value["JIBUN"]
+
+                geom = shape(feature["geometry"])
+
+                if geom:
+                    centroid = geom.centroid
+                    wgs84_centroid = transform(proj_transform, centroid)
+                    value["X좌표"] = int(wgs84_centroid.x)
+                    value["Y좌표"] = int(wgs84_centroid.y)
+                else:
+                    # geometry가 None인 경우 있음
+                    self.logger.debug(f"{value['A1']} has no geometry, skipping.")
+                    continue
+
+                try:
+                    address_dic = self.prepare_dic(value)
+                    if not address_dic:
+                        continue
+
+                    # # [TODO: 삭제]
+                    # if address_dic["ld_nm"] != "신북면":
+                    #     continue
+
+                    added = self.update_record(
+                        address_dic,
+                        merge_if_exists=True,  # null좌표 업데이트 기능도 있으므로 항상 True로 하는 것이 좋다.
+                        extras={
+                            "updater": "pnu_updater",
+                            "jibun": address_dic["jibun"],
+                            "yyyymm": self.yyyymm,
+                        },
+                        batch=batch,
+                        fast_giveup=True,  # 빠른 포기를 위해 True로 설정. 처음 시도에 중복이 있으면 바로 포기.
+                    )
+                    bcount += added
+                    add_count += added
+                    if address_dic["bld_x"]:
+                        has_xy += 1
+                except Exception as e:
+                    self.logger.error(f"Error: {e}")
+                    # continue
+
+                cnt += 1
+                if cnt % 10000 == 0:
+                    progress = (cnt / total_features) * 100
+                    self.logger.info(
+                        f"{self.name}  {cnt:,} +{add_count:,} ({progress:.2f}%)"
+                    )
+                    # print(f"{self.name} {cnt:,}")
+                if bcount > 5000:
+                    self.write_batch(batch)
+                    batch.clear()
+                    # batch = rocksdb3.WriterBatch()
+                    bcount = 0
+
+            # 마지막 배치 처리
+            if bcount != 0:
+                self.write_batch(batch)
+                batch.clear()
+
+            self.ldb.flush()
+
+        self.logger.info(
+            f"연속지적 DB {self.name}: {cnt:,} 건, 좌표있는 건물: {has_xy:,} 건. hash 추가: {add_count:,} 건"
+        )
+
+        self.logger.info(f"완료: {self.name}")
+
+        log_file = f"{self.outpath}{self.name}.log"
+        with open(log_file, "r") as f:
+            log = f.read()
+            wfile.write(log)
+
+        self._stop_updater_logging()
+        return True
+
+    def prepare_dic_jibun(self, value):
+        d = {
+            "bld_mgt_no": value["건물관리번호"],
+            "ld_cd": value["법정동코드"],
+            "h1_nm": value["시도명"],
+            "h23_nm": value["시군구명"],
+            "ld_nm": value["읍면동명"],
+            "ri_nm": value["리명"],
+            "san": value["산여부"],
+            "bng1": value["지번본번"],
+            "bng2": value["지번부번"],
+            "road_cd": value["도로명코드"],
+            "undgrnd_yn": value["지하여부"],
+            "bld1": value["건물본번"],
+            "bld2": value["건물부번"],
+            "undgrnd_yn": value["지하여부"],
+            "bld1": value["건물본번"],
+            "bld2": value["건물부번"],
+            # "hd_cd": value.get("주소관할읍면동코드"),
+        }
+
+        return d
+
+    async def update_shp2(self, wfile):
+        """
+        Updates the geocoder with the pnu (연속지적 shp).
+
+        Args:
+            wfile: The file to write the log to.
+
+        Returns:
+            bool: True if the update is successful, False otherwise.
+        """
+        # CPU 바운드 작업을 별도의 스레드로 오프로드
 
         # self.name 과 같은 패턴의 파일을 모두 찾기
         # 'AL_42_D002_20171202(2).shp'
@@ -283,7 +466,7 @@ class PnuUpdater(BaseUpdater):
         for f in matching_files:
             self.logger.info(f"Found matching file: {f}")
             self.name = f.split("/")[-1]  # 파일명만 추출
-            if not await asyncio.to_thread(self._update_sync, wfile):
+            if not await asyncio.to_thread(self._update_sync_shp2, wfile):
                 return False
 
         return True
@@ -291,7 +474,7 @@ class PnuUpdater(BaseUpdater):
         #     self.logger.error(f"No matching files found for pattern: {pattern}")
         #     return False
 
-    def _update_sync(self, wfile):
+    def _update_sync_shp2(self, wfile):
         """
         Updates the geocoder with the pnu (연속지적 shp).
 
@@ -308,10 +491,10 @@ class PnuUpdater(BaseUpdater):
 
         h1_cd = self.name_to_h1_cd(self.name)
 
-        self.hu = HdUpdater("202504", None)
+        self.hu = HdUpdater(self.yyyymm, None)
         self.hu.cache_shp(h1_cd)
 
-        self.zu = ZUpdater("202504", None)
+        self.zu = ZUpdater(self.yyyymm, None)
         self.zu.cache_shp(h1_cd)
 
         cnt = 0
@@ -538,6 +721,8 @@ class PnuUpdater(BaseUpdater):
                 h1_cd = name.split("_")[2]
             else:  # AL_44_D002_20151224.shp, AL_42_D002_20151224(2).shp
                 h1_cd = name.split("_")[1]
+        elif name.startswith("LSMD_CONT_LDREG_"):
+            h1_cd = name.split("_")[3][:2]
 
         if h1_cd == "42":
             h1_cd = "51"

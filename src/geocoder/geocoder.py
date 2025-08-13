@@ -31,10 +31,13 @@ from .pos_cd import *
 logger = logging.getLogger(__name__)
 console_handler = logging.StreamHandler()
 console_handler.setLevel(config.LOG_LEVEL)
-formatter = logging.Formatter(" %(message)s")
+formatter = logging.Formatter("%(levelname)s:   %(message)s")
 console_handler.setFormatter(formatter)
 logger.handlers = [console_handler]
 logger.setLevel(config.LOG_LEVEL)
+
+IMPORTANT_ERROR = True
+NOT_IMPORTANT_ERROR = False
 
 
 class Geocoder:
@@ -137,7 +140,6 @@ class Geocoder:
 
         # self.db = AimrocksDbGeocode(config.GEOCODE_DB)
         # self.db = RocksDbGeocode(config.GEOCODE_DB)
-        self.imoprtant_error = False
 
         self.hasher = Hasher(
             self.tokenizer,
@@ -241,15 +243,59 @@ class Geocoder:
         # builder 호환성을 위해 유지
         return self.hasher.addressHash(addr)
 
+    def _fix_h23_nm(self, toks: Tokens):
+        if len(toks) < 2:
+            return False
+
+        h23_pos = toks.index(TOKEN_H23)
+        h1_nm = toks.get_text(TOKEN_H1)
+        h1_cd = None
+        if h1_nm:
+            h1_nm = self.hsimplifier.h1Hash(h1_nm)
+            h1_cd = self.hcodeMatcher.search_h1_cd(h1_nm)
+
+        if h23_pos > -1:
+            # h23이 있는 경우, h23을 교정
+            h23_nm = toks.get(h23_pos).val
+
+            fixed_h23_nm = self.hcodeMatcher.search_most_likely_h23_nm(h23_nm, h1_cd)
+            if not fixed_h23_nm:
+                # 시군구명 삭제
+                logger.debug(f"유효하지 않은 시군구명: {h23_nm}")
+                toks.delete(h23_pos)
+                return True
+            elif fixed_h23_nm and fixed_h23_nm != h23_nm:
+                logger.debug(f"h23_nm 오타 교정: {h23_nm} -> {fixed_h23_nm}")
+                toks.get(h23_pos).val = fixed_h23_nm
+                return True
+
+        return False
+
+    def _apply_hint(self, address_hint_info, toks, address):
+        if address_hint_info:
+            if not toks.hasTypes(TOKEN_H1) and not toks.hasTypes(TOKEN_H23):
+                # h1, h23이 없는 경우
+                return f'{address_hint_info.get("h1", "")} {address_hint_info.get("h23", "")} {address}'.strip()
+            elif not toks.hasTypes(TOKEN_H1):
+                # h1이 없는 경우
+                return f'{address_hint_info.get("h1", "")} {address}'.strip()
+            elif not toks.hasTypes(TOKEN_H23):
+                # h23이 없는 경우
+                return f'{address} {address_hint_info.get("h23", "")}'.strip()
+        return None
+
     def search(self, addr, address_hint_info={}):
         if not isinstance(addr, str):
             return None
 
         # 스레드별 로컬 변수로 변경하여 thread safety 확보
         err_list = ErrList()
-        imoprtant_error = False
+        important_error = False
         addressCls = AddressCls.NOT_ADDRESS
-        err = ERR_RUNTIME
+        err: int = ERR_RUNTIME
+        hash: str = None
+        toks: Tokens = None
+        addressCls: str = None
 
         address = addr.strip('"')
         if address == "":
@@ -257,23 +303,14 @@ class Geocoder:
             return None
 
         hash, toks, addressCls, err = self.hasher.addressHash(address)
-        if address_hint_info:
-            if not toks.hasTypes(TOKEN_H1) and not toks.hasTypes(TOKEN_H23):
-                # h1, h23이 없는 경우
-                address = f'{address_hint_info.get("h1", "")} {address_hint_info.get("h23", "")} {address}'.strip()
-            elif not toks.hasTypes(TOKEN_H1):
-                # h1이 없는 경우
-                address = f'{address_hint_info.get("h1", "")} {address}'.strip()
-            elif not toks.hasTypes(TOKEN_H23):
-                # h23이 없는 경우
-                address = f'{address} {address_hint_info.get("h23", "")}'.strip()
+        if addr_with_hint := self._apply_hint(address_hint_info, toks, address):
+            hash, toks, addressCls, err = self.hasher.addressHash(addr_with_hint)
 
-            hash, toks, addressCls, err = self.hasher.addressHash(address)
+        # self._append_err_by_addressCls(err_list, addressCls)
 
-        self._append_err_by_addressCls(err_list, addressCls)
-
-        logger.debug(f"address: {address}, \n hash: {hash}, addressCls: {addressCls}")
-        logger.debug(f"toks: {toks}, errmsg: {err}")
+        logger.debug(f"address: {address}")
+        logger.debug(f"hash: {hash}, addressCls: {addressCls}")
+        logger.debug(f"toks: {toks}")
         if err:
             self._append_err(err_list, err)
 
@@ -284,7 +321,13 @@ class Geocoder:
             }
         toksString = self.tokenizer.getToksString(toks)
 
-        # possible_hash_list = self.possible_hashs(toks, hash, addressCls)
+        # h23 오타 교정
+        if self._fix_h23_nm(toks):
+            address = toks.to_address()
+            hash, toks, addressCls, err = self.hasher.addressHash(address)
+
+        h1_nm = self.hsimplifier.h1Hash(toks.get_text(TOKEN_H1)) or None
+        h23_nm = self.hsimplifier.h23Hash(toks.get_text(TOKEN_H23)) or None
 
         last_err_for_hash_condition = None
         hash_info: PossibleHash = None
@@ -293,14 +336,9 @@ class Geocoder:
             hash,
             self.hasher,
             addressCls,
-            self.jibunAddress,
-            self.bldAddress,
-            self.roadAddress,
-            self.hsimplifier,
-            self.hcodeMatcher,
         ):
 
-            logger.debug(f"trying hash_info: {str(hash_info)}")
+            logger.debug(f"검색: [ {str(hash_info)} ]")
             # for hash_info in possible_hash_list:
             hash = hash_info.get_hash()
 
@@ -308,12 +346,14 @@ class Geocoder:
             if hash_info.pass_condition(last_err_for_hash_condition):
                 continue
 
-            val = self.most_similar_address(
+            val, important_error = self.most_similar_address(
                 toks,
                 hash,
                 hash_info.get_addressCls(),
                 hash_info.get_pos_cd_filter(),
                 err_list=err_list,
+                h1_nm=h1_nm,
+                h23_nm=h23_nm,
             )
             err_failed = hash_info.get_err_failed()
             err_detail = hash_info.get_err_detail()
@@ -321,6 +361,7 @@ class Geocoder:
             if val:
                 # "info_success": INFO_NEAR_ROAD_BLD_FOUND,
                 # "info_detail": h,
+                logger.debug(f"성공: [ {hash} ]")
                 if hash_info.is_add_msg_when_success():
                     self._append_err(
                         err_list,
@@ -328,7 +369,7 @@ class Geocoder:
                         hash_info.get_info_detail(),
                     )
                     logger.debug(
-                        f"{hash_info.get_info_success()}: {hash_info.get_info_detail()}"
+                        f"  {hash_info.get_info_success_msg()}: {hash_info.get_info_detail()}"
                     )
 
                     if hash_info.get_info_success() == INFO_NEAR_JIBUN_FOUND:
@@ -336,7 +377,6 @@ class Geocoder:
                     elif hash_info.get_info_success() == INFO_NEAR_ROAD_BLD_FOUND:
                         val["pos_cd"] = NEAR_ROAD_BLD
 
-                logger.debug(f"Found address with hash: {hash}")
                 val["success"] = True
                 val["errmsg"] = ""
                 if "pos_cd" not in val:
@@ -383,17 +423,26 @@ class Geocoder:
 
                 return val
             else:
-                last_err_for_hash_condition = err_list.last_err().get("err_cd")
-                # self._append_err(err_list, err_failed, err_detail)
+                last_err_for_hash_condition = (
+                    err_list.last_err().get("err_cd") if err_list.last_err() else None
+                )
+                self._append_err(err_list, err_failed, err_detail)
+
+                if important_error:
+                    break
 
         # self._append_err(err_list, ERR_NOT_FOUND)
         errmsg = self._err_message(err_list, addressCls.value, "")
+        ac = hash_info.get_addressCls().value if hash_info else None
+        if not ac:
+            ac = addressCls.value
+
         val = {
             "success": False,
             "errmsg": errmsg,
             "hash": hash,
             "address": address,
-            "addressCls": hash_info.get_addressCls().value or addressCls.value,
+            "addressCls": ac,
             "toksString": self.tokenizer.getToksString(toks),
         }
 
@@ -450,24 +499,37 @@ class Geocoder:
         candidate_addresses,
         toks: Tokens,
         h1_nm,
+        h23_nm,
         addressCls,
         pos_cd_filter: set = None,
         err_list: ErrList = None,
     ):
-        logger.debug(f"filter_candidate_addresses: {len(candidate_addresses)}")
+        # "청주시 흥덕구"는 "청주시" 또는 "흥덕구"로 입력된 주소일 수 있다.
+        def h23_compare(db_h23_nm, in_h23_nm):
+            if " " in db_h23_nm:
+                h2_nm, h3_nm = db_h23_nm.split(" ", 1)
+                return (
+                    self.hsimplifier.h23Hash(h2_nm) == in_h23_nm
+                    or self.hsimplifier.h23Hash(h3_nm) == in_h23_nm
+                    or self.hsimplifier.h23Hash(db_h23_nm) == in_h23_nm
+                )
+            else:
+                return self.hsimplifier.h23Hash(db_h23_nm) == in_h23_nm
+
+        # logger.debug(f"filter_candidate_addresses: {len(candidate_addresses)}")
         if h1_nm:
             # h1_nm 같은 것만 선택
             candidate_addresses = [
                 r for r in candidate_addresses if r["h1_nm"] == h1_nm
             ]
             if not candidate_addresses:
-                return []
+                return [], NOT_IMPORTANT_ERROR
 
         # 좌표 없는 것 필터링
         candidate_addresses = [r for r in candidate_addresses if r["x"]]
         if not candidate_addresses:
             self.append_err(ERR_NOT_FOUND, "좌표 없는 주소", err_list=err_list)
-            return []
+            return [], NOT_IMPORTANT_ERROR
 
         if pos_cd_filter:
             # pos_cd_filter가 있는 경우 필터링
@@ -478,13 +540,30 @@ class Geocoder:
                 self.append_err(
                     ERR_POS_CD_NOT_FOUND, str(pos_cd_filter), err_list=err_list
                 )
-                return []
+                return [], NOT_IMPORTANT_ERROR
         else:
             if addressCls == AddressCls.JIBUN_ADDRESS:
                 # 지번 주소는 pos_cd가 없을 수 있음
                 candidate_addresses = [
                     r for r in candidate_addresses if "pos_cd" not in r
                 ]
+
+                # h23_nm이 일치해야 함.
+                if h23_nm:
+                    candidate_addresses = [
+                        r
+                        for r in candidate_addresses
+                        if h23_compare(r.get("h23_nm"), h23_nm)
+                    ]
+                else:  # h23_nm이 없는 경우 후보 데이터의 h23_nm이 유일해야 함
+                    h23_nm_set = {r["h23_nm"] for r in candidate_addresses}
+                    if len(h23_nm_set) > 1:
+                        self.append_err(
+                            ERR_NOT_UNIQUE_H23_NM, str(h23_nm_set), err_list=err_list
+                        )
+                        # self.important_error = True
+                        return [], IMPORTANT_ERROR
+
             elif addressCls == AddressCls.ROAD_ADDRESS:
                 # 12자의 road_cd가 존재해야 함
                 candidate_addresses = [
@@ -504,23 +583,30 @@ class Geocoder:
                             str(h23_nm_set),
                             err_list=err_list,
                         )
-                        self.imoprtant_error = True
-                        return []
+                        # self.important_error = True
+                        return [], IMPORTANT_ERROR
 
                 if addressCls == AddressCls.ROAD_ADDRESS and toks.hasTypes(TOKEN_H23):
                     h23_nm_set = {r["h23_nm"] for r in candidate_addresses}
                     h23_hash = self.hsimplifier.h23Hash(toks.get_text(TOKEN_H23))
                     # 도로명 주소 후보자의 h23_nm이 모두 같아야 함
                     if len(h23_nm_set) > 1:
-                        self.imoprtant_error = True
-                        return []
+                        # self.important_error = True
+                        return [], IMPORTANT_ERROR
                     else:
+                        if h23_nm:
+                            candidate_addresses = [
+                                r
+                                for r in candidate_addresses
+                                if h23_compare(r.get("h23_nm"), h23_nm)
+                            ]
+
                         # 경기도이며 h23_nm이 모두 같다면 입력 주소의 h23_nm과 후보자의 h23_nm이 일치해야 함
-                        if h1_nm == "경기" and h23_hash != self.hsimplifier.h23Hash(
-                            next(iter(h23_nm_set))
-                        ).replace(" ", ""):
-                            self.imoprtant_error = True
-                            return []
+                        # if h1_nm == "경기" and h23_hash != self.hsimplifier.h23Hash(
+                        #     next(iter(h23_nm_set))
+                        # ).replace(" ", ""):
+                        #     self.important_error = True
+                        #     return [], IMPORTANT_ERROR
 
             elif addressCls == AddressCls.BLD_ADDRESS:
                 candidate_addresses = [
@@ -539,7 +625,7 @@ class Geocoder:
                 ]
                 if not candidate_addresses:
                     self.append_err(ERR_RI_NOT_FOUND, err_list=err_list)
-                    return []
+                    return [], NOT_IMPORTANT_ERROR
             elif addressCls == AddressCls.ROAD_END_ADDRESS:
                 candidate_addresses = [
                     r
@@ -548,7 +634,7 @@ class Geocoder:
                 ]
                 if not candidate_addresses:
                     self.append_err(ERR_ROAD_NOT_FOUND, err_list=err_list)
-                    return []
+                    return [], NOT_IMPORTANT_ERROR
             elif addressCls == AddressCls.H4_END_ADDRESS:
                 candidate_addresses = [
                     r
@@ -557,7 +643,7 @@ class Geocoder:
                 ]
                 if not candidate_addresses:
                     self.append_err(ERR_DONG_NOT_FOUND, err_list=err_list)
-                    return []
+                    return [], NOT_IMPORTANT_ERROR
             elif addressCls == AddressCls.H23_END_ADDRESS:
                 candidate_addresses = [
                     r
@@ -566,7 +652,7 @@ class Geocoder:
                 ]
                 if not candidate_addresses:
                     self.append_err(ERR_H23_NOT_FOUND, err_list=err_list)
-                    return []
+                    return [], NOT_IMPORTANT_ERROR
             elif addressCls == AddressCls.H1_END_ADDRESS:
                 candidate_addresses = [
                     r
@@ -575,7 +661,7 @@ class Geocoder:
                 ]
                 if not candidate_addresses:
                     self.append_err(ERR_H1_NOT_FOUND, err_list=err_list)
-                    return []
+                    return [], NOT_IMPORTANT_ERROR
 
         if h1_nm and candidate_addresses:
             # h1_nm 같은 것만 선택
@@ -584,20 +670,20 @@ class Geocoder:
             ]
             if not candidate_addresses:
                 self.append_err(ERR_H1_NM_NOT_FOUND, err_list=err_list)
-                return []
+                return [], NOT_IMPORTANT_ERROR
         else:
             # h1_nm 없으면 모든 h1_nm이 같아야 함. 그렇지 않으면 None 반환
             h1_nm_set = {r["h1_nm"] for r in candidate_addresses if "h1_nm" in r}
             if len(h1_nm_set) > 1:
                 self.append_err(ERR_NOT_UNIQUE_H1_NM, str(h1_nm_set), err_list=err_list)
-                return []
+                return [], NOT_IMPORTANT_ERROR
 
         if addressCls == addressCls.JIBUN_ADDRESS and toks.hasTypes(TOKEN_RI):
             # ri가 있는 경우 ri_nm이 같아야 함
             ri_nm_set = {r["ri_nm"] for r in candidate_addresses if "ri_nm" in r}
             if len(ri_nm_set) > 1:
                 self.append_err(ERR_NOT_UNIQUE_RI_NM, str(ri_nm_set), err_list=err_list)
-                return []
+                return [], NOT_IMPORTANT_ERROR
 
         if addressCls == AddressCls.ROAD_ADDRESS:
             # 도로명주소는 rm 이 있어야 함
@@ -618,7 +704,7 @@ class Geocoder:
 
             if not candidate_addresses:
                 self.append_err(ERR_ROAD_NM_NOT_FOUND, err_list=err_list)
-                return []
+                return [], NOT_IMPORTANT_ERROR
 
             if not h1_nm:
                 # h1_nm 없으면 모든 후보의 도로명 코드가 같아야 함
@@ -627,7 +713,7 @@ class Geocoder:
                     self.append_err(
                         ERR_NOT_UNIQUE_ROAD_CD, str(road_cds), err_list=err_list
                     )
-                    return []
+                    return [], NOT_IMPORTANT_ERROR
 
         # extras.get("updater") 우선순위. "roadbase_updater"를 가장 나중에, extras.get("yyyymm") 우선순위. 가장 최근 날짜를 우선으로 함.
         # Sort by extras.get("updater") and extras.get("yyyymm")
@@ -648,7 +734,7 @@ class Geocoder:
         #     ),
         #     reverse=True,
         # )
-        return candidate_addresses
+        return candidate_addresses, False
 
     def most_similar_address(
         self,
@@ -657,6 +743,8 @@ class Geocoder:
         addressCls: str = None,
         pos_cd_filter: list = None,
         err_list: ErrList = None,
+        h1_nm: str = None,
+        h23_nm: str = None,
     ):
         """
         주어진 토큰과 키를 사용하여 가장 유사한 주소를 반환합니다.
@@ -676,7 +764,7 @@ class Geocoder:
             o = self._get_db().get(hash)
             if o == None:
                 logger.debug(f"Not Found: {addressCls}, hash: {hash}")
-                return None
+                return None, NOT_IMPORTANT_ERROR
 
             t0 = toks.get(0)
             if t0.t == TOKEN_H23 and t0.val.startswith("세종"):
@@ -689,30 +777,31 @@ class Geocoder:
                 candidate_addresses = o
 
             # h1 다르면 배제
-            h1_pos = toks.index(TOKEN_H1)
-            if h1_pos > -1:
-                # h1 같은 것만 선택
-                h1_nm = self.hsimplifier.h1Hash(toks[h1_pos])
-            else:
-                h1_nm = None
+            # h1_pos = toks.index(TOKEN_H1)
+            # if h1_pos > -1:
+            #     # h1 같은 것만 선택
+            #     h1_nm = self.hsimplifier.h1Hash(toks[h1_pos])
+            # else:
+            #     h1_nm = None
 
             # 후보자 압축 (h1_nm이 있는 경우 h1_nm과 일치하는 것만 선택)
-            candidate_addresses = self.filter_candidate_addresses(
+            candidate_addresses, important_error = self.filter_candidate_addresses(
                 candidate_addresses,
                 toks,
                 h1_nm,
+                h23_nm,
                 addressCls,
                 pos_cd_filter=pos_cd_filter,
                 err_list=err_list,
             )
             if not candidate_addresses:
-                return None
+                return None, important_error
             if len(candidate_addresses) == 1:
                 # 후보가 하나면 바로 반환
                 val = candidate_addresses[0]
-                return val
+                return val, important_error
             elif pos_cd_filter:
-                return candidate_addresses[0]
+                return candidate_addresses[0], important_error
 
             if addressCls == AddressCls.JIBUN_ADDRESS:
                 if toks.hasTypes(TOKEN_BLD):
@@ -733,15 +822,15 @@ class Geocoder:
                             JIBUN  # 지번 주소는 건물명까지 검색 안 해도 성공한 것.
                         )
                         val["similar_hash"] = hash
-                        return val
+                        return val, important_error
                     else:
                         val = candidate_addresses[0]
                         # val["similar_hash"] = hash
-                        return val
+                        return val, important_error
                 else:
                     val = candidate_addresses[0]
                     val["similar_hash"] = hash
-                    return val
+                    return val, important_error
 
             elif addressCls == AddressCls.ROAD_ADDRESS:
                 if toks.hasTypes(TOKEN_BLD):
@@ -762,12 +851,12 @@ class Geocoder:
                             ROAD  # 지번 주소는 건물명까지 검색 안 해도 성공한 것.
                         )
                         val["similar_hash"] = hash
-                        return val
+                        return val, important_error
 
                 # 건물명이 없거나 유사한 건물명이 없는 경우
                 val = candidate_addresses[0]
                 val["similar_hash"] = hash
-                return val
+                return val, important_error
 
             elif addressCls == AddressCls.BLD_ADDRESS and toks.hasTypes(TOKEN_BLD):
                 # 가장 유사한 건물 주소를 찾는다.
@@ -787,7 +876,7 @@ class Geocoder:
                     val["pos_cd"] = SIMILAR_BUILDING_NAME
                     val["similar_hash"] = hash
                     self.append_err(INFO_SIMILAR_BLD_FOUND, " ".join(val["bm"]))
-                    return val
+                    return val, important_error
                 else:
                     self.append_err(ERR_BLD_NM_NOT_FOUND, bld_name_with_dong)
 
@@ -800,13 +889,13 @@ class Geocoder:
                 AddressCls.H1_END_ADDRESS,
             ):
                 val = candidate_addresses[0]
-                return val
+                return val, important_error
 
             # 길이름 다르면 배제: 보류
-            return None
+            return None, important_error
         except Exception as e:
             # print(e)
-            return None
+            return None, important_error
 
     def err_message(self, addressCls, pos_cd, err_list: ErrList = None):
         if addressCls in (AddressCls.NOT_ADDRESS, AddressCls.UNRECOGNIZABLE_ADDRESS):

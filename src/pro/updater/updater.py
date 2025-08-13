@@ -254,6 +254,11 @@ class BaseUpdater:
             add_count += self._merge_address_multi(
                 [
                     ("h23_nm", "ld_nm", "ri_nm", "san", "bng1", "bng2"),
+                    # (
+                    #     ("h23_nm", "ri_nm", "san", "bng1", "bng2")
+                    #     if daddr["ri_nm"]
+                    #     else ()
+                    # ),  # 전남 여수시 죽포리 1519 => 리 이하 hash 검사를 하므로 추가 안 해도 됨. 단, h23 일치 여부 검사 필수
                     ("ld_nm", "ri_nm", "san", "bng1", "bng2"),
                     ("ri_nm", "san", "bng1", "bng2") if daddr["ri_nm"] else (),
                 ],
@@ -288,6 +293,11 @@ class BaseUpdater:
             add_count += self._merge_address_multi(
                 [
                     ("h23_nm", "hd_nm", "ri_nm", "san", "bng1", "bng2"),
+                    # (
+                    #     ("h23_nm", "ri_nm", "san", "bng1", "bng2")
+                    #     if daddr["ri_nm"]
+                    #     else ()
+                    # ),
                     ("hd_nm", "ri_nm", "san", "bng1", "bng2"),
                     ("ri_nm", "san", "bng1", "bng2") if daddr["ri_nm"] else (),
                 ],
@@ -764,7 +774,9 @@ class BaseUpdater:
 
             # 없으면 추가
             if val == [] or not self._has_val(val, self.ctx.val):
-                val.append(self.ctx.val)
+                # 좌표가 같으면 update
+                self.update_or_append_by_xy(val)
+
                 modified = True
                 added = True
 
@@ -778,6 +790,30 @@ class BaseUpdater:
                 self.db_cache[key] = val
 
         return added
+
+    def update_or_append_by_xy(self, val):
+        """
+        Updates or appends the entry in the database based on the x, y coordinates.
+
+        Args:
+            val (list): The list of values to update or append.
+        """
+        # 좌표가 같으면 업데이트
+        updated = False
+        for item in val:
+            if (
+                item["x"]
+                and self.ctx.val["x"]
+                and item["x"] == self.ctx.val["x"]
+                and item["y"] == self.ctx.val["y"]
+            ):
+                # 좌표가 같으면 업데이트
+                # ctx.val의 값 중에서 존재하는 것만 업데이트
+                item.update({k: v for k, v in self.ctx.val.items() if v})
+                updated = True
+
+        if not updated:
+            val.append(self.ctx.val)
 
     def write_batch(self, batch):
         """

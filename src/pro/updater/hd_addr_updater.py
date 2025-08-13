@@ -1,5 +1,7 @@
 import asyncio
 
+from packages.Fiona import fiona
+
 # import fiona
 # import pyogrio
 from .shp_reader import ShpReader

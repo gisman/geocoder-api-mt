@@ -383,7 +383,9 @@ def process_shapefile_to_rocksdb(shp_file, db_path, depth, key_prefix, batch_siz
         logger.error(f"Error processing shapefile: {str(e)}")
         raise
     finally:
-        # RocksDB는 명시적으로 닫을 필요가 없음
+        # RocksDB는 명시적으로 닫을 필요가 없지만 merge_hd_history api가 DB를 열기 때문에 닫음.
+        db.close()
+        del db  # Clean up the db variable to free resources
         pass
 
 

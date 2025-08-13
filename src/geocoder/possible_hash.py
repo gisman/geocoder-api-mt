@@ -76,6 +76,9 @@ class PossibleHash:
     def get_info_success(self):
         return self.info_success
 
+    def get_info_success_msg(self):
+        return ERR_STR_MAP.get(self.info_success)
+
     def get_info_detail(self):
         return self.info_detail or ""
 
@@ -83,6 +86,8 @@ class PossibleHash:
         return self.info_success is not None
 
     def __str__(self):
+        return f"""{self.hash}, {self.addressCls}, {self.pos_cd_filter}"""
+
         return f"""{self.hash}, {self.addressCls}, {self.pos_cd_filter}
     failed=({ERR_STR_MAP.get(self.err_failed)}, {self.err_detail}), 
     success=({ERR_STR_MAP.get(self.info_success)}, {self.info_detail}))"""
@@ -93,11 +98,6 @@ def possible_hashs(
     hash: str,
     hasher: Hasher,
     addressCls,
-    jibunAddress,
-    bldAddress,
-    roadAddress,
-    hsimplifier,
-    hcodeMatcher,
 ):
     # def possible_hashs(self, toks: Tokens, hash: str, addressCls) -> list[str]:
     """
@@ -216,16 +216,16 @@ def possible_hashs(
         if addressCls == AddressCls.JIBUN_ADDRESS:
             # Replace the $SELECTION_PLACEHOLDER$ code with:
             yield PossibleHash(
-                hash=jibunAddress.hash(toks),
+                hash=hasher.jibunAddress.hash(toks),
                 addressCls=AddressCls.JIBUN_ADDRESS,
                 err_failed=ERR_BLD_DONG_NOT_FOUND,
                 err_detail=bld_dong,
                 info_success=INFO_JIBUN_ADDRESS,
-                info_detail=f"지번 주소의 {bld_dong}",
+                info_detail=f"",
             )
         elif addressCls == AddressCls.BLD_ADDRESS:
             yield PossibleHash(
-                hash=bldAddress.hash(toks),
+                hash=hasher.bldAddress.hash(toks),
                 addressCls=AddressCls.BLD_ADDRESS,
                 err_failed=ERR_BLD_DONG_NOT_FOUND,
                 err_detail=bld_dong,
@@ -234,12 +234,13 @@ def possible_hashs(
             )
         elif addressCls == AddressCls.ROAD_ADDRESS:
             yield PossibleHash(
-                hash=roadAddress.hash(toks),
+                hash=hasher.roadAddress.hash(toks),
                 addressCls=AddressCls.ROAD_ADDRESS,
                 err_failed=ERR_BLD_DONG_NOT_FOUND,
                 err_detail=bld_dong,
                 info_success=INFO_ROAD_ADDRESS,
-                info_detail=f"도로명 주소의 {bld_dong}",
+                info_detail=f"",
+                # info_detail=f"도로명 주소의 {bld_dong}",
             )
 
     # 건물동 제외하고 건물명까지
@@ -247,7 +248,7 @@ def possible_hashs(
         bld_nm = toks.get(toks.index(TOKEN_BLD)).val
         if addressCls == AddressCls.JIBUN_ADDRESS:
             yield PossibleHash(
-                hash=jibunAddress.hash(toks, end_with=TOKEN_BLD),
+                hash=hasher.jibunAddress.hash(toks, end_with=TOKEN_BLD),
                 addressCls=AddressCls.JIBUN_ADDRESS,
                 err_failed=ERR_BLD_NM_NOT_FOUND,
                 err_detail=bld_nm,
@@ -257,7 +258,7 @@ def possible_hashs(
 
         elif addressCls == AddressCls.BLD_ADDRESS:
             yield PossibleHash(
-                hash=bldAddress.hash(toks, end_with=TOKEN_BLD),
+                hash=hasher.bldAddress.hash(toks, end_with=TOKEN_BLD),
                 addressCls=AddressCls.BLD_ADDRESS,
                 err_failed=ERR_BLD_NM_NOT_FOUND,
                 err_detail=bld_nm,
@@ -267,7 +268,7 @@ def possible_hashs(
 
         elif addressCls == AddressCls.ROAD_ADDRESS:
             yield PossibleHash(
-                hash=roadAddress.hash(toks, end_with=TOKEN_BLD),
+                hash=hasher.roadAddress.hash(toks, end_with=TOKEN_BLD),
                 addressCls=AddressCls.ROAD_ADDRESS,
                 err_failed=ERR_BLD_NM_NOT_FOUND,
                 err_detail=bld_nm,
@@ -293,7 +294,7 @@ def possible_hashs(
     if addressCls == AddressCls.JIBUN_ADDRESS:
         bld_nm = toks.get_text(TOKEN_BLD)
         yield PossibleHash(
-            hash=jibunAddress.hash(toks, end_with=TOKEN_BNG),
+            hash=hasher.jibunAddress.hash(toks, end_with=TOKEN_BNG),
             addressCls=AddressCls.JIBUN_ADDRESS,
             err_failed=ERR_JIBUN_HASH,
             info_success=INFO_JIBUN_ADDRESS,
@@ -303,12 +304,12 @@ def possible_hashs(
     elif addressCls == AddressCls.ROAD_ADDRESS:
         bld_nm = toks.get_text(TOKEN_BLD)
         yield PossibleHash(
-            hash=roadAddress.hash(toks, end_with=TOKEN_BLDNO),
+            hash=hasher.roadAddress.hash(toks, end_with=TOKEN_BLDNO),
             addressCls=AddressCls.ROAD_ADDRESS,
             err_failed=ERR_ROAD_HASH,
             err_detail=hash,
             info_success=INFO_ROAD_ADDRESS,
-            info_detail=(f"건물명 {bld_nm} 제외" if bld_nm else ""),
+            info_detail=f"건물명 {bld_nm} 제외" if bld_nm else "",
         )
 
     # 인근 지번 주소
@@ -374,7 +375,7 @@ def possible_hashs(
             [toks.get(toks.index(TOKEN_H4)).val, toks.get(toks.index(TOKEN_RI)).val]
         )
         yield PossibleHash(
-            hash=roadAddress.hash(
+            hash=hasher.roadAddress.hash(
                 toks, end_with=TOKEN_BLDNO, ignore=[TOKEN_H4, TOKEN_RI]
             ),
             addressCls=AddressCls.ROAD_ADDRESS,
@@ -386,32 +387,57 @@ def possible_hashs(
 
     # 도로명 이하 주소               오룡길 1 전라남도청 본관, 오룡길 1 전라남도청, 오룡길 1
     if toks.hasTypes(TOKEN_ROAD) and toks.hasTypes(TOKEN_BLDNO):
+        hash = hasher.roadAddress.hash(toks, start_with=TOKEN_ROAD)
         yield PossibleHash(
-            hash=roadAddress.hash(toks, start_with=TOKEN_ROAD),
+            hash=hash,
             addressCls=AddressCls.ROAD_ADDRESS,
             err_failed=ERR_REGION_NOT_FOUND,
-            err_detail=roadAddress.hash(toks, start_with=TOKEN_ROAD),
+            err_detail=hash,
             info_success=INFO_ROAD_ADDRESS,
             info_detail=toks.get_text_after(TOKEN_ROAD, count=2),
         )
+        # 인근 도로명 주소
+        hashs = get_near_road_bld_hashs(hash)
+        for h, bld_no in hashs:
+            yield PossibleHash(
+                hash=h,
+                addressCls=AddressCls.ROAD_ADDRESS,
+                err_failed=ERR_NEAR_ROAD_BLD_NOT_FOUND,
+                err_detail=bld_no,
+                info_success=INFO_NEAR_ROAD_BLD_FOUND,
+                info_detail=bld_no,
+            )
 
     # 리 이하 주소               경기도 김포시 신곡리 532번지 66호 1층 1호
     if toks.hasTypes(TOKEN_RI) and toks.hasTypes(TOKEN_BNG):
+        hash = hasher.jibunAddress.hash(toks, start_with=TOKEN_RI)
         yield PossibleHash(
-            hash=jibunAddress.hash(toks, start_with=TOKEN_RI),
+            hash=hash,
             addressCls=AddressCls.JIBUN_ADDRESS,
             err_failed=ERR_REGION_NOT_FOUND,
-            err_detail=jibunAddress.hash(toks, start_with=TOKEN_RI),
+            err_detail=hasher.jibunAddress.hash(toks, start_with=TOKEN_RI),
             info_success=INFO_JIBUN_ADDRESS,
             info_detail=toks.get_text_after(TOKEN_RI, count=2),
         )
+
+        # 인근 지번 주소
+        hashs = get_near_jibun_hashs(hash)
+        for h, bng in hashs:
+            yield PossibleHash(
+                hash=h,
+                addressCls=AddressCls.JIBUN_ADDRESS,
+                err_failed=ERR_NEAR_JIBUN_NOT_FOUND,
+                err_detail=bng,
+                info_success=INFO_NEAR_JIBUN_FOUND,
+                info_detail=bng,
+            )
 
     # 대표주소
     # 길대표
     if toks.hasTypes(TOKEN_ROAD):
         road_nm = toks.get(toks.index(TOKEN_ROAD)).val
         yield PossibleHash(
-            hash=roadAddress.hash(toks, end_with=TOKEN_ROAD),
+            hash=hasher.roadAddress.hash(toks, end_with=TOKEN_ROAD),
             addressCls=AddressCls.ROAD_END_ADDRESS,
             pos_cd_filter={ROAD_ADDR_FILTER},
             err_failed=ERR_ROAD_NOT_FOUND,
@@ -425,7 +451,7 @@ def possible_hashs(
         road_nm = toks.get(toks.index(TOKEN_ROAD)).val
         ri_nm = toks.get(toks.index(TOKEN_RI)).val
         yield PossibleHash(
-            hash=roadAddress.hash(toks, end_with=TOKEN_ROAD, ignore=[TOKEN_RI]),
+            hash=hasher.roadAddress.hash(toks, end_with=TOKEN_ROAD, ignore=[TOKEN_RI]),
             addressCls=AddressCls.ROAD_END_ADDRESS,
             pos_cd_filter={ROAD_ADDR_FILTER},
             err_failed=ERR_ROAD_NOT_FOUND,
@@ -437,7 +463,7 @@ def possible_hashs(
     if toks.hasTypes(TOKEN_RI):
         ri_nm = toks.get(toks.index(TOKEN_RI)).val
         yield PossibleHash(
-            hash=jibunAddress.hash(toks, end_with=TOKEN_RI),
+            hash=hasher.jibunAddress.hash(toks, end_with=TOKEN_RI),
             addressCls=AddressCls.RI_END_ADDRESS,
             pos_cd_filter={RI_ADDR_FILTER},
             err_failed=ERR_RI_NOT_FOUND,
@@ -450,7 +476,7 @@ def possible_hashs(
     if toks.hasTypes(TOKEN_H4):
         h4_nm = toks.get(toks.index(TOKEN_H4)).val
         yield PossibleHash(
-            hash=jibunAddress.hash(toks, end_with=TOKEN_H4),
+            hash=hasher.jibunAddress.hash(toks, end_with=TOKEN_H4),
             addressCls=AddressCls.H4_END_ADDRESS,
             pos_cd_filter={HD_ADDR, LD_ADDR_FILTER},
             err_failed=ERR_DONG_NOT_FOUND,
@@ -463,7 +489,7 @@ def possible_hashs(
     if toks.hasTypes(TOKEN_H23):
         h23_nm = toks.get(toks.index(TOKEN_H23)).val
         yield PossibleHash(
-            hash=jibunAddress.hash(toks, end_with=TOKEN_H23),
+            hash=hasher.jibunAddress.hash(toks, end_with=TOKEN_H23),
             addressCls=AddressCls.H23_END_ADDRESS,
             pos_cd_filter={H23_ADDR_FILTER},
             err_failed=ERR_H23_NOT_FOUND,
@@ -476,7 +502,7 @@ def possible_hashs(
     if toks.hasTypes(TOKEN_H1):
         h1_nm = toks.get(toks.index(TOKEN_H1)).val
         yield PossibleHash(
-            hash=hsimplifier.h1Hash(toks.get(0).val),
+            hash=hasher.hsimplifier.h1Hash(toks.get(0).val),
             addressCls=AddressCls.H1_END_ADDRESS,
             pos_cd_filter={H1_ADDR_FILTER},
             err_failed=ERR_H1_NOT_FOUND,

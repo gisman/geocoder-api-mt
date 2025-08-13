@@ -28,6 +28,8 @@ from fastapi.responses import FileResponse
 from fastapi import Depends, Request
 from fastapi import File, UploadFile, Form
 
+from cli.build_geohash import process_region_to_rocksdb, process_shapefile_to_rocksdb
+from cli.merge_geohash import merge_geohash_dbs
 import src.config as config
 from src.geocoder.geocoder import Geocoder, POS_CD_SUCCESS
 from src.geocoder.hash.BldAddress import BldAddress
@@ -858,6 +860,289 @@ async def region(
     return val
 
 
+@router.get("/update_region")
+async def update_region(
+    request: Request,
+    name: str = None,  # Input shapefile path
+    yyyymm: str = None,  # YYYYMM format for the region data
+    region: str = None,  # Region type: hd (행정동), h23 (시군구), h1 (광역시도)
+):
+    """
+    Updates the region data in the database.
+    ## 주어진 shapefile 경로에서 행정동 데이터를 업데이트합니다.
+
+    ex)
+    # 행정동
+    curl 'http://localhost:4009/update_region?name=11000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=26000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=27000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=28000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=29000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=30000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=31000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=36000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=41000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=43000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=44000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=46000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=47000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=48000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=50000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=51000&region=hd&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=52000&region=hd&yyyymm=202305'
+
+    # 시군구
+    curl 'http://localhost:4009/update_region?name=11000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=26000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=27000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=28000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=29000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=30000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=31000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=36000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=41000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=43000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=44000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=46000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=47000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=48000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=50000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=51000&region=h23&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=52000&region=h23&yyyymm=202305'
+
+    # 광역시도
+    curl 'http://localhost:4009/update_region?name=11000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=26000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=27000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=28000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=29000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=30000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=31000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=36000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=41000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=43000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=44000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=46000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=47000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=48000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=50000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=51000&region=h1&yyyymm=202305'
+    curl 'http://localhost:4009/update_region?name=52000&region=h1&yyyymm=202305'
+
+    ### Args:
+    * shp_path (str): 업데이트할 shapefile 경로입니다.
+    * yyyymm (str): 행정동 데이터의 년월(YYYYMM) 형식입니다.
+
+    ### Returns:
+    * 성공 메시지와 처리된 년월(YYYYMM) 정보입니다.
+    """
+
+    region_type = region
+    if region_type not in ["hd", "h23", "h1"]:
+        return HTTPException(
+            status_code=400, detail="Invalid region type. Must be 'hd', 'h23', or 'h1'."
+        )
+
+    SHP_FILE_NAME_MAP = {
+        "hd": "TL_SCCO_GEMD.shp",
+        "h23": "TL_SCCO_SIG.shp",
+        "h1": "TL_SCCO_CTPRVN.shp",
+    }
+
+    shp_path = os.path.join(
+        JUSO_DATA_DIR, "전체분", yyyymm, "map", name, SHP_FILE_NAME_MAP[region_type]
+    )
+
+    # 입력 확인
+    if not os.path.exists(shp_path):
+        # logger.error(f"Error: Shapefile {shp_path} does not exist")
+        return HTTPException(
+            status_code=400, detail=f"Shapefile {shp_path} does not exist"
+        )
+
+    try:
+        # region_prefix = args.region
+        # yyyymm = shp_path.split("/")[-4]  # 예: 202305
+        batch_size = 1000
+
+        if await ApiHandler().reverse_geocoder.process_region_to_rocksdb(
+            shp_path, region_type, yyyymm, batch_size
+        ):
+            return {
+                "message": f"Region data processed successfully from {shp_path}",
+                "yyyymm": yyyymm,
+            }
+        else:
+            return HTTPException(
+                status_code=500, detail=f"Failed to process region data from {shp_path}"
+            )
+
+    except Exception as e:
+        # logger.error(f"Error: {str(e)}")
+        import traceback
+
+        traceback.print_exc()
+        return HTTPException(
+            status_code=500, detail=f"Error processing shapefile: {str(e)}"
+        )
+
+
+@router.get("/merge_hd_history")
+async def merge_hd_history(
+    request: Request,
+    name: str = None,  # Input shapefile path
+    db_name: str = None,  # Output directory for RocksDB
+    yyyymm: str = None,
+):
+    """
+    주어진 shapefile 경로에서 행정동 변동 이력을 생성합니다.
+    Geohash를 사용하여 행정동 변동 이력을 RocksDB에 저장합니다.
+
+    Airflow:  geocoder_monthly_update.merge_hd_history
+    ex)
+        curl 'http://localhost:4009/merge_hd_history?name=11000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=26000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=27000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=28000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=29000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=30000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=31000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=36000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=41000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=43000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=44000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=46000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=47000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=48000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=50000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=51000&db_name=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/merge_hd_history?name=52000&db_name=hd_history&yyyymm=202507'
+    """
+
+    db_path = os.path.join(JUSO_DATA_DIR, "전체분", yyyymm, "map", name, db_name)
+    if not os.path.exists(db_path):
+        # logger.error(f"Error: RocksDB {db_path} does not exist")
+        return HTTPException(
+            status_code=400, detail=f"RocksDB {db_path} does not exist"
+        )
+
+    try:
+        # Shapefile 처리 및 RocksDB 저장
+        metadata = await ApiHandler().reverse_geocoder.merge_hd_history(
+            db_path,
+            yyyymm,
+        )
+
+        # 메타데이터 파일 작성 (RocksDB 외부에도 저장)
+        with open(os.path.join(db_path, "metadata.json"), "w", encoding="utf-8") as f:
+            json.dump(metadata, f, ensure_ascii=False, indent=2)
+
+        return metadata
+
+    except Exception as e:
+        # logger.error(f"Error: {str(e)}")
+        import traceback
+
+        traceback.print_exc()
+        return HTTPException(
+            status_code=500, detail=f"Error processing shapefile: {str(e)}"
+        )
+
+
+@router.get("/build_hd_history")
+async def build_hd_history(
+    request: Request,
+    name: str = None,  # Input shapefile path
+    output_dir: str = None,  # Output directory for RocksDB
+    yyyymm: str = None,
+    depth: int = 7,  # Geohash precision/depth (default: 7)
+):
+    """
+    주어진 shapefile 경로에서 행정동 변동 이력을 생성합니다.
+    Geohash를 사용하여 행정동 변동 이력을 RocksDB에 저장합니다.
+
+    Airflow:  geocoder_monthly_update.update_hd_history
+    ex)
+        curl 'http://localhost:4009/build_hd_history?name=11000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=26000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=27000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=28000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=29000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=30000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=31000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=36000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=41000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=43000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=44000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=46000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=47000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=48000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=50000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=51000&output_dir=hd_history&yyyymm=202507'
+        curl 'http://localhost:4009/build_hd_history?name=52000&output_dir=hd_history&yyyymm=202507'
+    """
+
+    # 입력 확인
+    shp_path = os.path.join(
+        JUSO_DATA_DIR, "전체분", yyyymm, "map", name, f"TL_SCCO_GEMD.shp"
+    )
+
+    if not os.path.exists(shp_path):
+        # logger.error(f"Error: Shapefile {shp_path} does not exist")
+        return HTTPException(
+            status_code=400, detail=f"Shapefile {shp_path} does not exist"
+        )
+
+    # 출력 디렉토리 생성
+    # RocksDB 경로
+    db_path = os.path.join(JUSO_DATA_DIR, "전체분", yyyymm, "map", name, output_dir)
+    os.makedirs(db_path, exist_ok=True)
+
+    # key_prefix = None  # 기본값은 None, 사용하지 않음
+    # batch_size = 1000
+
+    try:
+        metadata = await ApiHandler().reverse_geocoder.build_hd_history(
+            shp_path,
+            db_path,
+            depth,
+        )
+
+        # # Shapefile 처리 및 RocksDB 저장
+        # stats = await asyncio.to_thread(
+        #     process_shapefile_to_rocksdb,
+        #     shp_path,
+        #     db_path,
+        #     depth,
+        #     key_prefix,
+        #     batch_size,
+        # )
+
+        # # 메타데이터 파일 작성 (RocksDB 외부에도 저장)
+        # metadata = {
+        #     "count": stats["total_geohashes"],
+        #     "features": stats["total_features"],
+        #     "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+        #     "elapsed_time": stats["elapsed_time"],
+        #     "description": "Geohash database generated from shapefile",
+        # }
+
+        with open(os.path.join(db_path, "metadata.json"), "w", encoding="utf-8") as f:
+            json.dump(metadata, f, ensure_ascii=False, indent=2)
+
+        # logger.info(f"Process completed successfully! Database saved to {db_path}")
+        return metadata
+
+    except Exception as e:
+        # logger.error(f"Error: {str(e)}")
+        import traceback
+
+        traceback.print_exc()
+        return HTTPException(
+            status_code=500, detail=f"Error processing shapefile: {str(e)}"
+        )
+
+
 @router.get("/hd_history", response_model=List[HdHistoryResult])
 async def hd_history(
     request: Request,
@@ -1594,52 +1879,29 @@ async def delete_all_pnu():
 async def update_jibun_in_pnu(file: str, yyyymm: str):
     """
     PNU(지적도)에서 지번 정보를 업데이트합니다.
+    월간 업데이트용이며 vworld의 연속지적도를 사용. "연속지적지형도" 가 아님 주의.
+    "연속지적지형도"를 이용한 업데이트는 과거 데이터를 이용하기 위해 1회성으로 사용했음. update_jibun_in_pnu_shp2에 archived.
+
+    "연속지적지형도"는 reverse geocoding에도 사용 됨.
 
     실행:
-        2025년 5월 기준
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_11_202505.shp' # 서울      902,493
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_26_202505.shp' # 부산      708,412
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_27_202505.shp' # 대구      789,763
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_28_202505.shp' # 인천      669,059
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_29_202505.shp' # 광주      387,860
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_30_202505.shp' # 대전      292,574
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_31_202505.shp' # 울산      510,767
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_36110_202505.shp' # 세종   205,119
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_41_202505.shp' # 경기도   5,190,303
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_43_202505.shp' # 충청북도 2,402,775
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_44_202505.shp' # 충청남도 3,756,113
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_46_202505.shp' # 전라남도 5,913,968
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_47_202505.shp' # 경상북도 5,716,889
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_48_202505.shp' # 경상남도 4,823,336
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_50_202505.shp' # 제주도    882,245
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_51_202505.shp' # 강원도   2,744,896
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_52_202505.shp' # 전라북도 3,878,900
-
-        2024년 4월 기준
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_11_202404.shp' # 서울
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_26_202404.shp' # 부산
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_27_202404.shp' # 대구
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_28_202404.shp' # 인천
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_29_202404.shp' # 광주
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_30_202404.shp' # 대전
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_31_202404.shp' # 울산
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_36_202404.shp' # 세종
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_41_202404.shp' # 경기도
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_43_202404.shp' # 충청북도
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_44_202404.shp' # 충청남도
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_46_202404.shp' # 전라남도
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_47_202404.shp' # 경상북도
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_48_202404.shp' # 경상남도
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_50_202404.shp' # 제주도
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_51_202404.shp' # 강원도
-        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_52_202404.shp' # 전라북도
-
-
-    Args:
-        file: 업데이트할 PNU 데이터의 파일 이름
-
-    Returns:
-        업데이트 결과 메시지
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_11_202507.shp&yyyymm=202507' # 서울      902,493
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_26_202507.shp&yyyymm=202507' # 부산      708,412
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_27_202507.shp&yyyymm=202507' # 대구      789,763
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_28_202507.shp&yyyymm=202507' # 인천      669,059
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_29_202507.shp&yyyymm=202507' # 광주      387,860
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_30_202507.shp&yyyymm=202507' # 대전      292,574
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_31_202507.shp&yyyymm=202507' # 울산      510,767
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_36110_202507.shp&yyyymm=202507' # 세종   205,119
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_41_202507.shp&yyyymm=202507' # 경기도   5,190,303
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_43_202507.shp&yyyymm=202507' # 충청북도 2,402,775
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_44_202507.shp&yyyymm=202507' # 충청남도 3,756,113
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_46_202507.shp&yyyymm=202507' # 전라남도 5,913,968
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_47_202507.shp&yyyymm=202507' # 경상북도 5,716,889
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_48_202507.shp&yyyymm=202507' # 경상남도 4,823,336
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_50_202507.shp&yyyymm=202507' # 제주도    882,245
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_51_202507.shp&yyyymm=202507' # 강원도   2,744,896
+        curl 'http://localhost:4009/update_jibun_in_pnu?file=LSMD_CONT_LDREG_52_202507.shp&yyyymm=202507' # 전라북도 3,878,900
     """
     if not file:
         raise HTTPException(status_code=400, detail="file parameter is required")
@@ -1666,8 +1928,84 @@ async def update_jibun_in_pnu(file: str, yyyymm: str):
         )
 
 
+@router.get("/update_jibun_in_pnu_shp2", include_in_schema=False)
+async def update_jibun_in_pnu_shp2(file: str, yyyymm: str):
+    """
+    PNU(지적도)에서 지번 정보를 업데이트합니다.
+
+    실행:
+        2025년 5월 기준
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_11_202505.shp' # 서울      902,493
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_26_202505.shp' # 부산      708,412
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_27_202505.shp' # 대구      789,763
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_28_202505.shp' # 인천      669,059
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_29_202505.shp' # 광주      387,860
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_30_202505.shp' # 대전      292,574
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_31_202505.shp' # 울산      510,767
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_36110_202505.shp' # 세종   205,119
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_41_202505.shp' # 경기도   5,190,303
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_43_202505.shp' # 충청북도 2,402,775
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_44_202505.shp' # 충청남도 3,756,113
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_46_202505.shp' # 전라남도 5,913,968
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_47_202505.shp' # 경상북도 5,716,889
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_48_202505.shp' # 경상남도 4,823,336
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_50_202505.shp' # 제주도    882,245
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_51_202505.shp' # 강원도   2,744,896
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_52_202505.shp' # 전라북도 3,878,900
+
+        2024년 4월 기준
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_11_202404.shp' # 서울
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_26_202404.shp' # 부산
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_27_202404.shp' # 대구
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_28_202404.shp' # 인천
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_29_202404.shp' # 광주
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_30_202404.shp' # 대전
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_31_202404.shp' # 울산
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_36_202404.shp' # 세종
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_41_202404.shp' # 경기도
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_43_202404.shp' # 충청북도
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_44_202404.shp' # 충청남도
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_46_202404.shp' # 전라남도
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_47_202404.shp' # 경상북도
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_48_202404.shp' # 경상남도
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_50_202404.shp' # 제주도
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_51_202404.shp' # 강원도
+        curl 'http://localhost:4009/update_jibun_in_pnu_shp2?file=LSMD_CONT_LDREG_52_202404.shp' # 전라북도
+
+
+    Args:
+        file: 업데이트할 PNU 데이터의 파일 이름
+
+    Returns:
+        업데이트 결과 메시지
+    """
+    if not file:
+        raise HTTPException(status_code=400, detail="file parameter is required")
+
+    updater = PnuUpdater(file, yyyymm, ApiHandler().geocoder)
+
+    try:
+        output = StringIO()  # Create a string write buffer
+        if not await updater.update_shp2(output):
+            logging.error(f"ERROR: update_jibun_in_pnu fail")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to update jibun in pnu data for {file}",
+            )
+
+        logging.info(f"update_jibun_in_pnu finished")
+        return {"message": f"update_jibun_in_pnu finished: {file}\n{output.getvalue()}"}
+
+    except Exception as e:
+        logging.error(f"ERROR: update_jibun_in_pnu fail ({file}): {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error updating jibun in pnu data for {file}: {str(e)}",
+        )
+
+
 @router.get("/update_bld", include_in_schema=False)
-async def update_bld(file: str):
+async def update_bld(file: str, yyyymm: str):
     """
     건물도형 정보를 업데이트합니다.
 
@@ -1680,7 +2018,8 @@ async def update_bld(file: str):
     if not file:
         raise HTTPException(status_code=400, detail="file parameter is required")
 
-    shp_path = f"{JUSO_DATA_DIR}/건물도형/shp/{file}"
+    shp_path = f"{JUSO_DATA_DIR}/전체분/{yyyymm}/bld/{file}"
+    # shp_path = f"{JUSO_DATA_DIR}/건물도형/shp/{file}"
     try:
         if not await ApiHandler.reverse_geocoder.update_bld(shp_path):
             logging.error(f"ERROR: update_bld fail ({file})")
@@ -1701,27 +2040,27 @@ async def update_bld(file: str):
 
 
 @router.get("/update_pnu", include_in_schema=False)
-async def update_pnu(file: str):
+async def update_pnu(file: str, yyyymm: str):
     """
     PNU(지적도) 정보를 업데이트합니다.
 
-    실행: curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_11_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_26_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_27_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_28_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_29_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_30_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_31_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_36110_202505.shp'
-        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_41_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_43_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_44_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_46_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_47_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_48_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_50_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_51_202505.shp'
-        curl 'http://localhost:4009/update_pnu?name=LSMD_CONT_LDREG_52_202505.shp'
+    실행: curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_11_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_26_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_27_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_28_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_29_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_30_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_31_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_36110_202505.shp&yyyymm=202505{yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_41_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_43_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_44_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_46_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_47_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_48_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_50_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_51_202505.shp&yyyymm={yyyymm}'
+        curl 'http://localhost:4009/update_pnu?file=LSMD_CONT_LDREG_52_202505.shp&yyyymm={yyyymm}'
 
 
     Args:
@@ -1733,7 +2072,8 @@ async def update_pnu(file: str):
     if not file:
         raise HTTPException(status_code=400, detail="file parameter is required")
 
-    shp_path = f"{JUSO_DATA_DIR}/연속지적/shp/{file}"
+    shp_path = f"{JUSO_DATA_DIR}/전체분/{yyyymm}/pnu/{file}"
+    # shp_path = f"{JUSO_DATA_DIR}/연속지적/shp/{file}"
     try:
         if not await ApiHandler.reverse_geocoder.update_pnu(shp_path):
             logging.error(f"ERROR: update_pnu fail ({file})")
@@ -2002,16 +2342,6 @@ class ApiHandler:
         start_time = time.time()
 
         limited_addrs = addrs[:LINES_LIMIT]
-
-        # loop = asyncio.get_running_loop()
-        # # run_in_executor를 사용하여 스레드 풀에서 동기 함수 실행
-        # tasks = [
-        #     loop.run_in_executor(self.executor, self._geocode_worker, addr)
-        #     for addr in limited_addrs
-        # ]
-
-        # # 모든 지오코딩 작업이 완료될 때까지 대기
-        # results = await asyncio.gather(*tasks)
 
         if self.executor:
             # 스레드 풀을 사용하여 병렬로 지오코딩 작업 수행

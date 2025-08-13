@@ -403,7 +403,7 @@ class FileGeocoder:
             with open(
                 f"{download_dir}{filename}.summary", "w", newline=""
             ) as summary_file:
-                json.dump(summary, summary_file)
+                json.dump(summary, summary_file, ensure_ascii=False)
 
         except:
             self.logger.error("Failed to write summary")
@@ -581,7 +581,7 @@ class FileGeocoder:
             with open(
                 f"{download_dir}{filename}.summary", "w", newline=""
             ) as summary_file:
-                json.dump(summary, summary_file)
+                json.dump(summary, summary_file, ensure_ascii=False)
 
         except:
             self.logger.error("Failed to write summary")

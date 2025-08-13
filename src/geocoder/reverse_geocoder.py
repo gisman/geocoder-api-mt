@@ -1,19 +1,17 @@
+import asyncio
 import os
 import json
-import csv
+import time
 import geohash
+import logging
 from polygon_geohasher.polygon_geohasher import polygon_to_geohashes
 
-import pyogrio
-
-# from fiona import transform
-
-# from shapely import geometry
+import fiona
+import geopandas as gpd
 import shapely
-from shapely import wkt
+from shapely import wkt, make_valid
 from shapely.geometry import (
     shape,
-    mapping,
     Point,
     LineString,
     Polygon,
@@ -25,8 +23,9 @@ from shapely.geometry import (
 from shapely.ops import transform
 
 import pyproj
-from pyproj import Transformer
-import logging
+from tqdm import tqdm
+
+from src.pro.updater.hd_history_updater import HdHistoryUpdater
 
 from .db.gimi9_rocks import Gimi9RocksDB
 
@@ -35,6 +34,15 @@ from .db.gimi9_rocks import Gimi9RocksDB
 from .util.pnumatcher import PNUMatcher
 from .util.roadmatcher import RoadMatcher
 import src.config as config
+
+
+logger = logging.getLogger(__name__)
+console_handler = logging.StreamHandler()
+console_handler.setLevel(config.LOG_LEVEL)
+formatter = logging.Formatter(" %(message)s")
+console_handler.setFormatter(formatter)
+logger.handlers = [console_handler]
+logger.setLevel(config.LOG_LEVEL)
 
 # 생성
 # 검색
@@ -369,7 +377,7 @@ class ReverseGeocoder:
 
         Args:
             addrs (list): 주소 목록. 각 주소는 딕셔너리 형태로 되어 있으며,
-                          shp_type과 yyyymm 키를 포함해야 합니다.
+                        shp_type과 yyyymm 키를 포함해야 합니다.
             shp_type (str): 주소에서 확인할 shp_type 키.
 
         Returns:
@@ -629,19 +637,32 @@ class ReverseGeocoder:
             d0 = []
         else:
             d0 = json.loads(d0.decode("utf8"))
+
+            # yyyymm이 MST.로 시작하는 경우 yyyymm을 202404로 변경. (초기 데이터 오류 수정)
+            change_yyyymm = False
+            for d in d0:
+                # ADR_MNG_NO가 있는 경우 yyyymm이 같은지 확인
+                if "yyyymm" in d and d["yyyymm"].startswith("MST."):
+                    d["yyyymm"] = "202404"
+                    change_yyyymm = True
+
             # 중복 데이터 제거
             for i in range(len(d0) - 1, -1, -1):
                 if (
-                    d0[i]["yyyymm"] == property_dict["yyyymm"]
+                    "ADR_MNG_NO" in d0[i]  # d0[i]["yyyymm"] == property_dict["yyyymm"]
                     and d0[i]["ADR_MNG_NO"] == property_dict["ADR_MNG_NO"]
                 ):
-                    if d0[i] == property_dict:  # 중복 데이터가 있으면 저장하지 않음
-                        # print("skip")
-                        return
-                    else:
-                        # 최신 데이터로 업데이트하기 위해 제거
-                        d0.pop(i)
-                        break
+                    if change_yyyymm:
+                        self.db.put(key, json.dumps(d0).encode("utf8"))
+                    return
+
+                    # if d0[i] == property_dict:  # 중복 데이터가 있으면 저장하지 않음
+                    #     # print("skip")
+                    #     return
+                    # else:
+                    #     # 최신 데이터로 업데이트하기 위해 제거
+                    #     d0.pop(i)
+                    #     break
 
         d = {
             "ADR_MNG_NO": property_dict["ADR_MNG_NO"],
@@ -670,16 +691,17 @@ class ReverseGeocoder:
             # 중복 데이터 제거
             for i in range(len(d0) - 1, -1, -1):
                 if (
-                    d0[i]["yyyymm"] == property_dict["yyyymm"]
+                    "PNU" in d0[i]  # d0[i]["yyyymm"] == property_dict["yyyymm"]
                     and d0[i]["PNU"] == property_dict["PNU"]
                 ):
-                    if d0[i] == property_dict:  # 중복 데이터가 있으면 저장하지 않음
-                        # print("skip")
-                        return
-                    else:
-                        # 최신 데이터로 업데이트하기 위해 제거
-                        d0.pop(i)
-                        break
+                    return  # 중복 PNU 있으면 저장하지 않음
+                    # if d0[i] == property_dict:  # 중복 데이터가 있으면 저장하지 않음
+                    #     # print("skip")
+                    #     return
+                    # else:
+                    #     # 최신 데이터로 업데이트하기 위해 제거
+                    #     d0.pop(i)
+                    #     break
 
         d = {
             "PNU": property_dict["PNU"],
@@ -728,9 +750,17 @@ class ReverseGeocoder:
         # '.shp'를 제거하고 return
         return part.replace(".shp", "")
 
+    def get_data_yyyymm_bld(self, shp_path):
+        # '/disk/hdd-lv/juso-data/전체분/202507/bld/Total.JUSURB.20250801.TL_SGCO_RNADR_MST.11000.shp'
+        return os.path.dirname(shp_path).split("/")[-2]
+
     async def update_bld(self, shp_path):
-        self.data_yyyymm = self.get_data_yyyymm(shp_path)
-        filename = os.path.basename(shp_path)
+        # CPU 바운드 작업을 별도의 스레드로 오프로드
+        return await asyncio.to_thread(self._update_bld, shp_path)
+
+    def _update_bld(self, shp_path):
+        self.data_yyyymm = self.get_data_yyyymm_bld(shp_path)
+        # filename = os.path.basename(shp_path)
 
         from_crs = pyproj.CRS("EPSG:5179")
         to_crs = pyproj.CRS("EPSG:4326")
@@ -741,32 +771,28 @@ class ReverseGeocoder:
 
         # open shp file
         # # self.logger.info(f"update_bld {shp_path}")
-        # with fiona.open(shp_path, "r", encoding="cp949") as shp_file:
-        #     # for all geometry
-        #     n = 0
-        #     for feature in shp_file:
-        #         # update
-        #         self.update_bld_hash(feature, proj_transform)
-        #         n += 1
-        #         if n % 1000 == 0:
-        #             # self.logger.info(f"update {filename}: {n:,}")
-        #             print(n)
-        #     print(n)
+        n = 0
+        with fiona.open(shp_path, "r", encoding="cp949") as shp_file:
+            # for all geometry
+            n = 0
+            for feature in shp_file:
+                # update
+                self.update_bld_hash(feature, proj_transform)
+                n += 1
+                if n % 1000 == 0:
+                    # self.logger.info(f"update {filename}: {n:,}")
+                    print(n)
+            print(n)
 
-        # 전체 데이터를 스트림으로 읽기
-        for feature in pyogrio.read_bounds(shp_path, encoding="cp949"):
-            feature_dict = {
-                "geometry": feature["geometry"],
-                "properties": feature["properties"],
-            }
-            self.update_bld_hash(feature_dict, proj_transform)
-            n += 1
-            if n % 1000 == 0:
-                print(f"{filename}: {n:,}")
+        return True
 
     async def update_pnu(self, shp_path):
+        # CPU 바운드 작업을 별도의 스레드로 오프로드
+        return await asyncio.to_thread(self._update_pnu, shp_path)
+
+    def _update_pnu(self, shp_path):
         self.data_yyyymm = self.get_data_yyyymm(shp_path)
-        filename = os.path.basename(shp_path)
+        # filename = os.path.basename(shp_path)
 
         from_crs = pyproj.CRS("EPSG:5186")
         to_crs = pyproj.CRS("EPSG:4326")
@@ -775,26 +801,182 @@ class ReverseGeocoder:
             from_crs, to_crs, always_xy=True
         ).transform
 
-        # open shp file
-        # self.logger.info(f"update_pnu {shp_path}")
-        # with fiona.open(shp_path, "r", encoding="cp949") as shp_file:
-        #     # for all geometry
-        #     n = 0
-        #     for feature in shp_file:
-        #         # update
-        #         self.update_pnu_hash(feature, proj_transform)
-        #         n += 1
-        #         if n % 1000 == 0:
-        #             # self.logger.info(f"update {filename}: {n:,}")
-        #             print(n)
-        #     print(n)
+        n = 0
+        with fiona.open(shp_path, "r", encoding="cp949") as shp_file:
+            # for all geometry
+            n = 0
+            for feature in shp_file:
+                # update
+                self.update_pnu_hash(feature, proj_transform)
+                n += 1
+                if n % 1000 == 0:
+                    # self.logger.info(f"update {filename}: {n:,}")
+                    print(n)
+            print(n)
 
-        for feature in pyogrio.read_bounds(shp_path, encoding="cp949"):
-            feature_dict = {
-                "geometry": feature["geometry"],
-                "properties": feature["properties"],
-            }
-            self.update_pnu_hash(feature_dict, proj_transform)
-            n += 1
-            if n % 1000 == 0:
-                print(f"{filename}: {n:,}")
+        return True
+
+    async def process_region_to_rocksdb(
+        self, shp_path, region_type, yyyymm, batch_size=1000
+    ):
+        return await asyncio.to_thread(
+            self._process_region_to_rocksdb, shp_path, region_type, yyyymm, batch_size
+        )
+
+    def _process_region_to_rocksdb(
+        self, shp_file, region_type, yyyymm, batch_size=1000
+    ):
+        """
+        Shapefile을 읽어 형상을 simplify하여 RocksDB에 저장합니다.
+
+        Args:
+            shp_file: Shapefile 경로
+            db_path: RocksDB 데이터베이스 경로
+            region_prefix: 키 접두사
+            batch_size: 한 번에 처리할 피처 수
+        """
+
+        logger.info(f"Reading shapefile: {shp_file}")
+
+        # RocksDB 열기
+        db = self.hd_db
+
+        CODE: str = ""  # 코드 필드명
+        REGION_PREFIX: str = ""  # 지역 접두사
+        TOLERANCE: float = 0.0001  # 단순화 허용 오차
+
+        if shp_file.endswith("TL_SCCO_GEMD.shp"):
+            CODE = "EMD_CD"
+            REGION_PREFIX = "hd"
+            TOLERANCE = 10 / 111320  # 10m tolerance in degrees
+        elif shp_file.endswith("TL_SCCO_SIG.shp"):
+            CODE = "SIG_CD"
+            REGION_PREFIX = "h23"
+            TOLERANCE = 20 / 111320  # 20m tolerance in degrees
+        elif shp_file.endswith("TL_SCCO_CTPRVN.shp"):
+            CODE = "CTPRVN_CD"
+            REGION_PREFIX = "h1"
+            TOLERANCE = 50 / 111320  # 50m tolerance in degrees
+        else:
+            logger.error(f"Unsupported shapefile: {shp_file}")
+            raise ValueError(f"Unsupported shapefile: {shp_file}")
+
+        # 행정동 geohash로 검색
+        # TL_SCCO_GEMD.shp    행정동
+        # TL_SCCO_SIG.shp     시군구
+        # TL_SCCO_CTPRVN.shp  광역시도
+
+        # geohash가 업어서 검색 불가
+        # TL_KODIS_BAS.shp    기초구역
+        # TL_SCCO_EMD.shp     법정동
+        # TL_SCCO_LI.shp      리
+        # TL_SPPN_MAKAREA.shp 지점번호표기 의무지역
+
+        try:
+            # Shapefile 읽기
+            gdf = gpd.read_file(shp_file, encoding="cp949")
+            logger.info(f"Loaded {len(gdf)} features")
+
+            # CRS가 EPSG:4326(WGS84)이 아닌 경우 변환
+            if gdf.crs != "EPSG:4326":
+                logger.info(f"Converting CRS from {gdf.crs} to EPSG:4326")
+                gdf.set_crs("EPSG:5179", inplace=True)  # 원래 CRS 설정
+                gdf = gdf.to_crs("EPSG:4326")
+
+            # 일괄 쓰기 및 메모리 관리를 위한 배치 처리
+            # wb = rocksdb.WriteBatch()
+            batch_count = 0
+
+            # 진행률 표시
+            logger.info(f"Add features {REGION_PREFIX}, yyyymm {yyyymm}...")
+
+            for idx, row in tqdm(gdf.iterrows(), total=len(gdf)):
+                geom = row.geometry
+                attr_dict = row.drop("geometry").to_dict()
+
+                if geom.geom_type == "Point":
+                    continue  # 포인트는 처리하지 않음
+
+                # Simplify the geometry to reduce complexity
+                if not geom.is_valid:
+                    geom = make_valid(geom)
+
+                simplified_geom = geom.simplify(
+                    tolerance=TOLERANCE, preserve_topology=False
+                )  # 10m tolerance in degrees
+
+                if not simplified_geom.is_valid:
+                    simplified_geom = make_valid(geom)
+
+                if simplified_geom.is_empty or not simplified_geom.is_valid:
+                    continue  # Skip invalid or empty geometries
+
+                # .js의 WKT 라이브러리가 MultiCollection을 지원하지 않으므로 MultiPolygon으로 변환
+                if hasattr(simplified_geom, "geoms"):
+                    # print(
+                    #     [
+                    #         g.geom_type
+                    #         for g in simplified_geom.geoms
+                    #         if g.geom_type == "Point"
+                    #     ]
+                    # )
+                    polygons = [
+                        geom
+                        for geom in simplified_geom.geoms
+                        if geom != geom.geom_type in ("Polygon", "MultiPolygon")
+                    ]
+                    if len(polygons) == 1 and polygons[0].geom_type == "MultiPolygon":
+                        simplified_geom = MultiPolygon(polygons[0])
+                    else:
+                        simplified_geom = MultiPolygon(polygons)
+                geom = simplified_geom
+
+                # h = geohash.encode(y, x, depth)
+                # key = h
+                key = f"{REGION_PREFIX}-{yyyymm}-{attr_dict[CODE]}"
+                logger.info(f"Processing feature {idx + 1}: {key}")
+
+                attr_dict["wkt"] = geom.wkt
+                attr_dict["yyyymm"] = yyyymm
+                db.put(key.encode(), json.dumps(attr_dict).encode())
+
+                # stats["total_geohashes"] += 1
+                batch_count += 1
+                # stats["processed_features"] += 1
+
+            return True
+        except Exception as e:
+            logger.error(f"Error processing shapefile: {str(e)}")
+            raise
+        finally:
+            # RocksDB는 명시적으로 닫을 필요가 없음
+            pass
+
+    async def merge_hd_history(self, input_db_path: str, yyyymm: str):
+        # Merge historical administrative district data
+        """
+        geohash 데이터베이스를 병합합니다.
+
+        Args:
+            input_db_paths: 추가될 데이터베이스 경로 리스트
+
+        Returns:
+            병합 통계 정보
+        """
+
+        hd_history_updater = HdHistoryUpdater(self.hd_db)
+
+        return await hd_history_updater.merge_history(input_db_path, yyyymm)
+
+    async def build_hd_history(self, shp_path: str, db_path: str, depth=7):
+        """
+        geohash 데이터베이스를 병합합니다.
+        merge_hd_history()가 병합을 수행하기 위해 필요.
+        """
+        hd_history_updater = HdHistoryUpdater(self.hd_db)
+
+        return await hd_history_updater.build_history(
+            shp_path,
+            db_path,
+            depth,
+        )

@@ -139,7 +139,7 @@ class HSimplifier:
         # h2h3 포항시남구 -> 포항남
         m = self.h23re.search(h23)
         if m:
-            h23 = m.group(1) + m.group(3)
+            h23 = m.group(1) + m.group(3).strip()
 
         # 시군구 산청군 -> 산청
         m = self.h2re.search(h23)
@@ -147,8 +147,9 @@ class HSimplifier:
             h23 = m.group(1)
 
         # 부천시 XX구 예외처리. 2015년 구 없앰.
-        if h23.startswith("부천"):
-            h23 = h23[:2]
+        # 2024년 1월 1일 부활
+        # if h23.startswith("부천"):
+        #     h23 = h23[:2]
         return h23
 
     def h4Hash(self, h4, keep_dong=False):

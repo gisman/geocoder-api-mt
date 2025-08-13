@@ -172,7 +172,7 @@ def geocode_file(filepath, download_dir, limit=10000):
         with open(
             f"{download_dir}/{filename}.summary", "w", newline=""
         ) as summary_file:
-            json.dump(summary, summary_file)
+            json.dump(summary, summary_file, ensure_ascii=False)
 
         # self.send_response(200)  # 응답코드
         # self.end_headers()  # 헤더와 본문을 구분

@@ -3,7 +3,7 @@
 # TL_SCCO_SIG.shp     시군구
 # TL_SCCO_CTPRVN.shp  광역시도
 
-# geohash가 업어서 검색 불가
+# geohash가 없어서 검색 불가
 # TL_KODIS_BAS.shp    기초구역
 # TL_SCCO_EMD.shp     법정동
 # TL_SCCO_LI.shp      리

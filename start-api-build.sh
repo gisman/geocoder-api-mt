@@ -11,10 +11,10 @@ echo 'Starting...'
 
 export PYTHON_GIL=0
 export CODE_DATA_DIR=/disk/nvme1t/geocoder-api-db/code
-export GEOCODE_DB=/disk/nvme1t/geocoder-api-db/rocks-debug
-export REVERSE_GEOCODE_DB=/disk/nvme1t/geocoder-api-db/rocks-reverse-geocoder-debug
-export HD_HISTORY_DB=/disk/nvme1t/geocoder-api-db/rocks_hd_history-debug
-export BIGCACHE_DB=/disk/nvme1t/geocoder-api-db/bigcache-debug
+export GEOCODE_DB=/disk/nvme1t/geocoder-api-db/rocks-build
+export REVERSE_GEOCODE_DB=/disk/nvme1t/geocoder-api-db/rocks-reverse-geocoder-build
+export HD_HISTORY_DB=/disk/nvme1t/geocoder-api-db/rocks_hd_history-build
+export BIGCACHE_DB=/disk/nvme1t/geocoder-api-db/bigcache-build
 export LOG_LEVEL=INFO
 export USE_HASH_CACHE=true
 export THREAD_POOL_SIZE=8
