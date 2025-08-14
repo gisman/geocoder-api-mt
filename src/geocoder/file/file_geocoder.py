@@ -397,6 +397,7 @@ class FileGeocoder:
         summary["target_crs"] = target_crs
         summary["uploaded_filename"] = self.uploaded_filename
         summary["results"] = sample
+        summary["hint"] = self.address_hint_info
 
         # summary 파일 저장
         try:
