@@ -387,26 +387,15 @@ def possible_hashs(
 
     # 도로명 이하 주소               오룡길 1 전라남도청 본관, 오룡길 1 전라남도청, 오룡길 1
     if toks.hasTypes(TOKEN_ROAD) and toks.hasTypes(TOKEN_BLDNO):
-        hash = hasher.roadAddress.hash(toks, start_with=TOKEN_ROAD)
-        yield PossibleHash(
-            hash=hash,
-            addressCls=AddressCls.ROAD_ADDRESS,
-            err_failed=ERR_REGION_NOT_FOUND,
-            err_detail=hash,
-            info_success=INFO_ROAD_ADDRESS,
-            info_detail=toks.get_text_after(TOKEN_ROAD, count=2),
-        )
-        # 인근 도로명 주소
-        hashs = get_near_road_bld_hashs(hash)
-        for h, bld_no in hashs:
-            yield PossibleHash(
-                hash=h,
-                addressCls=AddressCls.ROAD_ADDRESS,
-                err_failed=ERR_NEAR_ROAD_BLD_NOT_FOUND,
-                err_detail=bld_no,
-                info_success=INFO_NEAR_ROAD_BLD_FOUND,
-                info_detail=bld_no,
-            )
+        yield from yield_hashs_start_with_road(toks, hasher)
+
+        # 도로명 이하 주소에서 지하 제거
+        if toks.hasTypes(TOKEN_UNDER):
+            road_pos, under_pos = toks.searchTypeSequence([TOKEN_ROAD, TOKEN_UNDER])
+            if road_pos > -1:
+                no_under_toks = toks.copy()
+                no_under_toks.delete(road_pos + 1)
+                yield from yield_hashs_start_with_road(no_under_toks, hasher)
 
     # 리 이하 주소               경기도 김포시 신곡리 532번지 66호 1층 1호
     if toks.hasTypes(TOKEN_RI) and toks.hasTypes(TOKEN_BNG):
@@ -578,6 +567,29 @@ def get_near_jibun_hashs(hash):
                 )
 
     return near_jibun_hashs
+
+
+def yield_hashs_start_with_road(toks, hasher):
+    hash = hasher.roadAddress.hash(toks, start_with=TOKEN_ROAD)
+    yield PossibleHash(
+        hash=hash,
+        addressCls=AddressCls.ROAD_ADDRESS,
+        err_failed=ERR_REGION_NOT_FOUND,
+        err_detail=hash,
+        info_success=INFO_ROAD_ADDRESS,
+        info_detail=toks.get_text_after(TOKEN_ROAD, count=2),
+    )
+    # 인근 도로명 주소
+    hashs = get_near_road_bld_hashs(hash)
+    for h, bld_no in hashs:
+        yield PossibleHash(
+            hash=h,
+            addressCls=AddressCls.ROAD_ADDRESS,
+            err_failed=ERR_NEAR_ROAD_BLD_NOT_FOUND,
+            err_detail=bld_no,
+            info_success=INFO_NEAR_ROAD_BLD_FOUND,
+            info_detail=bld_no,
+        )
 
 
 def get_near_road_bld_hashs(hash):
