@@ -426,10 +426,11 @@ class Geocoder:
                 last_err_for_hash_condition = (
                     err_list.last_err().get("err_cd") if err_list.last_err() else None
                 )
-                self._append_err(err_list, err_failed, err_detail)
 
                 if important_error:
                     break
+
+                self._append_err(err_list, err_failed, err_detail)
 
         # self._append_err(err_list, ERR_NOT_FOUND)
         errmsg = self._err_message(err_list, addressCls.value, "")
@@ -592,6 +593,11 @@ class Geocoder:
                     # 도로명 주소 후보자의 h23_nm이 모두 같아야 함
                     if len(h23_nm_set) > 1:
                         # self.important_error = True
+                        self.append_err(
+                            ERR_ROAD_NOT_UNIQUE_H23_NM,
+                            str(h23_nm_set),
+                            err_list=err_list,
+                        )
                         return [], IMPORTANT_ERROR
                     else:
                         if h23_nm:
@@ -600,6 +606,14 @@ class Geocoder:
                                 for r in candidate_addresses
                                 if h23_compare(r.get("h23_nm"), h23_nm)
                             ]
+
+                        if not candidate_addresses:
+                            self.append_err(
+                                ERR_H23_NOT_FOUND,
+                                h23_nm,
+                                err_list=err_list,
+                            )
+                            return [], NOT_IMPORTANT_ERROR
 
                         # 경기도이며 h23_nm이 모두 같다면 입력 주소의 h23_nm과 후보자의 h23_nm이 일치해야 함
                         # if h1_nm == "경기" and h23_hash != self.hsimplifier.h23Hash(
