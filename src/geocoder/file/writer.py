@@ -32,6 +32,9 @@ class Writer:
                 "hd_nm",
                 "pos_cd",
                 "errmsg",
+                "hash",
+                "toksString",
+                "inputaddr",
             ]
             + hd_history_cols
         )
@@ -60,6 +63,9 @@ class Writer:
             "hd_nm": row_result.get("hd_nm") or "",
             "pos_cd": row_result.get("pos_cd") or "",
             "errmsg": row_result.get("errmsg") or "",
+            "hash": row_result.get("hash") or "",
+            "toksString": row_result.get("toksString") or "",
+            "inputaddr": row_result.get("inputaddr") or "",
         }
 
         if "hd_history" in row_result:
