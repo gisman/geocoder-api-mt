@@ -427,7 +427,7 @@ class Geocoder:
                     err_list.last_err().get("err_cd") if err_list.last_err() else None
                 )
 
-                if important_error:
+                if important_error and not h23_nm:
                     break
 
                 self._append_err(err_list, err_failed, err_detail)

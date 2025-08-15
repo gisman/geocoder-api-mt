@@ -28,12 +28,12 @@ class AddressFinder:
         read_data: 파일에서 데이터를 읽고 pandas DataFrame을 반환합니다.
     """
 
-    def __init__(self, filepath, charenc, delimiter):
+    def __init__(self, filepath, charenc, delimiter, address_hint_info=None):
         self.filepath = filepath
         self.filename = os.path.basename(filepath)
         self.charenc = charenc
         self.delimiter = delimiter
-        # self.uploaded_filename = uploaded_filename
+        self.address_hint_info = address_hint_info
 
     def geocode(self, addrs):
         """
@@ -54,7 +54,7 @@ class AddressFinder:
 
         for addr in addrs:
             count += 1
-            val = self.geocoder.search(addr)
+            val = self.geocoder.search(addr, self.address_hint_info)
             if not val:
                 val = {}
                 fail_count += 1

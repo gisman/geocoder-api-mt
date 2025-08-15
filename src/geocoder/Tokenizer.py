@@ -541,7 +541,7 @@ class Tokenizer:
         반환값:
             str: 괄호가 제거된 주소 문자열입니다.
         """
-        match = self.re_road_in_bracket.match(address)
+        match = self.re_road_in_bracket.search(address)
         if match:
             matched = match.group(1)
             address = address.replace(match.group(0), matched).strip()

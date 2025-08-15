@@ -116,7 +116,7 @@ class FileGeocoder:
 
         self.delimiter = enc.detect_delimiter(self.charenc)
         self.address_col = -1
-        af = AddressFinder(filepath, charenc, self.delimiter)
+        af = AddressFinder(filepath, charenc, self.delimiter, self.address_hint_info)
         try:
             summary = af.find(self.geocoder)
             self.uploaded_filename = uploaded_filename
